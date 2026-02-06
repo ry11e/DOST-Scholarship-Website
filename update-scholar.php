@@ -1,4 +1,8 @@
 <?php
+
+header('Content-Type: application/json');
+
+
 // Establish a connection to your database
 $conn = new mysqli("localhost", "root", "", "scholarship_db");
 
@@ -105,9 +109,17 @@ $sql = "UPDATE scholars SET
     WHERE id = '$id'";
 
 if ($conn->query($sql) === TRUE) {
-    echo "<script>alert('Scholar data successfully edited'); window.location.href='dashboard.php';</script>";
+    echo json_encode([
+        'success' => true,
+        'message' => 'Record Updated'
+    ]);
+    //echo "<script>alert('Scholar data successfully edited'); window.location.href='dashboard.php';</script>";
 } else {
-    echo "<script>alert('Error: " . $conn->error . "'); window.location.href='dashboard.php';</script>";
+    echo json_encode([
+        'success' => false,
+        'message' => 'Edit Failed'
+    ]);
+    //echo "<script>alert('Error: " . $conn->error . "'); window.location.href='dashboard.php';</script>";
 }
 
 $conn->close();

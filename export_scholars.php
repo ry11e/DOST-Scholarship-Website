@@ -16,9 +16,9 @@ $sql = "SELECT id, year_of_award, scholarship_program, name, school, course, con
         FROM scholars";
 $result = $conn->query($sql);
 
-echo "ID\tYear of Award\tScholarship Program\tName\tSchool\tCourse\tContact No\tMunicipality\tDistrict\tPeriodic Requirements\tRemarks\tStatus\n";
+echo "ID\tYear of Award\tScholarship Program\tName\tSchool\tCourse\tContact No\tMunicipality\tDistrict\tStatus\n";
 
 while ($row = $result->fetch_assoc()) {
-    echo "{$row['id']}\t{$row['year_of_award']}\t{$row['scholarship_program']}\t{$row['name']}\t{$row['school']}\t{$row['course']}\t{$row['contact_no']}\t{$row['municipality']}\t{$row['district']}\t{$row['periodic_requirements']}\t{$row['remarks']}\t{$row['status']}\n";
+    echo "{$row['id']}\t{$row['year_of_award']}\t{$row['scholarship_program']}\t{$row['name']}\t{$row['school']}\t{$row['course']}\t{$row['contact_no']}\t{$row['municipality']}\t{$row['district']}\t{$row['status']}\n";
 }
 ?>
