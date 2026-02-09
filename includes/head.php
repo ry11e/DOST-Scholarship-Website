@@ -1,5 +1,9 @@
 <?php
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+
 include_once 'includes/connection.php';
 
 // Check if the user is logged in
@@ -127,6 +131,8 @@ $username = $_SESSION['admin_username'];
 			href="src/plugins/datatables/css/responsive.bootstrap4.min.css"
 		/>
 		<link rel="stylesheet" type="text/css" href="vendors/styles/style.css" />
+		<link rel="stylesheet"
+			href="src/styles/bootstrap.min.css"/>
 
 	</head>
 	<!--<style>

@@ -23,6 +23,7 @@ $conn->close();
 ?>
 
 <div class="main-container">
+    
     <div class="xs-pd-20-10 pd-ltr-20">
         <div class="card-box pb-10" style="padding: 10px;">
             <div class="h5 pd-20 mb-0">Edit Scholar Details</div>
@@ -162,6 +163,12 @@ $conn->close();
     </div>
     <!-- Result -->
     <div id="result" class="mt-3"></div>
+
+    <?php 
+        include "notification.php";
+    ?>
+    
+
 </div>
 
 <!-- JS Scripts -->
@@ -222,19 +229,59 @@ $conn->close();
                 method: 'POST',
                 body: formData
             });
-
             const data = await response.json(); // assuming PHP returns JSON
 
             if (data.success) {
-                resultDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                //resultDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
+                //alert("Update Success");
                 form.reset(); // optional: clear form
+                
+                showNotification("Success", "success");
             } else {
-                resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Error'}</div>`;
+                //resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Error'}</div>`;
+                showNotification(`Error${data.message || 'Error'}`, "error");
             }
         } catch (error) {
-            resultDiv.innerHTML = `<div class="alert alert-danger">Network error: ${error.message}</div>`;
+            //resultDiv.innerHTML = `<div class="alert alert-danger">Network error: ${error.message}</div>`;
+            showNotification(`Network Error:  ${error.message}`,"error");
         }
     });
+
+    function showNotification(msg, status){
+
+        const box = document.getElementById('notification-box');
+        
+        
+        console.log(box);
+        if(status = "success"){
+            box.style.color = 'green';
+            box.style.background = '#b8ffcd';
+        }
+        else if(status = "error"){
+            box.style.color = 'red';
+            box.style.background = '#ff9e9e';
+        }
+        
+
+        if(msg != null || msg != ""){
+            box.innerHTML = msg;
+        }
+        
+        if (box) {
+        // Fade in
+        setTimeout(() => {
+            box.style.opacity = '1';
+        }, 100);
+
+        // Fade out after 4 seconds
+        setTimeout(() => {
+            box.style.opacity = '0';
+            // Optional: remove from DOM after fade
+            setTimeout(() => box.remove(), 500);
+        }, 4000);
+    }
+
+    }
 </script>
 
 </body>

@@ -2,6 +2,10 @@
 
 header('Content-Type: application/json');
 
+if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
 
 // Establish a connection to your database
 $conn = new mysqli("localhost", "root", "", "scholarship_db");
@@ -109,6 +113,7 @@ $sql = "UPDATE scholars SET
     WHERE id = '$id'";
 
 if ($conn->query($sql) === TRUE) {
+
     echo json_encode([
         'success' => true,
         'message' => 'Record Updated'
