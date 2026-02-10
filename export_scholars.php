@@ -1,24 +1,48 @@
 <?php
-include('includes/connection.php');
-header("Content-Type: application/vnd.ms-excel");
-header("Content-Disposition: attachment; filename=scholars.xls");
+include 'includes/connection.php';
+require_once 'includes/SimpleXLSXGen.php';   // php library for generating xlsx files
 
-// NOTICE: THE EXPORTED FILE WILL BE AN 'XLS.', TAKE CAUTION
+$rows = [
+    ['LIST OF DOST-SEI SCHOLARS IN THE PROVINCE OF AKLAN'],
+    ['SY 2024-2025'],
+    [], // empty line
+    ['ID', 'Year of Award', 'Scholarship Program', 'Name', 'School', 'Course', 'Contact No', 'Municipality', 'District', 'Status']
+];
 
-// Add centered title
-echo "\t\t\t\t LIST OF DOST-SEI SCHOLARS IN THE PROVINCE OF AKLAN \t\t\t\t\n";
-// Add centered title
-echo "\t\t\t\t\t\t\t\t SY 2024-2025										
- \t\t\t\t\t\t\n\n";
-
-// Fetch scholars records for export
-$sql = "SELECT id, year_of_award, scholarship_program, name, school, course, contact_no, municipality, district, periodic_requirements, remarks, status 
+$sql = "SELECT id, year_of_award, scholarship_program, name, school, course, contact_no, municipality, district, status 
         FROM scholars";
 $result = $conn->query($sql);
 
-echo "ID\tYear of Award\tScholarship Program\tName\tSchool\tCourse\tContact No\tMunicipality\tDistrict\tStatus\n";
-
 while ($row = $result->fetch_assoc()) {
-    echo "{$row['id']}\t{$row['year_of_award']}\t{$row['scholarship_program']}\t{$row['name']}\t{$row['school']}\t{$row['course']}\t{$row['contact_no']}\t{$row['municipality']}\t{$row['district']}\t{$row['status']}\n";
+    // Keep original types (numbers stay numbers, etc.)
+    $rows[] = [
+        $row['id'],
+        $row['year_of_award'],
+        $row['scholarship_program'],
+        $row['name'],
+        $row['school'],
+        $row['course'],
+        $row['contact_no'],
+        $row['municipality'],
+        $row['district'],
+        $row['status']
+    ];
 }
+
+$xlsx = Shuchkin\SimpleXLSXGen::fromArray($rows);
+
+// Optional: make title rows bold/centered
+$xlsx->setColWidth(0,  5);   // ID
+$xlsx->setColWidth(1,  12);
+$xlsx->setColWidth(2,  25);
+$xlsx->setColWidth(3,  35);  // Name – wider
+$xlsx->setColWidth(4,  30);
+$xlsx->setColWidth(5,  25);
+$xlsx->setColWidth(6,  18);
+$xlsx->setColWidth(7,  18);
+$xlsx->setColWidth(8,  12);
+$xlsx->setColWidth(9,  15);
+
+// Download
+$xlsx->downloadAs('scholars.xlsx');
 ?>
