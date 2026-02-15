@@ -255,11 +255,11 @@ $conn->close();
         console.log(box);
         if(status = "success"){
             box.style.color = 'green';
-            box.style.background = '#b8ffcd';
+            box.style.background = 'rgb(230, 255, 238)';
         }
         else if(status = "error"){
             box.style.color = 'red';
-            box.style.background = '#ff9e9e';
+            box.style.background = '#ffd7d7';
         }
         
 
@@ -276,9 +276,10 @@ $conn->close();
         // Fade out after 4 seconds
         setTimeout(() => {
             box.style.opacity = '0';
+            location.reload();
             // Optional: remove from DOM after fade
             setTimeout(() => box.remove(), 500);
-        }, 4000);
+        }, 1500);
     }
 
     }
