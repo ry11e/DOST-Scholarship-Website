@@ -113,7 +113,7 @@
     <div class="xs-pd-20-10 pd-ltr-20">
         <div class="card-box pb-10" style="padding: 40px;">
 
-        <div class="row" style="padding-bottom: 30px;">
+        <div class="row" style="padding-bottom: 30px;" hidden>
             <div class="col" style="display: flex;
                                     justify-content: center;
                                     
