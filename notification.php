@@ -27,6 +27,7 @@
 
             background-color: #b8ffcd;
             color: #00892c;
+            border: #afffc9 solid 2px;
             padding: 15px;
             border-radius: 10px;
 
