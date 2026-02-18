@@ -1,6 +1,7 @@
 <?php 
 include_once 'includes/head.php'; 
 include_once 'includes/sidebar.php';
+include_once "includes/connection.php";
 
 
 ?>
@@ -36,7 +37,7 @@ include_once 'includes/sidebar.php';
                         <datalist id="scholarshipPrograms">
                             <?php
                                 // Fetch scholarship programs from the database
-                                $conn = new mysqli("localhost", "root", "", "scholarship_db");
+                                //$conn = new mysqli("localhost", "root", "", "scholarship_db");
                                 if ($conn->connect_error) {
                                     die("Connection failed: " . $conn->connect_error);
                                 }
@@ -45,7 +46,7 @@ include_once 'includes/sidebar.php';
                                 while ($row = $result->fetch_assoc()) {
                                     echo "<option value='" . $row['scholarship_program'] . "'>";
                                 }
-                                $conn->close();
+                                //$conn->close();
                             ?>
                         </datalist>
                     </div>
@@ -55,9 +56,14 @@ include_once 'includes/sidebar.php';
                     <div class="col-md-auto">
                         <select class="form-control" name="status" id="statusSelect">
                             <option value="" <?php echo isset($_GET['status']) && $_GET['status'] == '' ? 'selected' : ''; ?>>Select Status</option>
-                            <option value="Ongoing" <?php echo isset($_GET['status']) && $_GET['status'] == 'Ongoing' ? 'selected' : ''; ?>>Ongoing</option>
-                            <option value="Terminated" <?php echo isset($_GET['status']) && $_GET['status'] == 'Terminated' ? 'selected' : ''; ?>>Terminated</option>
-                            <option value="others" <?php echo isset($_GET['status']) && $_GET['status'] == 'others' ? 'selected' : ''; ?>>Others</option>
+                            <?php
+                                $scholStatSql = "Select * FROM tbl_scholar_status";
+                                $scholStatRes = $conn->query($scholStatSql);
+                                while($row = $scholStatRes->fetch_assoc()){
+                                    echo "<option value='".$row['fld_scholarshipStatus']."' >". $row['fld_scholarshipStatus'] ."</option>";
+                                }
+                                
+                            ?>
                         </select>
                     </div>
 
@@ -152,7 +158,7 @@ include_once 'includes/sidebar.php';
 
                     <?php
                         // Establish a connection to your database
-                        $conn = new mysqli("localhost", "root", "", "scholarship_db");
+                        // $conn = new mysqli("localhost", "root", "", "scholarship_db");
 
                         // Check if the connection was successful
                         if ($conn->connect_error) {
@@ -286,7 +292,7 @@ include_once 'includes/sidebar.php';
                         }
 
                         // Close the connection
-                        $conn->close();
+                        // $conn->close();
                     ?>
                 </tbody>
 				<?php
@@ -472,5 +478,13 @@ include_once 'includes/sidebar.php';
 <script src="src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
 <script src="vendors/scripts/dashboard3.js"></script>
 
+
+
+
+<?php
+
+$conn->close();
+unset($conn);
+?>
 </body>
 </html>
