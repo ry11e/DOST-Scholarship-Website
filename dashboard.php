@@ -1,5 +1,5 @@
-<?php 
-include_once 'includes/head.php'; 
+<?php
+include_once 'includes/head.php';
 include_once 'includes/sidebar.php';
 include_once "includes/connection.php";
 
@@ -8,18 +8,18 @@ include_once "includes/connection.php";
 
 <div class="main-container">
     <div class="xs-pd-20-10 pd-ltr-20">
-        
+
         <div class="card-box pb-10" style="padding: 10px;">
             <div class="h5 pd-20 mb-0">LIST OF DOST-SEI SCHOLARS IN THE PROVINCE OF AKLAN</div>
 
 
             <!-- Display Alert Message -->
             <?php
-                if (isset($_SESSION['message'])) {
-                    echo "<div class='alert alert-" . $_SESSION['message_type'] . "'>" . $_SESSION['message'] . "</div>";
-                    unset($_SESSION['message']);
-                    unset($_SESSION['message_type']);
-                }
+            if (isset($_SESSION['message'])) {
+                echo "<div class='alert alert-" . $_SESSION['message_type'] . "'>" . $_SESSION['message'] . "</div>";
+                unset($_SESSION['message']);
+                unset($_SESSION['message_type']);
+            }
             ?>
 
             <!-- Search Form -->
@@ -29,24 +29,24 @@ include_once "includes/connection.php";
                     <!-- Name, School, Address Selector -->
                     <div class="col-md-auto">
                         <input type="text" class="form-control" name="search_name" placeholder="Search Name, School, and Municipality" value="<?php echo isset($_GET['search_name']) ? $_GET['search_name'] : ''; ?>" />
-                    </div>  
+                    </div>
 
                     <!-- Scholarship Selector -->
                     <div class="col-md-auto">
                         <input list="scholarshipPrograms" class="form-control" name="search_scholarprog" placeholder="Search by Scholarship Program" value="<?php echo isset($_GET['search_scholarprog']) ? $_GET['search_scholarprog'] : ''; ?>" />
                         <datalist id="scholarshipPrograms">
                             <?php
-                                // Fetch scholarship programs from the database
-                                //$conn = new mysqli("localhost", "root", "", "scholarship_db");
-                                if ($conn->connect_error) {
-                                    die("Connection failed: " . $conn->connect_error);
-                                }
-                                $sql = "SELECT DISTINCT scholarship_program FROM scholars";
-                                $result = $conn->query($sql);
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<option value='" . $row['scholarship_program'] . "'>";
-                                }
-                                //$conn->close();
+                            // Fetch scholarship programs from the database
+                            //$conn = new mysqli("localhost", "root", "", "scholarship_db");
+                            if ($conn->connect_error) {
+                                die("Connection failed: " . $conn->connect_error);
+                            }
+                            $sql = "SELECT DISTINCT scholarship_program FROM scholars";
+                            $result = $conn->query($sql);
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<option value='" . $row['scholarship_program'] . "'>";
+                            }
+                            //$conn->close();
                             ?>
                         </datalist>
                     </div>
@@ -55,16 +55,35 @@ include_once "includes/connection.php";
                     <!-- Status Selector -->
                     <div class="col-md-auto">
                         <select class="form-control" name="status" id="statusSelect">
-                            <option value="" <?php echo isset($_GET['status']) && $_GET['status'] == '' ? 'selected' : ''; ?>>Select Status</option>
+                            <option value="">Select Status</option>
+
                             <?php
-                                $scholStatSql = "Select * FROM tbl_scholar_status";
-                                $scholStatRes = $conn->query($scholStatSql);
-                                while($row = $scholStatRes->fetch_assoc()){
-                                    echo "<option value='".$row['fld_scholarshipStatus']."' >". $row['fld_scholarshipStatus'] ."</option>";
-                                }
-                                
+                            // Get the current selected value from GET (or set to empty string if not present)
+                            $selected_status = isset($_GET['status']) ? $_GET['status'] : '';
+
+                            $scholStatSql = "SELECT * FROM tbl_scholar_status";
+                            $scholStatRes = $conn->query($scholStatSql);
+
+                            while ($row = $scholStatRes->fetch_assoc()) {
+                                $value = $row['fld_scholarshipStatus'];
+                                $display = $row['fld_scholarshipStatus'];
+
+                                // Check if this option should be selected
+                                $is_selected = ($selected_status === $value) ? 'selected' : '';
+
+                                echo "<option value=\"$value\" $is_selected>$display</option>";
+                            }
                             ?>
+
+                            <?php
+                            // Handle the "others" option separately
+                            $others_selected = ($selected_status === 'others') ? 'selected' : '';
+                            ?>
+                            <option value="others" <?= $others_selected ?>>others</option>
                         </select>
+
+                        <!-- Optional: for debugging -->
+                        <!-- <small>Current GET value: <?= htmlspecialchars($_GET['status'] ?? 'none') ?></small> -->
                     </div>
 
                     <!-- Year Selector -->
@@ -73,33 +92,36 @@ include_once "includes/connection.php";
 
                         <datalist id="years">
                             <?php
-                                $currentYear = date("Y");
-                                $startYear   = $currentYear - 20;
+                            $currentYear = date("Y");
+                            $startYear   = $currentYear - 20;
 
-                                for ($year = $currentYear; $year >= $startYear; $year--) {
-                                    echo "<option value=\"$year\">";
-                                }
+                            for ($year = $currentYear; $year >= $startYear; $year--) {
+                                echo "<option value=\"$year\">";
+                            }
                             ?>
                         </datalist>
                     </div>
 
                     <script>
-                    document.getElementById('statusSelect').addEventListener('change', function() {
-                        if (this.value === 'others') {
-                            var input = document.createElement('input');
-                            input.type = 'text';
-                            input.name = 'status';
-                            input.className = 'form-control';
-                            input.placeholder = 'Enter custom status';
-                            input.id = 'statusInput';
-                            this.parentNode.replaceChild(input, this);
-                        }
-                    });
+                        document.getElementById('statusSelect').addEventListener('change', function() {
+                            if (this.value === 'others') {
+                                var input = document.createElement('input');
+                                input.type = 'text';
+                                input.name = 'status';
+                                input.className = 'form-control';
+                                input.placeholder = 'Enter custom status';
+                                input.id = 'statusInput';
+                                this.parentNode.replaceChild(input, this);
+                            }
+                        });
                     </script>
 
                     <div class="col-md-auto">
                         <button type="submit" class="btn btn-primary">Search</button>
-                        <a style="background-color: rgba(0, 0, 0, 0.29);" onclick="resetScholarTable()" class="btn " href="dashboard.php" ><svg width="20" height="20" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 119.4 122.88"><title>reload</title><path d="M83.91,26.34a43.78,43.78,0,0,0-22.68-7,42,42,0,0,0-24.42,7,49.94,49.94,0,0,0-7.46,6.09,42.07,42.07,0,0,0-5.47,54.1A49,49,0,0,0,30,94a41.83,41.83,0,0,0,18.6,10.9,42.77,42.77,0,0,0,21.77.13,47.18,47.18,0,0,0,19.2-9.62,38,38,0,0,0,11.14-16,36.8,36.8,0,0,0,1.64-6.18,38.36,38.36,0,0,0,.61-6.69,8.24,8.24,0,1,1,16.47,0,55.24,55.24,0,0,1-.8,9.53A54.77,54.77,0,0,1,100.26,108a63.62,63.62,0,0,1-25.92,13.1,59.09,59.09,0,0,1-30.1-.25,58.45,58.45,0,0,1-26-15.17,65.94,65.94,0,0,1-8.1-9.86,58.56,58.56,0,0,1,7.54-75,65.68,65.68,0,0,1,9.92-8.09A58.38,58.38,0,0,1,61.55,2.88,60.51,60.51,0,0,1,94.05,13.3l-.47-4.11A8.25,8.25,0,1,1,110,7.32l2.64,22.77h0a8.24,8.24,0,0,1-6.73,9L82.53,43.31a8.23,8.23,0,1,1-2.9-16.21l4.28-.76Z"/></svg></a>
+                        <a style="background-color: rgba(0, 0, 0, 0.29);" onclick="resetScholarTable()" class="btn " href="dashboard.php"><svg width="20" height="20" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 119.4 122.88">
+                                <title>reload</title>
+                                <path d="M83.91,26.34a43.78,43.78,0,0,0-22.68-7,42,42,0,0,0-24.42,7,49.94,49.94,0,0,0-7.46,6.09,42.07,42.07,0,0,0-5.47,54.1A49,49,0,0,0,30,94a41.83,41.83,0,0,0,18.6,10.9,42.77,42.77,0,0,0,21.77.13,47.18,47.18,0,0,0,19.2-9.62,38,38,0,0,0,11.14-16,36.8,36.8,0,0,0,1.64-6.18,38.36,38.36,0,0,0,.61-6.69,8.24,8.24,0,1,1,16.47,0,55.24,55.24,0,0,1-.8,9.53A54.77,54.77,0,0,1,100.26,108a63.62,63.62,0,0,1-25.92,13.1,59.09,59.09,0,0,1-30.1-.25,58.45,58.45,0,0,1-26-15.17,65.94,65.94,0,0,1-8.1-9.86,58.56,58.56,0,0,1,7.54-75,65.68,65.68,0,0,1,9.92-8.09A58.38,58.38,0,0,1,61.55,2.88,60.51,60.51,0,0,1,94.05,13.3l-.47-4.11A8.25,8.25,0,1,1,110,7.32l2.64,22.77h0a8.24,8.24,0,0,1-6.73,9L82.53,43.31a8.23,8.23,0,1,1-2.9-16.21l4.28-.76Z" />
+                            </svg></a>
                     </div>
                 </div>
             </form>
@@ -107,22 +129,30 @@ include_once "includes/connection.php";
             <!-- Add Button -->
             <div class="text-right mb-3">
                 <!-- Trigger the modal -->
-                <button  type="button" style="border: solid black 3px; font-size: 17px; padding:15px; "  class="btn " data-toggle="modal" data-target="#addScholarModal"><span class="micon bi bi-person-plus"></span>
+                <button type="button" style="border: solid black 3px; font-size: 17px; padding:15px; " class="btn " data-toggle="modal" data-target="#addScholarModal"><span class="micon bi bi-person-plus"></span>
                     &nbsp;Add/Create Scholar
                 </button>
 
                 <!-- Export To Excel Button -->
-                <button style="border: solid black 3px;"  onclick="exportToExcel()" class="btn">
+                <button style="border: solid black 3px;" onclick="exportToExcel()" class="btn">
                     <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 48 48">
-                    <defs>
-                    <linearGradient id="G7C1BuhajJQaEWHVlNUzHa_BEMhRoRy403e_gr1" x1="6" x2="27" y1="24" y2="24" data-name="ÐÐµÐ·ÑÐ¼ÑÐ½Ð½ÑÐ¹ Ð³ÑÐ°Ð´Ð¸ÐµÐ½Ñ 10" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#21ad64"></stop><stop offset="1" stop-color="#088242"></stop></linearGradient></defs><path fill="#31c447" d="m41,10h-16v28h16c.55,0,1-.45,1-1V11c0-.55-.45-1-1-1Z"></path><path fill="#fff" d="m32,15h7v3h-7v-3Zm0,10h7v3h-7v-3Zm0,5h7v3h-7v-3Zm0-10h7v3h-7v-3Zm-7-5h5v3h-5v-3Zm0,10h5v3h-5v-3Zm0,5h5v3h-5v-3Zm0-10h5v3h-5v-3Z"></path><path fill="url(#G7C1BuhajJQaEWHVlNUzHa_BEMhRoRy403e_gr1)" d="m27,42l-21-4V10l21-4v36Z"></path><path fill="#fff" d="m19.13,31l-2.41-4.56c-.09-.17-.19-.48-.28-.94h-.04c-.05.22-.15.54-.32.98l-2.42,4.52h-3.76l4.46-7-4.08-7h3.84l2,4.2c.16.33.3.73.42,1.18h.04c.08-.27.22-.68.44-1.22l2.23-4.16h3.51l-4.2,6.94,4.32,7.06h-3.74Z"></path>
+                        <defs>
+                            <linearGradient id="G7C1BuhajJQaEWHVlNUzHa_BEMhRoRy403e_gr1" x1="6" x2="27" y1="24" y2="24" data-name="ÐÐµÐ·ÑÐ¼ÑÐ½Ð½ÑÐ¹ Ð³ÑÐ°Ð´Ð¸ÐµÐ½Ñ 10" gradientUnits="userSpaceOnUse">
+                                <stop offset="0" stop-color="#21ad64"></stop>
+                                <stop offset="1" stop-color="#088242"></stop>
+                            </linearGradient>
+                        </defs>
+                        <path fill="#31c447" d="m41,10h-16v28h16c.55,0,1-.45,1-1V11c0-.55-.45-1-1-1Z"></path>
+                        <path fill="#fff" d="m32,15h7v3h-7v-3Zm0,10h7v3h-7v-3Zm0,5h7v3h-7v-3Zm0-10h7v3h-7v-3Zm-7-5h5v3h-5v-3Zm0,10h5v3h-5v-3Zm0,5h5v3h-5v-3Zm0-10h5v3h-5v-3Z"></path>
+                        <path fill="url(#G7C1BuhajJQaEWHVlNUzHa_BEMhRoRy403e_gr1)" d="m27,42l-21-4V10l21-4v36Z"></path>
+                        <path fill="#fff" d="m19.13,31l-2.41-4.56c-.09-.17-.19-.48-.28-.94h-.04c-.05.22-.15.54-.32.98l-2.42,4.52h-3.76l4.46-7-4.08-7h3.84l2,4.2c.16.33.3.73.42,1.18h.04c.08-.27.22-.68.44-1.22l2.23-4.16h3.51l-4.2,6.94,4.32,7.06h-3.74Z"></path>
                     </svg>
                     Export to Excel
                 </button>
             </div>
 
             <!-- Table displaying scholars -->
-            <table  class="data-table table no-wrap table-hover table-bordered table-striped">
+            <table class="data-table table no-wrap table-hover table-bordered table-striped">
                 <thead>
                     <tr style="background-color: rgba(0, 0, 0, 0.39);">
                         <th class="table-plus">#</th>
@@ -135,7 +165,7 @@ include_once "includes/connection.php";
                         <th class="datatable-nosort">MUNICIPALITY</th>
                         <th class="datatable-nosort">STATUS</th>
                         <th class="datatable-nosort">PERIODIC REQUIREMENTS</th>
-                     
+
                         <th class="datatable-nosort">SUMMER</th>
                         <th class="datatable-nosort">Updated COG</th>
                         <th class="datatable-nosort">Delayed Requirements</th>
@@ -147,163 +177,164 @@ include_once "includes/connection.php";
                 </thead>
                 <tbody>
                     <?php
-                        if (isset($_GET['message'])) {
-                            if ($_GET['message'] == 'deleted') {
-                                echo "<div class='alert alert-success'>Scholar details deleted successfully!</div>";
-                            } elseif ($_GET['message'] == 'error') {
-                                echo "<div class='alert alert-danger'>An error occurred while deleting the scholar details.</div>";
-                            }
+                    if (isset($_GET['message'])) {
+                        if ($_GET['message'] == 'deleted') {
+                            echo "<div class='alert alert-success'>Scholar details deleted successfully!</div>";
+                        } elseif ($_GET['message'] == 'error') {
+                            echo "<div class='alert alert-danger'>An error occurred while deleting the scholar details.</div>";
                         }
+                    }
                     ?>
 
                     <?php
-                        // Establish a connection to your database
-                        // $conn = new mysqli("localhost", "root", "", "scholarship_db");
+                    // Establish a connection to your database
+                    // $conn = new mysqli("localhost", "root", "", "scholarship_db");
 
-                        // Check if the connection was successful
-                        if ($conn->connect_error) {
-                            die("Connection failed: " . $conn->connect_error);
+                    // Check if the connection was successful
+                    if ($conn->connect_error) {
+                        die("Connection failed: " . $conn->connect_error);
+                    }
+
+                    // Build the query based on search inputs
+                    $sql = "SELECT * FROM scholars WHERE 1";
+
+
+                    // Filters
+                    if (isset($_GET['search_name']) && $_GET['search_name'] != "") {
+                        $search_name = $conn->real_escape_string($_GET['search_name']);
+                        $sql .= " AND (name LIKE '%$search_name%' OR school LIKE '%$search_name%' OR municipality LIKE '%$search_name%')";
+                    }
+
+                    if (isset($_GET['search_scholarprog']) && $_GET['search_scholarprog'] != "") {
+                        $search_scholarprog = $conn->real_escape_string($_GET['search_scholarprog']);
+                        $sql .= " AND (scholarship_program LIKE '%$search_scholarprog%')";
+                    }
+
+                    if (isset($_GET['status']) && $_GET['status'] != "") {
+                        $status = $conn->real_escape_string($_GET['status']);
+                        $sql .= " AND status = '$status'";
+                    }
+
+                    if (isset($_GET['selected_year']) && $_GET['selected_year'] != "") {
+                        $year = (int)$_GET['selected_year'];
+                        $sql .= " AND year_of_award = $year";
+                        $_SESSION['currentYear'] = $year;
+                    }
+
+
+                    // appends a sort query
+                    $sql = $sql . " ORDER BY YEAR(year_of_award) DESC";
+
+
+
+
+                    // ------------------------------------------------------------//
+                    // This function is called by the 'Cancel' button in 'update-scholar.php'
+                    if (isset($_GET['action']) && $_GET['action'] === 'reloadLastQuery') {
+                        reloadLastQuery();
+
+                        //echo  "<pre>" . "Last Query Reloaded" . "</pre>";
+                        //exit;
+                    }
+                    function reloadLastQuery()
+                    {
+                        global $sql;
+                        $sql = $_SESSION['lastSearchQuery'];
+                    }
+                    // ---------------------------------------------------------//
+
+
+
+
+                    $_SESSION['lastSearchQuery'] = $sql;
+                    //echo  "<pre>" . htmlspecialchars($_SESSION['lastSearchQuery']) . "</pre>"; // Debugger
+
+
+
+
+                    // Execute the query and get the result
+                    $result = $conn->query($sql);
+
+
+
+
+                    // Display the results in the table
+                    $count = 1;
+                    while ($row = $result->fetch_assoc()) {
+
+
+                        $statusClass = '';
+                        if ($row['status'] == 'Ongoing') {
+                            $statusClass = 'bg-success';
+                        } elseif ($row['status'] == 'Terminated') {
+                            $statusClass = 'bg-danger';
                         }
-
-                        // Build the query based on search inputs
-                        $sql = "SELECT * FROM scholars WHERE 1";
-
-                    
-                        // Filters
-                        if (isset($_GET['search_name']) && $_GET['search_name'] != "") {
-                            $search_name = $conn->real_escape_string($_GET['search_name']);
-                            $sql .= " AND (name LIKE '%$search_name%' OR school LIKE '%$search_name%' OR municipality LIKE '%$search_name%')";
-                        }
-                        
-                        if (isset($_GET['search_scholarprog']) && $_GET['search_scholarprog'] != "") {
-                            $search_scholarprog = $conn->real_escape_string($_GET['search_scholarprog']);
-                            $sql .= " AND (scholarship_program LIKE '%$search_scholarprog%')";
-                        }
-                        
-                        if (isset($_GET['status']) && $_GET['status'] != "") {
-                            $status = $conn->real_escape_string($_GET['status']);
-                            $sql .= " AND status = '$status'";
-                        }
-
-                        if (isset($_GET['selected_year']) && $_GET['selected_year'] != "") {
-                            $year = (int)$_GET['selected_year'];
-                            $sql .= " AND year_of_award = $year";
-                            $_SESSION['currentYear'] = $year;
-                        }
-
-
-                        // appends a sort query
-                        $sql = $sql . " ORDER BY YEAR(year_of_award) DESC" ;
-
-
-
-
-                        // ------------------------------------------------------------//
-                        // This function is called by the 'Cancel' button in 'update-scholar.php'
-                        if (isset($_GET['action']) && $_GET['action'] === 'reloadLastQuery') {
-                            reloadLastQuery();
-                             
-                            //echo  "<pre>" . "Last Query Reloaded" . "</pre>";
-                            //exit;
-                        }
-                        function reloadLastQuery(){
-                            global $sql;
-                            $sql = $_SESSION['lastSearchQuery'];
-                        }
-                        // ---------------------------------------------------------//
-
-                        
-
-
-                        $_SESSION['lastSearchQuery'] = $sql;
-                        //echo  "<pre>" . htmlspecialchars($_SESSION['lastSearchQuery']) . "</pre>"; // Debugger
-
-
-                        
-
-                        // Execute the query and get the result
-                        $result = $conn->query($sql);
-
-
-                
-
-                        // Display the results in the table
-                        $count = 1;
-                        while ($row = $result->fetch_assoc()) {
-
-                            
-                            $statusClass = '';
-                            if ($row['status'] == 'Ongoing') {
-                                $statusClass = 'bg-success';
-                            } elseif ($row['status'] == 'Terminated') {
-                                $statusClass = 'bg-danger';
-                            }
-                            echo "<tr>";
-                            echo "<td class='table-plus'>" . $count . "</td>";
-                            echo "<td>" . $row['year_of_award'] . "</td>";
-                            echo "<td>" . $row['scholarship_program'] . "</td>";
-                            echo "<td>" . $row['name'] . "</td>";
-                            echo "<td>" . $row['school'] . "</td>";
-                            echo "<td>" . $row['course'] . "</td>";
-                            echo "<td>" . $row['contact_no'] . "</td>";
-                            echo "<td>" . $row['municipality'] . "</td>";
-                            echo "<td class='$statusClass'>" . $row['status'] . "</td>";
-                            echo "<td>";
-                            if (!empty($row['periodic_requirements'])) {
-                                $files = explode(',', $row['periodic_requirements']);
-                                foreach ($files as $file) {
-                                    list($filename, $upload_date) = explode('|', $file);
-                                    echo "<p style='font-size: 12px; background-color:beige;'>
+                        echo "<tr>";
+                        echo "<td class='table-plus'>" . $count . "</td>";
+                        echo "<td>" . $row['year_of_award'] . "</td>";
+                        echo "<td>" . $row['scholarship_program'] . "</td>";
+                        echo "<td>" . $row['name'] . "</td>";
+                        echo "<td>" . $row['school'] . "</td>";
+                        echo "<td>" . $row['course'] . "</td>";
+                        echo "<td>" . $row['contact_no'] . "</td>";
+                        echo "<td>" . $row['municipality'] . "</td>";
+                        echo "<td class='$statusClass'>" . $row['status'] . "</td>";
+                        echo "<td>";
+                        if (!empty($row['periodic_requirements'])) {
+                            $files = explode(',', $row['periodic_requirements']);
+                            foreach ($files as $file) {
+                                list($filename, $upload_date) = explode('|', $file);
+                                echo "<p style='font-size: 12px; background-color:beige;'>
                                             <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' shape-rendering='geometricPrecision' text-rendering='geometricPrecision' image-rendering='optimizeQuality' fill-rule='evenodd' clip-rule='evenodd' viewBox='0 0 424 511.543'><path fill='#262626' fill-rule='nonzero' d='M86.371 413.439c-11.766 0-11.766-17.89 0-17.89h102.733a129.853 129.853 0 00-.316 8.945c0 3.008.112 5.99.316 8.945H86.371zm179.438-389.18v29.103c0 65.658 15.314 69.469 69.082 69.469h22.031l-91.113-98.572zm94.336 115.919h-21.48c-61.025 0-90.202-4.092-90.202-86.277V17.347H56.817c-21.693 0-39.47 17.778-39.47 39.472v264.794h201.856a128.538 128.538 0 00-12.518 17.541H17.347v89.824c0 21.622 17.85 39.47 39.47 39.47h149.048a128.452 128.452 0 0012.01 17.347H56.817C25.626 485.795 0 460.171 0 428.978V56.819C0 25.553 25.55 0 56.817 0h206.336a8.656 8.656 0 016.926 3.454l105.073 113.675c2.191 2.367 2.339 4.663 2.339 7.517v166.861a127.423 127.423 0 00-17.346-7.709v-143.62z'/><path fill='#262626' fill-rule='nonzero' d='M123.665 246.354h-17.178v19.953H80.059v-82.589h41.624c18.941 0 28.41 10.175 28.41 30.526 0 11.188-2.467 19.468-7.4 24.841-1.849 2.026-4.405 3.746-7.663 5.154-3.259 1.411-7.048 2.115-11.365 2.115zm-17.178-41.493v20.35h6.079c3.171 0 5.484-.329 6.938-.991 1.453-.661 2.179-2.18 2.179-4.558v-9.25c0-2.379-.726-3.9-2.179-4.559-1.454-.661-3.767-.992-6.938-.992h-6.079zm51.536 61.446v-82.589h36.998c14.889 0 25.107 3.172 30.657 9.516 5.551 6.341 8.326 16.934 8.326 31.779 0 14.844-2.775 25.437-8.326 31.78-5.55 6.344-15.768 9.514-30.657 9.514h-36.998zm37.395-61.446H184.45v40.303h10.968c3.612 0 6.233-.417 7.862-1.254 1.63-.838 2.446-2.753 2.446-5.748v-26.297c0-2.995-.816-4.91-2.446-5.747-1.629-.838-4.25-1.257-7.862-1.257zm96.729 30.789h-22.465v30.657h-26.428v-82.589h54.178l-3.304 21.143h-24.446v11.1h22.465v19.689z'/><path fill='red' d='M316.953 297.447c59.119 0 107.047 47.93 107.047 107.049 0 59.118-47.928 107.047-107.047 107.047-59.12 0-107.049-47.929-107.049-107.047 0-59.119 47.929-107.049 107.049-107.049z'/><path fill='#fff' fill-rule='nonzero' d='M334.136 399.617l17.346 6.065c11.471 4.405 23.271-3.713 14.378-13.819-10.821-12.445-27.258-29.548-39.216-40.938-7.427-7.423-11.734-7.488-19.187-.061-13.237 12.997-26.232 27.437-39.17 40.871-9.254 10.06 2.291 18.552 14.272 13.947l17.166-6.004c-1.258 16.274-2.825 31.833-3.775 48.096 0 2.994 2.503 5.388 5.425 5.613 10.31 0 20.837.242 31.12 0 2.918-.225 5.422-2.622 5.422-5.613l-3.781-48.157z'/></svg>
                 
                                             <a href='uploads/$filename' target='_blank'>$filename</a>
                                             <br>(Uploaded on: " . date('m/d/Y', strtotime($upload_date)) . ")
                                         </p>";
-                                }
                             }
-                            echo "</td>";
-                            echo "<td>" . $row['summer'] . "</td>";
-                            echo "<td>";
-                            if (!empty($row['updated_cog_filename'])) {
-                                $cogFiles = explode(',', $row['updated_cog_filename']);
-                                foreach ($cogFiles as $cogFile) {
-                                    list($filename, $upload_date) = explode('|', $cogFile);
-                                    echo "<p style='font-size: 12px; background-color:beige;'>
+                        }
+                        echo "</td>";
+                        echo "<td>" . $row['summer'] . "</td>";
+                        echo "<td>";
+                        if (!empty($row['updated_cog_filename'])) {
+                            $cogFiles = explode(',', $row['updated_cog_filename']);
+                            foreach ($cogFiles as $cogFile) {
+                                list($filename, $upload_date) = explode('|', $cogFile);
+                                echo "<p style='font-size: 12px; background-color:beige;'>
                                             <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20' shape-rendering='geometricPrecision' text-rendering='geometricPrecision' image-rendering='optimizeQuality' fill-rule='evenodd' clip-rule='evenodd' viewBox='0 0 424 511.543'><path fill='#262626' fill-rule='nonzero' d='M86.371 413.439c-11.766 0-11.766-17.89 0-17.89h102.733a129.853 129.853 0 00-.316 8.945c0 3.008.112 5.99.316 8.945H86.371zm179.438-389.18v29.103c0 65.658 15.314 69.469 69.082 69.469h22.031l-91.113-98.572zm94.336 115.919h-21.48c-61.025 0-90.202-4.092-90.202-86.277V17.347H56.817c-21.693 0-39.47 17.778-39.47 39.472v264.794h201.856a128.538 128.538 0 00-12.518 17.541H17.347v89.824c0 21.622 17.85 39.47 39.47 39.47h149.048a128.452 128.452 0 0012.01 17.347H56.817C25.626 485.795 0 460.171 0 428.978V56.819C0 25.553 25.55 0 56.817 0h206.336a8.656 8.656 0 016.926 3.454l105.073 113.675c2.191 2.367 2.339 4.663 2.339 7.517v166.861a127.423 127.423 0 00-17.346-7.709v-143.62z'/><path fill='#262626' fill-rule='nonzero' d='M123.665 246.354h-17.178v19.953H80.059v-82.589h41.624c18.941 0 28.41 10.175 28.41 30.526 0 11.188-2.467 19.468-7.4 24.841-1.849 2.026-4.405 3.746-7.663 5.154-3.259 1.411-7.048 2.115-11.365 2.115zm-17.178-41.493v20.35h6.079c3.171 0 5.484-.329 6.938-.991 1.453-.661 2.179-2.18 2.179-4.558v-9.25c0-2.379-.726-3.9-2.179-4.559-1.454-.661-3.767-.992-6.938-.992h-6.079zm51.536 61.446v-82.589h36.998c14.889 0 25.107 3.172 30.657 9.516 5.551 6.341 8.326 16.934 8.326 31.779 0 14.844-2.775 25.437-8.326 31.78-5.55 6.344-15.768 9.514-30.657 9.514h-36.998zm37.395-61.446H184.45v40.303h10.968c3.612 0 6.233-.417 7.862-1.254 1.63-.838 2.446-2.753 2.446-5.748v-26.297c0-2.995-.816-4.91-2.446-5.747-1.629-.838-4.25-1.257-7.862-1.257zm96.729 30.789h-22.465v30.657h-26.428v-82.589h54.178l-3.304 21.143h-24.446v11.1h22.465v19.689z'/><path fill='red' d='M316.953 297.447c59.119 0 107.047 47.93 107.047 107.049 0 59.118-47.928 107.047-107.047 107.047-59.12 0-107.049-47.929-107.049-107.047 0-59.119 47.929-107.049 107.049-107.049z'/><path fill='#fff' fill-rule='nonzero' d='M334.136 399.617l17.346 6.065c11.471 4.405 23.271-3.713 14.378-13.819-10.821-12.445-27.258-29.548-39.216-40.938-7.427-7.423-11.734-7.488-19.187-.061-13.237 12.997-26.232 27.437-39.17 40.871-9.254 10.06 2.291 18.552 14.272 13.947l17.166-6.004c-1.258 16.274-2.825 31.833-3.775 48.096 0 2.994 2.503 5.388 5.425 5.613 10.31 0 20.837.242 31.12 0 2.918-.225 5.422-2.622 5.422-5.613l-3.781-48.157z'/></svg>
                                             <a href='uploads/$filename' target='_blank'>$filename</a>
                                             <br>(Uploaded on: " . date('m/d/Y', strtotime($upload_date)) . ")
                                         </p>";
-                                }
                             }
-                            echo "</td>";
-                            
-                            echo "<td>" . $row['delayed_requirements'] . "</td>";
-                            echo "<td>" . $row['lacking_requirements'] . "</td>";
-                            echo "<td>" . $row['remarks'] . "</td>";
-                            echo "<td>" . $row['district'] . "</td>";
-                            echo "<td>
+                        }
+                        echo "</td>";
+
+                        echo "<td>" . $row['delayed_requirements'] . "</td>";
+                        echo "<td>" . $row['lacking_requirements'] . "</td>";
+                        echo "<td>" . $row['remarks'] . "</td>";
+                        echo "<td>" . $row['district'] . "</td>";
+                        echo "<td>
                                 <div class='table-actions'>
-                                <a href='edit-scholar.php?id=".$row['id']."' class='btn' data-color='#265ed7'><i class='icon-copy dw dw-edit2'></i></a>
-                                    <a onclick='return confirmDelete()' href='delete_scholar.php?id=".$row['id']."' data-color='#e95959' class='btn'><i class='icon-copy dw dw-delete-3'></i></a>
+                                <a href='edit-scholar.php?id=" . $row['id'] . "' class='btn' data-color='#265ed7'><i class='icon-copy dw dw-edit2'></i></a>
+                                    <a onclick='return confirmDelete()' href='delete_scholar.php?id=" . $row['id'] . "' data-color='#e95959' class='btn'><i class='icon-copy dw dw-delete-3'></i></a>
                                 </div>
                             </td>";
-                            echo "</tr>";
-                            $count++;
-                        }
+                        echo "</tr>";
+                        $count++;
+                    }
 
-                        // Close the connection
-                        // $conn->close();
+                    // Close the connection
+                    // $conn->close();
                     ?>
                 </tbody>
-				<?php
-                    // Display the number of results
-                    echo "<div class='mb-3'>Number of results: " . $result->num_rows . "</div>";
+                <?php
+                // Display the number of results
+                echo "<div class='mb-3'>Number of results: " . $result->num_rows . "</div>";
                 ?>
                 <script>
                     function confirmDelete() {
                         return confirm("Are you sure you want to delete this scholar?");
                     }
-                </script> 
+                </script>
 
             </table>
         </div>
@@ -369,13 +400,25 @@ include_once "includes/connection.php";
                             <label for="status">Status</label>
                             <select class="form-control" id="status" name="status" required>
                                 <option value="">Select Status</option>
-                                <option value="Undergraduate">Ongoing</option>
-                                <option value="Graduate">Terminated</option>
-                                <option value="Others">Others</option>
+                                <?php
+
+                                    $scholStatSql = "SELECT * FROM tbl_scholar_status";
+                                    $scholStatRes = $conn->query($scholStatSql);
+
+                                    while ($row = $scholStatRes->fetch_assoc()) {
+                                        $value = $row['fld_scholarshipStatus'];
+                                        $display = $row['fld_scholarshipStatus'];
+
+                                        // Check if this option should be selected
+                                        $is_selected = ($selected_status === $value) ? 'selected' : '';
+
+                                        echo "<option value=\"$value\" $is_selected>$display</option>";
+                                    }
+                                ?>
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="periodic_requirements">Periodic Requirements&nbsp;<span style="font-size: 9px; color:red; background-color:antiquewhite ;">  Note: (Filenames should not have commas(,))</span></label>
+                            <label for="periodic_requirements">Periodic Requirements&nbsp;<span style="font-size: 9px; color:red; background-color:antiquewhite ;"> Note: (Filenames should not have commas(,))</span></label>
                             <input type="file" class="form-control" id="periodic_requirements" name="periodic_requirements[]" accept=".pdf,.doc,.docx" multiple>
                         </div>
                     </div>
@@ -425,15 +468,17 @@ include_once "includes/connection.php";
     // Resets the table to its original state
     function resetScholarTable(tableId = 'data-table') {
         const table = $('.' + tableId).DataTable();
-        
-        table.state.clear();                                            // 1. Clear any saved state (if stateSave is on)
-        table.search('').columns().search('');                          // 2. Reset search/filter
-        table.order(table.settings()[0].oInit.order || [[0, 'asc']]);   // 3. Reset ordering to initial
-        table.page(0);                                                  // 4. Reset paging to page 1
-        table.page.len(table.settings()[0].oInit.pageLength || 10);     // 5. Reset length menu to default
-        
+
+        table.state.clear(); // 1. Clear any saved state (if stateSave is on)
+        table.search('').columns().search(''); // 2. Reset search/filter
+        table.order(table.settings()[0].oInit.order || [
+            [0, 'asc']
+        ]); // 3. Reset ordering to initial
+        table.page(0); // 4. Reset paging to page 1
+        table.page.len(table.settings()[0].oInit.pageLength || 10); // 5. Reset length menu to default
+
         // 6. Redraw the table (applies all changes)
-        table.draw(false);  // false = reset paging, true = keep current page
+        table.draw(false); // false = reset paging, true = keep current page
     }
 
 
@@ -453,18 +498,16 @@ include_once "includes/connection.php";
     }
 
     document.getElementById('edit_status').addEventListener('change', function() {
-    if (this.value === 'others') {
-        var input = document.createElement('input');
-        input.type = 'text';
-        input.name = 'status';
-        input.className = 'form-control';
-        input.placeholder = 'Enter custom status';
-        input.id = 'edit_status';
-        this.parentNode.replaceChild(input, this);
-    }
-});
-
-
+        if (this.value === 'others') {
+            var input = document.createElement('input');
+            input.type = 'text';
+            input.name = 'status';
+            input.className = 'form-control';
+            input.placeholder = 'Enter custom status';
+            input.id = 'edit_status';
+            this.parentNode.replaceChild(input, this);
+        }
+    });
 </script>
 <!-- JS Scripts -->
 <script src="vendors/scripts/core.js"></script>
@@ -487,4 +530,5 @@ $conn->close();
 unset($conn);
 ?>
 </body>
+
 </html>

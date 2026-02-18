@@ -1,9 +1,10 @@
 <?php
 include_once 'includes/head.php';
 include_once 'includes/sidebar.php';
+include_once 'includes/connection.php';
 
 // Establish a connection to your database
-$conn = new mysqli("localhost", "root", "", "scholarship_db");
+//$conn = new mysqli("localhost", "root", "", "scholarship_db");
 
 // Check if the connection was successful
 if ($conn->connect_error) {
@@ -19,7 +20,7 @@ $result = $conn->query($sql);
 $scholar = $result->fetch_assoc();
 
 // Close the connection
-$conn->close();
+//$conn->close();
 ?>
 
 <div class="main-container">
@@ -74,9 +75,23 @@ $conn->close();
                         <label for="status">Status</label>
                         <select class="form-control" name="status" id="statusSelect">
                             <option value=" " <?php echo $scholar['status'] == '  ' ? 'selected' : ''; ?>>Select Status</option>
-                            <option value="Ongoing" <?php echo $scholar['status'] == 'Ongoing' ? 'selected' : ''; ?>>Ongoing</option>
-                            <option value="Terminated" <?php echo $scholar['status'] == 'Terminated' ? 'selected' : ''; ?>>Terminated</option>
-                            <option value="others" <?php echo $scholar['status'] == 'others' ? 'selected' : ''; ?>>Others</option>
+                            <?php
+                            // Get the current selected value from GET (or set to empty string if not present)
+                            $selected_status = $scholar['status'];
+
+                            $scholStatSql = "SELECT * FROM tbl_scholar_status";
+                            $scholStatRes = $conn->query($scholStatSql);
+
+                            while ($row = $scholStatRes->fetch_assoc()) {
+                                $value = $row['fld_scholarshipStatus'];
+                                $display = $row['fld_scholarshipStatus'];
+
+                                // Check if this option should be selected
+                                $is_selected = ($selected_status === $value) ? 'selected' : '';
+
+                                echo "<option value=\"$value\" $is_selected>$display</option>";
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -284,7 +299,9 @@ $conn->close();
 
     }
 </script>
-
+<?php
+$conn->close();
+?>
 </body>
 
 </html>
