@@ -9,11 +9,25 @@
 
     include 'includes/connection.php';
 
+
+
+
+
+
     
     
     // Scholarship Programs
     $scholProgData = [];
     $scholProgLabels = [];
+
+
+    $schoolProgNormData = [];
+    $schoolProgNormLabel = [];
+
+    $schoolProgJLSSData = [];
+    $schoolProgJLSSLabel = [];
+
+
 
     $sqlScholarshipPrograms = "
         SELECT `scholarship_program`, COUNT(`scholarship_program`) AS total FROM `scholars` GROUP BY `scholarship_program`
@@ -21,9 +35,27 @@
     $resultBar = $conn->query($sqlScholarshipPrograms);
 
     while ($row = $resultBar->fetch_assoc()) {
-        $scholProgLabels[] = $row['scholarship_program'];
-        $scholProgData[]   = (int)$row['total'];
+        
+        if(  stripos($row["scholarship_program"], "JLSS") !== false  ){
+            $schoolProgJLSSLabel[] = $row['scholarship_program'];
+            $schoolProgJLSSData[]   = (int)$row['total'];
+        }
+        else{
+            $schoolProgNormLabel[] = $row['scholarship_program'];
+            $schoolProgNormData[]   = (int)$row['total'];
+        }
+
+
+        //$scholProgLabels[] = $row['scholarship_program'];
+        //$scholProgData[]   = (int)$row['total'];
     }
+
+
+
+
+
+
+
 
 
     // Year Of Award
@@ -225,13 +257,13 @@
                 <div class="col">
                     <div class="reports-chart-container">
                         <h2>Scholarship Programs</h2>
-                        <div id="scholarshipChart" style="height:350px;"></div>
+                        <div id="scholarshipNormChart" style="height:350px;"></div>
                     </div>
                 </div>
                 <div class="col">
                     <div class="chart-container">
-                        <h2>Sscholarship JLSS</h2>
-                        <div id="JLSS" style="height:350px;"></div>
+                        <h2>JLSS Scholarship Programs</h2>
+                        <div id="scholarshipJLSSChart" style="height:350px;"></div>
                     </div>
                 </div>
             </div>
@@ -316,7 +348,7 @@
 
 <script>
     // Scholarship Program
-    var scholarshipOptions = {
+    var scholarshipNormOptions = {
         chart: {
             type: 'bar',
             height: 350,
@@ -329,10 +361,10 @@
         stroke: { show: true, width: 2, colors: ['transparent'] },
         series: [{
             name: 'Records',
-            data: <?= json_encode($scholProgData) ?>
+            data: <?= json_encode($schoolProgNormData) ?>
         }],
         xaxis: {
-            categories: <?= json_encode($scholProgLabels) ?>,
+            categories: <?= json_encode($schoolProgNormLabel) ?>,
             labels: { rotate: -45, rotateAlways: true }
         },
         yaxis: { title: { text: 'Number of Scholars' } },
@@ -341,8 +373,37 @@
         
     };
 
-    var barChart = new ApexCharts(document.querySelector("#scholarshipChart"), scholarshipOptions);
-    barChart.render();
+    var scholarshipNormChart = new ApexCharts(document.querySelector("#scholarshipNormChart"), scholarshipNormOptions);
+    scholarshipNormChart.render();
+
+
+    var scholarshipJLSSOptions = {
+        chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: { show: true }
+        },
+        plotOptions: {
+            bar: { horizontal: false, columnWidth: '55%', borderRasius: 10 }
+        },
+        dataLabels: { enabled: false },
+        stroke: { show: true, width: 2, colors: ['transparent'] },
+        series: [{
+            name: 'Records',
+            data: <?= json_encode($schoolProgJLSSData) ?>
+        }],
+        xaxis: {
+            categories: <?= json_encode($schoolProgJLSSLabel) ?>,
+            labels: { rotate: -45, rotateAlways: true }
+        },
+        yaxis: { title: { text: 'Number of Scholars' } },
+        fill: { opacity: 1 },
+        tooltip: { y: { formatter: val => val + " records" } },
+        
+    };
+
+    var scholarshipJLSSChart = new ApexCharts(document.querySelector("#scholarshipJLSSChart"), scholarshipJLSSOptions);
+    scholarshipJLSSChart.render();
 
 
 
