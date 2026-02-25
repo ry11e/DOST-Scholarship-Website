@@ -54,36 +54,21 @@ include_once "includes/connection.php";
 
                     <!-- Status Selector -->
                     <div class="col-md-auto">
-                        <select class="form-control" name="status" id="statusSelect">
-                            <option value="">Select Status</option>
-
+                        
+                        <input list="statusOptions" class="form-control" name="status" placeholder="Search by Status"  />
+                        <datalist id="statusOptions">
                             <?php
-                            // Get the current selected value from GET (or set to empty string if not present)
-                            $selected_status = isset($_GET['status']) ? $_GET['status'] : '';
-
-                            $scholStatSql = "SELECT * FROM tbl_scholar_status";
-                            $scholStatRes = $conn->query($scholStatSql);
-
-                            while ($row = $scholStatRes->fetch_assoc()) {
-                                $value = $row['fld_scholarshipStatus'];
-                                $display = $row['fld_scholarshipStatus'];
-
-                                // Check if this option should be selected
-                                $is_selected = ($selected_status === $value) ? 'selected' : '';
-
-                                echo "<option value=\"$value\" $is_selected>$display</option>";
+                            if ($conn->connect_error) {
+                                die("Connection failed: " . $conn->connect_error);
+                            }
+                            // Fetch distinct statuses from the database for the datalist
+                            $statusSql = "SELECT fld_scholarshipStatus FROM tbl_scholar_status";
+                            $statusRes = $conn->query($statusSql);
+                            while ($row = $statusRes->fetch_assoc()) {
+                                echo "<option value='" . htmlspecialchars($row['fld_scholarshipStatus']) . "'>";
                             }
                             ?>
-
-                            <?php
-                            // Handle the "others" option separately
-                            $others_selected = ($selected_status === 'others') ? 'selected' : '';
-                            ?>
-                            <option value="others" <?= $others_selected ?>>others</option>
-                        </select>
-
-                        <!-- Optional: for debugging -->
-                        <!-- <small>Current GET value: <?= htmlspecialchars($_GET['status'] ?? 'none') ?></small> -->
+                        </datalist>
                     </div>
 
 
