@@ -373,8 +373,18 @@ include_once "includes/connection.php";
                             <input type="text" class="form-control" id="scholarship_program" name="scholarship_program" required>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="school">School</label>
-                            <input type="text" class="form-control" id="school" name="school" required>
+                            <label for="schoolsInput">School</label>
+                            <input list="schoolsListDatalist" id="schoolsInput" name="school" class="form-control" required>
+                            <datalist id="schoolsListDatalist">
+                                <?php
+                                $schoolsSql = "SELECT DISTINCT school FROM scholars ORDER BY school ASC";
+                                $schoolsRes = $conn->query($schoolsSql);
+
+                                while ($row = $schoolsRes->fetch_assoc()) {
+                                    echo "<option value='" . htmlspecialchars($row['school']) . "'>" . htmlspecialchars($row['school']) . "</option>";
+                                }
+                                ?>
+                                </datalist>
                         </div>
                     </div>
                     <div class="form-row">
