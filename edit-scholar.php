@@ -46,7 +46,7 @@ $scholar = $result->fetch_assoc();
                         <input type="text" class="form-control" name="scholarship_program" value="<?php echo $scholar['scholarship_program']; ?>" />
                     </div>
                     <div class="col-md-6">
-                        <label for="school">School</label>
+                        <label for="schoolInput">School</label>
                         <input list="schoolsListDatalist" id="schoolsInput" name="school" class="form-control" value="<?php echo $scholar['school']; ?>">
                             <datalist id="schoolsListDatalist">
                                 <?php
@@ -82,27 +82,21 @@ $scholar = $result->fetch_assoc();
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
-                        <label for="status">Status</label>
-                        <select class="form-control" name="status" id="statusSelect">
-                            <option value=" " <?php echo $scholar['status'] == '  ' ? 'selected' : ''; ?>>Select Status</option>
-                            <?php
-                            // Get the current selected value from GET (or set to empty string if not present)
-                            $selected_status = $scholar['status'];
-
-                            $scholStatSql = "SELECT * FROM tbl_scholar_status";
-                            $scholStatRes = $conn->query($scholStatSql);
-
-                            while ($row = $scholStatRes->fetch_assoc()) {
-                                $value = $row['fld_scholarshipStatus'];
-                                $display = $row['fld_scholarshipStatus'];
-
-                                // Check if this option should be selected
-                                $is_selected = ($selected_status === $value) ? 'selected' : '';
-
-                                echo "<option value=\"$value\" $is_selected>$display</option>";
-                            }
-                            ?>
-                        </select>
+                        <label for="statusList">Status</label>
+                        <input list="statusOptions" id="statusList" class="form-control" name="status" placeholder="Search by Status" value="<?php echo $scholar['status']; ?>" />
+                            <datalist id="statusOptions">
+                                <?php
+                                if ($conn->connect_error) {
+                                    die("Connection failed: " . $conn->connect_error);
+                                }
+                                // Fetch distinct statuses from the database for the datalist
+                                $statusSql = "SELECT fld_scholarshipStatus FROM tbl_scholar_status";
+                                $statusRes = $conn->query($statusSql);
+                                while ($row = $statusRes->fetch_assoc()) {
+                                    echo "<option value='" . htmlspecialchars($row['fld_scholarshipStatus']) . "'>";
+                                }
+                                ?>
+                            </datalist>
                     </div>
                     <div class="col-md-6">
                         <label for="periodic_requirements">Periodic Requirements&nbsp; &nbsp;<span style="font-size: 12px; color:red; background-color:antiquewhite ;"> Note: (Filenames should not have commas(,))</span></label>
