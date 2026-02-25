@@ -17,12 +17,12 @@
     
     
     // Scholarship Programs
-    $scholProgData = [];
-    $scholProgLabels = [];
+    $schoolProgData = [];
+    $schoolProgLabels = [];
 
 
-    $schoolProgNormData = [];
-    $schoolProgNormLabel = [];
+    $schoolProgUndergradData = [];
+    $schoolProgUndergradLabel = [];
 
     $schoolProgJLSSData = [];
     $schoolProgJLSSLabel = [];
@@ -30,7 +30,7 @@
 
 
     $sqlScholarshipPrograms = "
-        SELECT `scholarship_program`, COUNT(`scholarship_program`) AS total FROM `scholars` GROUP BY `scholarship_program`
+        SELECT `scholarship_program`, COUNT(`scholarship_program`) AS total FROM `scholars` GROUP BY `scholarship_program` ORDER BY `scholarship_program` ASC
     ";
     $resultBar = $conn->query($sqlScholarshipPrograms);
 
@@ -39,16 +39,36 @@
         if(  stripos($row["scholarship_program"], "JLSS") !== false  ){
             $schoolProgJLSSLabel[] = $row['scholarship_program'];
             $schoolProgJLSSData[]   = (int)$row['total'];
+
+            $finalLabel = substr($row["scholarship_program"], 0,-5);
+
+            $schoolProgLabels[] = $finalLabel;
+            $schoolProgData[]   = (int)$row['total'];
         }
         else{
-            $schoolProgNormLabel[] = $row['scholarship_program'];
-            $schoolProgNormData[]   = (int)$row['total'];
+            $schoolProgUndergradLabel[] = $row['scholarship_program'];
+            $schoolProgUndergradData[]   = (int)$row['total'];
+
+            $schoolProgLabels[] = $row['scholarship_program'];
+            $schoolProgData[]   = (int)$row['total'];
         }
 
 
-        //$scholProgLabels[] = $row['scholarship_program'];
-        //$scholProgData[]   = (int)$row['total'];
+        
     }
+
+    $mergedScholars = [];
+
+    foreach ($schoolProgLabels as $i => $label) {
+        if (!isset($merged[$label])) {
+            $merged[$label] = 0;
+        }
+        $merged[$label] += $schoolProgData[$i];
+    }
+
+    $finalSchoolProgLabels = array_keys($merged);
+    $finalSchoolProgData = array_values($merged);
+
 
 
 
@@ -127,8 +147,6 @@
 
 */
 
-    $inAklanMunData = [];
-    $inAklanMunLabel = [];
 
     $outAklanMunData = [];
     $outAklanMunLabel = [];
@@ -140,6 +158,10 @@
 
     $inAklanData2nd = [];
     $inAklanLabel2nd = [];
+
+    $outAklanDataTotal = 0;
+    $inAklanData1stTotal = 0;
+    $inAklanData2ndTotal = 0;
 
 
 
@@ -155,28 +177,40 @@
 
 
     while($row = $resultMunicipality->fetch_assoc()){
-        if( isInAklan($row["municipality"]) ){
-            //$inAklanMunData[] = $row["total"];
-            //$inAklanMunLabel[] = $row["municipality"];
 
-            if( $row["district"] == "1st"){
+        // echo $row["municipality"] . " - " . $row["district"] . " - " . $row["total"];
+        // echo "<br>";
+
+
+        if( isInAklan($row["municipality"]) ){
+
+            if( stripos($row["district"], "1st") !== false){
                 $inAklanData1st[] = $row["total"];
                 $inAklanLabel1st[] = $row["municipality"];
+
+                $inAklanData1stTotal += $row["total"];
             }
-            else if($row["district"] == "2nd"){
+            else if(stripos($row["district"], "2nd") !== false){
                 $inAklanData2nd[] = $row["total"];
                 $inAklanLabel2nd[] = $row["municipality"];
+
+                $inAklanData2ndTotal += $row["total"];
+            }
+            else{
+                echo "Error: Municipality " . $row["municipality"] . " has an invalid district value of '" . $row["district"] . "'.";
             }
         }
         else{
             $outAklanMunData[] = $row["total"];
             $outAklanMunLabel[] = $row["municipality"];
+
+            $outAklanDataTotal += $row["total"];
         }
     }
 
 
 
-
+  
 
 
 
@@ -233,7 +267,7 @@
 
 <div class="main-container">
     <div class="xs-pd-20-10 pd-ltr-20">
-        <div class="card-box pb-10" style="padding: 40px;">
+        <div class="card-box pb-10" style="padding: 4px;">
 
         <div class="row" style="padding-bottom: 30px;" hidden>
             <div class="col" style="display: flex;
@@ -253,62 +287,96 @@
             </div>
         </div>
 
-            <div class="row" style="gap: 50px;">
-                <div class="col">
-                    <div class="reports-chart-container">
-                        <h2>Scholarship Programs</h2>
-                        <div id="scholarshipNormChart" style="height:350px;"></div>
+            <div class="container-fluid">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="reports-chart-container border p-4 shadow-sm bg-white rounded">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>Overall Scholarship Summary</h2>
+                                <span class="badge bg-primary">Combined Data</span>
+                            </div>
+                            <div id="scholarshipOverallChart" style="height:400px;"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="chart-container">
-                        <h2>JLSS Scholarship Programs</h2>
-                        <div id="scholarshipJLSSChart" style="height:350px;"></div>
+                
+                <div class="row g-4">
+                    <div class="col-12 col-xl-6">
+                        <div class="reports-chart-container border p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>Undergraduate Scholarship Programs</h2>
+                            </div>
+                            <div id="scholarshipUndergradChart" style="height:350px;"></div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-xl-6">
+                        <div class="reports-chart-container border p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>JLSS Scholarship Programs</h2>
+                            </div>
+                            <div id="scholarshipJLSSChart" style="height:350px;"></div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="row" style="gap: 50px;">
-                <div class = "col">
-                    <div class="reports-chart-container">
-                        <h2>Schools</h2>
+
+            <div class="row g-4" >
+                <div class = "col-12 col-xl-6">
+                    <div class="reports-chart-container border p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2>Schools</h2>
+                        </div>
                         <div id="schoolChart" style="height:350px;"></div>
                     </div>
                 </div>  
-                <div class = "col">
-                    <div class="reports-chart-container">
-                        <h2>Status</h2>
+                <div class = "col-12 col-xl-6">
+                    <div class="reports-chart-container border p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2>Status</h2>
+                        </div>
                         <div id="statusChart" style="height:350px;"></div>
                     </div>
                 </div>  
                 
             </div>
 
-            <div class="row" style="gap: 50px;">
-                <div class = "col">
-                    <div class="reports-chart-container">
-                        <h2>Year Of Program</h2>
+            <div class="row g-4" >
+                <div class = "col-12 col-xl-6">
+                    <div class="reports-chart-container border p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2>Year Of Award</h2>
+                        </div>
                         <div id="yearChart" style="height:350px;"></div>
                     </div>
                 </div>  
-                <div class = "col">
-                    <div class="reports-chart-container">
-                        <h2>Out Of Aklan Municipalities</h2>
+                <div class = "col-12 col-xl-6">
+                    <div class="reports-chart-container border p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2>Outside Aklan Municipalities</h2>
+                            <span class="badge bg-secondary">Total: <?php echo $outAklanDataTotal ?></span>
+                        </div>
                         <div id="outAklanMunChart" style="height:350px;"></div>
                     </div>
                 </div>  
                 
             </div>
 
-            <div class= "row" style="gap: 50px;">
-                <div class = "col">
-                    <div class="reports-chart-container">
-                        <h2>Within Aklan: District 1</h2>
+            <div class= "row g-4">
+                <div class = "col-12 col-xl-6">
+                    <div class="reports-chart-container border p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2>Within Aklan: District 1</h2>
+                            <span class="badge bg-secondary">Total: <?php echo ($inAklanData1stTotal) ?></span>
+                        </div>
                         <div id="inAklanMun1stChart" style="height:350px;"></div>
                     </div>
                 </div>
-                <div class = "col">
-                    <div class="reports-chart-container">
-                        <h2>Within Aklan: District 2</h2>
+                <div class = "col-12 col-xl-6">
+                    <div class="reports-chart-container border p-3 ">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2>Within Aklan: District 2</h2>
+                            <span class="badge bg-secondary">Total: <?php echo ($inAklanData2ndTotal) ?></span>
+                        </div>
                         <div id="inAklanMun2ndChart" style="height:350px;"></div>
                     </div>
                 </div>
@@ -348,11 +416,75 @@
 
 <script>
     // Scholarship Program
-    var scholarshipNormOptions = {
+
+
+    var scholarshipOverallOptions = {
         chart: {
             type: 'bar',
             height: 350,
-            toolbar: { show: true }
+            toolbar: { show: true },
+            width: '100%',
+            redrawOnParentResize: true
+        },
+        plotOptions: {
+            bar: { horizontal: false, columnWidth: '55%', borderRasius: 10 }
+        },
+        dataLabels: { enabled: false },
+        stroke: { show: true, width: 2, colors: ['transparent'] },
+        series: [{
+            name: 'Records',    
+            data: <?= json_encode($finalSchoolProgData) ?>
+        }],
+        xaxis: {
+            categories: <?= json_encode($finalSchoolProgLabels) ?>,
+            labels: { rotate: -45, rotateAlways: true }
+        },
+        yaxis: { title: { text: 'Number of Scholars' } },
+        fill: { opacity: 1 },
+        tooltip: { y: { formatter: val => val + " records" } },
+
+
+        responsive: [{
+        breakpoint: 768, // For tablets and phones
+        options: {
+            plotOptions: {
+                bar: {
+                    horizontal: true // Switch to horizontal for better reading
+                }
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+        }, {
+            breakpoint: 480, // For small phones
+            options: {
+                xaxis: {
+                    labels: { show: false } // Hide labels if it's way too crowded
+                }
+            }
+        }]
+        
+    };
+
+    var scholarshipOverallChart = new ApexCharts(document.querySelector("#scholarshipOverallChart"), scholarshipOverallOptions);
+    scholarshipOverallChart.render();
+
+
+
+
+
+
+
+
+
+    var scholarshipUndergradOptions = {
+        chart: {
+            type: 'bar',
+            height: 350,
+            toolbar: { show: true },
+            width: '100%',
+            redrawOnParentResize: true
         },
         plotOptions: {
             bar: { horizontal: false, columnWidth: '55%', borderRasius: 10 }
@@ -361,20 +493,45 @@
         stroke: { show: true, width: 2, colors: ['transparent'] },
         series: [{
             name: 'Records',
-            data: <?= json_encode($schoolProgNormData) ?>
+            data: <?= json_encode($schoolProgUndergradData) ?>
         }],
         xaxis: {
-            categories: <?= json_encode($schoolProgNormLabel) ?>,
+            categories: <?= json_encode($schoolProgUndergradLabel) ?>,
             labels: { rotate: -45, rotateAlways: true }
         },
         yaxis: { title: { text: 'Number of Scholars' } },
         fill: { opacity: 1 },
         tooltip: { y: { formatter: val => val + " records" } },
+
+
+        responsive: [{
+        breakpoint: 768, // For tablets and phones
+        options: {
+            plotOptions: {
+                bar: {
+                    horizontal: true // Switch to horizontal for better reading
+                }
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+        }, {
+            breakpoint: 480, // For small phones
+            options: {
+                xaxis: {
+                    labels: { show: false } // Hide labels if it's way too crowded
+                }
+            }
+        }]
         
     };
 
-    var scholarshipNormChart = new ApexCharts(document.querySelector("#scholarshipNormChart"), scholarshipNormOptions);
-    scholarshipNormChart.render();
+    var scholarshipUndergradChart = new ApexCharts(document.querySelector("#scholarshipUndergradChart"), scholarshipUndergradOptions);
+    scholarshipUndergradChart.render();
+
+
+
 
 
     var scholarshipJLSSOptions = {
@@ -399,6 +556,28 @@
         yaxis: { title: { text: 'Number of Scholars' } },
         fill: { opacity: 1 },
         tooltip: { y: { formatter: val => val + " records" } },
+
+
+        responsive: [{
+        breakpoint: 768, // For tablets and phones
+        options: {
+            plotOptions: {
+                bar: {
+                    horizontal: true // Switch to horizontal for better reading
+                }
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+        }, {
+            breakpoint: 480, // For small phones
+            options: {
+                xaxis: {
+                    labels: { show: false } // Hide labels if it's way too crowded
+                }
+            }
+        }]
         
     };
 
@@ -439,7 +618,9 @@
         chart: {
             type: 'bar',
             height: 350,
-            toolbar: { show: true }
+            toolbar: { show: true },
+            width: '100%',
+            redrawOnParentResize: true
         },
         plotOptions: {
             bar: { horizontal: false, columnWidth: '55%', borderRasius: 10 }
@@ -457,6 +638,27 @@
         yaxis: { title: { text: 'Number of Scholars' } },
         fill: { opacity: 1 },
         tooltip: { y: { formatter: val => val + " records" } },
+
+        responsive: [{
+        breakpoint: 768, // For tablets and phones
+        options: {
+            plotOptions: {
+                bar: {
+                    horizontal: true // Switch to horizontal for better reading
+                }
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+        }, {
+            breakpoint: 480, // For small phones
+            options: {
+                xaxis: {
+                    labels: { show: false } // Hide labels if it's way too crowded
+                }
+            }
+        }]
         
     };
 
@@ -474,7 +676,9 @@
         chart: {
             type: 'bar',
             height: 350,
-            toolbar: { show: true }
+            toolbar: { show: true },
+            width: '100%',
+            redrawOnParentResize: true
         },
         plotOptions: {
             bar: { horizontal: false, columnWidth: '55%', borderRasius: 10 }
@@ -492,6 +696,28 @@
         yaxis: { title: { text: 'Number of Scholars' } },
         fill: { opacity: 1 },
         tooltip: { y: { formatter: val => val + " records" } },
+
+
+        responsive: [{
+        breakpoint: 768, // For tablets and phones
+        options: {
+            plotOptions: {
+                bar: {
+                    horizontal: true // Switch to horizontal for better reading
+                }
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+        }, {
+            breakpoint: 480, // For small phones
+            options: {
+                xaxis: {
+                    labels: { show: false } // Hide labels if it's way too crowded
+                }
+            }
+        }]
         
     };
 
@@ -538,6 +764,29 @@
         },
         fill: { opacity: 1 },
         tooltip: { y: { formatter: val => val + " records" } },
+
+
+
+        responsive: [{
+        breakpoint: 768, // For tablets and phones
+        options: {
+            plotOptions: {
+                bar: {
+                    horizontal: true // Switch to horizontal for better reading
+                }
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+        }, {
+            breakpoint: 480, // For small phones
+            options: {
+                xaxis: {
+                    labels: { show: false } // Hide labels if it's way too crowded
+                }
+            }
+        }]
         
     };
 
@@ -554,7 +803,9 @@
         chart: {
             type: 'bar',
             height: 350,
-            toolbar: { show: true }
+            toolbar: { show: true },
+            width: '100%',
+            redrawOnParentResize: true
         },
         plotOptions: {
             bar: { horizontal: false, columnWidth: '55%', borderRasius: 10 }
@@ -576,6 +827,28 @@
          },
         fill: { opacity: 1 },
         tooltip: { y: { formatter: val => val + " records" } },
+
+
+        responsive: [{
+        breakpoint: 768, // For tablets and phones
+        options: {
+            plotOptions: {
+                bar: {
+                    horizontal: true // Switch to horizontal for better reading
+                }
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+        }, {
+            breakpoint: 480, // For small phones
+            options: {
+                xaxis: {
+                    labels: { show: false } // Hide labels if it's way too crowded
+                }
+            }
+        }]
         
     };
 
@@ -591,7 +864,9 @@
         chart: {
             type: 'bar',
             height: 350,
-            toolbar: { show: true }
+            toolbar: { show: true },
+            width: '100%',
+            redrawOnParentResize: true
         },
         plotOptions: {
             bar: { horizontal: false, columnWidth: '55%', borderRasius: 10 }
@@ -613,11 +888,40 @@
          },
         fill: { opacity: 1 },
         tooltip: { y: { formatter: val => val + " records" } },
+
+
+        responsive: [{
+        breakpoint: 768, // For tablets and phones
+        options: {
+            plotOptions: {
+                bar: {
+                    horizontal: true // Switch to horizontal for better reading
+                }
+            },
+            legend: {
+                position: 'bottom'
+            }
+        }
+        }, {
+            breakpoint: 480, // For small phones
+            options: {
+                xaxis: {
+                    labels: { show: false } // Hide labels if it's way too crowded
+                }
+            }
+        }]
         
     };
 
     var outAklanMunChart = new ApexCharts(document.querySelector("#outAklanMunChart"), outAklanMunOptions);
     outAklanMunChart.render();
+
+
+
+
+
+
+
 
 
 
