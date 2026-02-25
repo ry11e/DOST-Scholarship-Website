@@ -86,6 +86,8 @@ include_once "includes/connection.php";
                         <!-- <small>Current GET value: <?= htmlspecialchars($_GET['status'] ?? 'none') ?></small> -->
                     </div>
 
+
+                    
                     <!-- Year Selector -->
                     <div class="col-md-auto">
                         <input list="years" name="selected_year" id="year-input" class="form-control" placeholder="Search By Year" value="<?php echo isset($_GET['selected_year']) ? $_GET['selected_year'] : ''; ?>">
@@ -266,7 +268,7 @@ include_once "includes/connection.php";
                         $statusClass = '';
                         if ($row['status'] == 'Ongoing') {
                             $statusClass = 'bg-success';
-                        } elseif ($row['status'] == 'Terminated') {
+                        } elseif ($row['status'] == 'Problematic') {
                             $statusClass = 'bg-danger';
                         }
                         echo "<tr>";
