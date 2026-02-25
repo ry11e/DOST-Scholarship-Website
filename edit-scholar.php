@@ -47,7 +47,17 @@ $scholar = $result->fetch_assoc();
                     </div>
                     <div class="col-md-6">
                         <label for="school">School</label>
-                        <input type="text" class="form-control" name="school" value="<?php echo $scholar['school']; ?>" />
+                        <input list="schoolsListDatalist" id="schoolsInput" name="school" class="form-control" value="<?php echo $scholar['school']; ?>">
+                            <datalist id="schoolsListDatalist">
+                                <?php
+                                $schoolsSql = "SELECT DISTINCT school FROM scholars ORDER BY school ASC";
+                                $schoolsRes = $conn->query($schoolsSql);
+
+                                while ($row = $schoolsRes->fetch_assoc()) {
+                                    echo "<option value='" . htmlspecialchars($row['school']) . "'>" . htmlspecialchars($row['school']) . "</option>";
+                                }
+                                ?>
+                                </datalist>
                     </div>
                 </div>
                 <div class="form-group row">
