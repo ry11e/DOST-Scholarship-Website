@@ -284,7 +284,7 @@ function isInAklan($municipality)
                     <div class="col-12 col-lg-7">
                         <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2 class="h4">Overall Scholarship Summary</h2>
+                                <h2 class="h2">Overall Scholarship Summary</h2>
                                 <span class="badge bg-primary">Combined Data</span>
                             </div>
                             <div id="scholarshipOverallChart"></div>
@@ -294,13 +294,13 @@ function isInAklan($municipality)
                     <div class="col-12 col-lg-5">
                         <div class="d-flex flex-column gap-4 h-100">
 
-                            <div class="reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
-                                <h5>Undergraduate Programs</h5>
+                            <div class=" mb-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
+                                <h6>Undergraduate Programs</h6>
                                 <div id="scholarshipUndergradChart"></div>
                             </div>
 
-                            <div class="reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
-                                <h5>JLSS Programs</h5>
+                            <div class="mt-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
+                                <h6>JLSS Programs</h6>
                                 <div id="scholarshipJLSSChart"></div>
                             </div>
 
@@ -310,54 +310,53 @@ function isInAklan($municipality)
                 </div>
             </div>
 
-            <div class="container-fluid">
-                <div class="row mb-4">
-                    <div class="col-12 col-xl-6">
-                        <div class="reports-chart-container border p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2>Schools</h2>
-                            </div>
-                            <div id="schoolChart" style="height:350px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-6">
-                        <div class="reports-chart-container border p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
+
+            <br>
+            <br>
+
+
+            <div class="container-fluid mt-4 mb-4">
+                <div class="row g-4">
+
+                    <div class="col-12 col-lg-6">
+                        <div class="d-flex flex-column gap-4 h-100">
+
+                            <div class="mb-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
                                 <h2>Status</h2>
+                                <div id="statusChart" ></div>
                             </div>
-                            <div id="statusChart" style="height:350px;"></div>
+
+                            <div class="mt-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
+                                <h2>Schools</h2>
+                                <div id="schoolChart" ></div>
+                            </div>
+
                         </div>
                     </div>
+
+                    <div class="col-12 col-lg-6">
+                        <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="h2">Year Of Award</h2>
+                            </div>
+                            <div id="yearChart" ></div>
+                        </div>
+                    </div>
+
+                    
 
                 </div>
-
             </div>
 
-            <div class="container-fluid">
-                <div class="row mb-4">
-                    <div class="col-12 col-xl-6">
-                        <div class="reports-chart-container border p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2>Year Of Award</h2>
-                            </div>
-                            <div id="yearChart" style="height:350px;"></div>
-                        </div>
-                    </div>
-                    <div class="col-12 col-xl-6">
-                        <div class="reports-chart-container border p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2>Outside Aklan Municipalities</h2>
-                                <span class="badge bg-secondary">Total: <?php echo $outAklanDataTotal ?></span>
-                            </div>
-                            <div id="outAklanMunChart" style="height:350px;"></div>
-                        </div>
-                    </div>
 
-                </div>
+            <br>
+            <br>
 
-            </div>
+            
 
-            <div class="container-fluid">
+
+
+            <div class="container-fluid mt-4 mb-4">
                 <div class="row mb-4">
                     <div class="col-12 col-xl-6">
                         <div class="reports-chart-container border p-3">
@@ -380,6 +379,24 @@ function isInAklan($municipality)
 
                 </div>
             </div>
+
+            <div class="container-fluid">
+                <div class="row mb-4">
+                    <div class="col-12 col-xl-12`">
+                        <div class="reports-chart-container border p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>Outside Aklan Municipalities</h2>
+                                <span class="badge bg-secondary">Total: <?php echo $outAklanDataTotal ?></span>
+                            </div>
+                            <div id="outAklanMunChart" style="height:350px;"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            
 
 
 
@@ -419,7 +436,7 @@ function isInAklan($municipality)
     var scholarshipOverallOptions = {
         chart: {
             type: 'bar',
-            height: 350,
+            height: 400,
             toolbar: {
                 show: true
             },
@@ -506,7 +523,7 @@ function isInAklan($municipality)
     var scholarshipUndergradOptions = {
         chart: {
             type: 'bar',
-            height: 175,
+            height: 200,
             toolbar: {
                 show: true
             },
@@ -589,7 +606,7 @@ function isInAklan($municipality)
     var scholarshipJLSSOptions = {
         chart: {
             type: 'bar',
-            height: 175,
+            height: 200,
             toolbar: {
                 show: true
             }
@@ -669,7 +686,7 @@ function isInAklan($municipality)
     var awardYearOptions = {
         chart: {
             type: 'line',
-            height: 350,
+            height: 400,
             zoom: {
                 enabled: true
             },
@@ -717,7 +734,7 @@ function isInAklan($municipality)
     var schoolOptions = {
         chart: {
             type: 'bar',
-            height: 350,
+            height: 200,
             toolbar: {
                 show: true
             },
@@ -802,7 +819,7 @@ function isInAklan($municipality)
     var statusOptions = {
         chart: {
             type: 'bar',
-            height: 350,
+            height: 200,
             toolbar: {
                 show: true
             },
