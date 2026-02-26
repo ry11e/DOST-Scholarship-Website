@@ -300,7 +300,7 @@
                     </div>
                 </div>
                 
-                <div class="row g-4">
+                <div class="row mb-4">
                     <div class="col-12 col-xl-6">
                         <div class="reports-chart-container border p-3">
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -320,67 +320,75 @@
                 </div>
             </div>
 
-            <div class="row g-4" >
-                <div class = "col-12 col-xl-6">
-                    <div class="reports-chart-container border p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2>Schools</h2>
+            <div class="container-fluid">
+                <div class="row mb-4" >
+                    <div class = "col-12 col-xl-6">
+                        <div class="reports-chart-container border p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>Schools</h2>
+                            </div>
+                            <div id="schoolChart" style="height:350px;"></div>
                         </div>
-                        <div id="schoolChart" style="height:350px;"></div>
-                    </div>
-                </div>  
-                <div class = "col-12 col-xl-6">
-                    <div class="reports-chart-container border p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2>Status</h2>
+                    </div>  
+                    <div class = "col-12 col-xl-6">
+                        <div class="reports-chart-container border p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>Status</h2>
+                            </div>
+                            <div id="statusChart" style="height:350px;"></div>
                         </div>
-                        <div id="statusChart" style="height:350px;"></div>
-                    </div>
-                </div>  
+                    </div>  
+                    
+                </div>
                 
             </div>
 
-            <div class="row g-4" >
-                <div class = "col-12 col-xl-6">
-                    <div class="reports-chart-container border p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2>Year Of Award</h2>
+            <div class="container-fluid">
+                <div class="row mb-4" >
+                    <div class = "col-12 col-xl-6">
+                        <div class="reports-chart-container border p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>Year Of Award</h2>
+                            </div>
+                            <div id="yearChart" style="height:350px;"></div>
                         </div>
-                        <div id="yearChart" style="height:350px;"></div>
-                    </div>
-                </div>  
-                <div class = "col-12 col-xl-6">
-                    <div class="reports-chart-container border p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2>Outside Aklan Municipalities</h2>
-                            <span class="badge bg-secondary">Total: <?php echo $outAklanDataTotal ?></span>
+                    </div>  
+                    <div class = "col-12 col-xl-6">
+                        <div class="reports-chart-container border p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>Outside Aklan Municipalities</h2>
+                                <span class="badge bg-secondary">Total: <?php echo $outAklanDataTotal ?></span>
+                            </div>
+                            <div id="outAklanMunChart" style="height:350px;"></div>
                         </div>
-                        <div id="outAklanMunChart" style="height:350px;"></div>
-                    </div>
-                </div>  
+                    </div>  
+                    
+                </div>
                 
             </div>
 
-            <div class= "row g-4">
-                <div class = "col-12 col-xl-6">
-                    <div class="reports-chart-container border p-3">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2>Within Aklan: District 1</h2>
-                            <span class="badge bg-secondary">Total: <?php echo ($inAklanData1stTotal) ?></span>
+            <div class="container-fluid">
+                <div class= "row mb-4">
+                    <div class = "col-12 col-xl-6">
+                        <div class="reports-chart-container border p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>Within Aklan: District 1</h2>
+                                <span class="badge bg-secondary">Total: <?php echo ($inAklanData1stTotal) ?></span>
+                            </div>
+                            <div id="inAklanMun1stChart" style="height:350px;"></div>
                         </div>
-                        <div id="inAklanMun1stChart" style="height:350px;"></div>
                     </div>
-                </div>
-                <div class = "col-12 col-xl-6">
-                    <div class="reports-chart-container border p-3 ">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h2>Within Aklan: District 2</h2>
-                            <span class="badge bg-secondary">Total: <?php echo ($inAklanData2ndTotal) ?></span>
+                    <div class = "col-12 col-xl-6">
+                        <div class="reports-chart-container border p-3 ">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2>Within Aklan: District 2</h2>
+                                <span class="badge bg-secondary">Total: <?php echo ($inAklanData2ndTotal) ?></span>
+                            </div>
+                            <div id="inAklanMun2ndChart" style="height:350px;"></div>
                         </div>
-                        <div id="inAklanMun2ndChart" style="height:350px;"></div>
                     </div>
-                </div>
 
+                </div>
             </div>
         
 
