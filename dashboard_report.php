@@ -323,12 +323,12 @@ function isInAklan($municipality)
 
                             <div class="mb-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
                                 <h2>Status</h2>
-                                <div id="statusChart" ></div>
+                                <div id="statusChart"></div>
                             </div>
 
                             <div class="mt-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
                                 <h2>Schools</h2>
-                                <div id="schoolChart" ></div>
+                                <div id="schoolChart"></div>
                             </div>
 
                         </div>
@@ -339,11 +339,11 @@ function isInAklan($municipality)
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h2 class="h2">Year Of Award</h2>
                             </div>
-                            <div id="yearChart" ></div>
+                            <div id="yearChart"></div>
                         </div>
                     </div>
 
-                    
+
 
                 </div>
             </div>
@@ -352,7 +352,7 @@ function isInAklan($municipality)
             <br>
             <br>
 
-            
+
 
 
 
@@ -396,7 +396,7 @@ function isInAklan($municipality)
 
             </div>
 
-            
+
 
 
 
@@ -494,15 +494,56 @@ function isInAklan($municipality)
                 },
                 legend: {
                     position: 'bottom'
+                },
+                grid: {
+                    padding: {
+                        left: 0, // Forces a specific starting point for the chart
+                        right: 0
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        minWidth: 90, // Forces the label area to be at least this wide
+                        maxWidth: 90, // Combined with minWidth, this locks the ratio
+                        style: {
+                            fontSize: '10px'
+                        }
+                    }
                 }
             }
         }, {
             breakpoint: 480, // For small phones
             options: {
+                plotOptions: {
+                    bar: {
+                        horizontal: true // Switch to horizontal for better reading
+                    }
+                },
+                legend: {
+                    position: 'bottom'
+                },
+                grid: {
+                    padding: {
+                        left: 0, // Forces a specific starting point for the chart
+                        right: 0
+                    }
+                },
                 xaxis: {
                     labels: {
                         show: false
                     } // Hide labels if it's way too crowded
+                },
+                grid: {
+                    padding: {
+                        left: 0, // Forces a specific starting point for the chart
+                        right: 0
+                    }
+                },
+                yaxis: {
+                    labels: {
+                        minWidth: 70, // Forces the label area to be at least this wide
+                        maxWidth: 70 // Combined with minWidth, this locks the ratio
+                    }
                 }
             }
         }]
