@@ -9,8 +9,30 @@ include_once "includes/connection.php";
 <div class="main-container">
     <div class="xs-pd-20-10 pd-ltr-20">
 
-        <div class="card-box pb-10" style="padding: 10px;">
-            <div class="h5 pd-20 mb-0">LIST OF DOST-SEI SCHOLARS IN THE PROVINCE OF AKLAN</div>
+        <div class="card-box pd-20">
+            <div class="row mb-10">
+                <div class="col-lg-8 col-md-12 h5 pd-20 mb-0 d-flex ">
+                    LIST OF DOST-SEI SCHOLARS IN THE PROVINCE OF AKLAN
+                </div>
+                <div class="col-lg-4 col-md-12 pd-10">
+                    <!-- Add Button -->
+                    <div class="text-right">
+                        <!-- Trigger the modal -->
+                        <div class="d-inline-flex gap-2 p-2 rounded" style="gap: 10px;">
+                            <button type="button" class="btn btn-success px-4" data-toggle="modal" data-target="#addScholarModal">
+                                <i class="bi bi-plus-lg"></i> Add Scholar
+                            </button>
+
+                            <button onclick="exportToExcel()" class="btn btn-light border text-success" title="Export to Excel">
+                                <i class="bi bi-download"></i> Export To Excel
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
 
 
             <!-- Display Alert Message -->
@@ -24,11 +46,11 @@ include_once "includes/connection.php";
 
             <!-- Search Form -->
             <form method="GET" action="">
-                <div class="form-group row">
+                <div class="row g-3 row-cols-1 row-cols-md-3 row-cols-lg-5">
 
                     <!-- Name, School, Address Selector -->
                     <div class="col-md-auto">
-                        <input type="text" class="form-control" name="search_name" placeholder="Search Name, School, and Municipality" value="<?php echo isset($_GET['search_name']) ? $_GET['search_name'] : ''; ?>" />
+                        <input type="text" id="nameSchoolAddressInput" class="form-control" name="search_name" placeholder="Search Name, School, or Municipality" value="<?php echo isset($_GET['search_name']) ? $_GET['search_name'] : ''; ?>" />
                     </div>
 
                     <!-- Scholarship Selector -->
@@ -54,8 +76,8 @@ include_once "includes/connection.php";
 
                     <!-- Status Selector -->
                     <div class="col-md-auto">
-                        
-                        <input list="statusOptions" class="form-control" name="status" placeholder="Search by Status"  />
+
+                        <input list="statusOptions" class="form-control" name="status" placeholder="Search by Status" />
                         <datalist id="statusOptions">
                             <?php
                             if ($conn->connect_error) {
@@ -72,7 +94,7 @@ include_once "includes/connection.php";
                     </div>
 
 
-                    
+
                     <!-- Year Selector -->
                     <div class="col-md-auto">
                         <input list="years" name="selected_year" id="year-input" class="form-control" placeholder="Search By Year" value="<?php echo isset($_GET['selected_year']) ? $_GET['selected_year'] : ''; ?>">
@@ -113,30 +135,7 @@ include_once "includes/connection.php";
                 </div>
             </form>
 
-            <!-- Add Button -->
-            <div class="text-right mb-3">
-                <!-- Trigger the modal -->
-                <button type="button" style="border: solid black 3px; font-size: 17px; padding:15px; " class="btn " data-toggle="modal" data-target="#addScholarModal"><span class="micon bi bi-person-plus"></span>
-                    &nbsp;Add/Create Scholar
-                </button>
 
-                <!-- Export To Excel Button -->
-                <button style="border: solid black 3px;" onclick="exportToExcel()" class="btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="30" height="30" viewBox="0 0 48 48">
-                        <defs>
-                            <linearGradient id="G7C1BuhajJQaEWHVlNUzHa_BEMhRoRy403e_gr1" x1="6" x2="27" y1="24" y2="24" data-name="ÐÐµÐ·ÑÐ¼ÑÐ½Ð½ÑÐ¹ Ð³ÑÐ°Ð´Ð¸ÐµÐ½Ñ 10" gradientUnits="userSpaceOnUse">
-                                <stop offset="0" stop-color="#21ad64"></stop>
-                                <stop offset="1" stop-color="#088242"></stop>
-                            </linearGradient>
-                        </defs>
-                        <path fill="#31c447" d="m41,10h-16v28h16c.55,0,1-.45,1-1V11c0-.55-.45-1-1-1Z"></path>
-                        <path fill="#fff" d="m32,15h7v3h-7v-3Zm0,10h7v3h-7v-3Zm0,5h7v3h-7v-3Zm0-10h7v3h-7v-3Zm-7-5h5v3h-5v-3Zm0,10h5v3h-5v-3Zm0,5h5v3h-5v-3Zm0-10h5v3h-5v-3Z"></path>
-                        <path fill="url(#G7C1BuhajJQaEWHVlNUzHa_BEMhRoRy403e_gr1)" d="m27,42l-21-4V10l21-4v36Z"></path>
-                        <path fill="#fff" d="m19.13,31l-2.41-4.56c-.09-.17-.19-.48-.28-.94h-.04c-.05.22-.15.54-.32.98l-2.42,4.52h-3.76l4.46-7-4.08-7h3.84l2,4.2c.16.33.3.73.42,1.18h.04c.08-.27.22-.68.44-1.22l2.23-4.16h3.51l-4.2,6.94,4.32,7.06h-3.74Z"></path>
-                    </svg>
-                    Export to Excel
-                </button>
-            </div>
 
             <!-- Table displaying scholars -->
             <table class="data-table table no-wrap table-hover table-bordered table-striped">
@@ -300,9 +299,17 @@ include_once "includes/connection.php";
                         echo "<td>" . $row['remarks'] . "</td>";
                         echo "<td>" . $row['district'] . "</td>";
                         echo "<td>
-                                <div class='table-actions'>
-                                <a href='edit-scholar.php?id=" . $row['id'] . "' class='btn' data-color='#265ed7'><i class='icon-copy dw dw-edit2'></i></a>
-                                    <a onclick='return confirmDelete()' href='delete_scholar.php?id=" . $row['id'] . "' data-color='#e95959' class='btn'><i class='icon-copy dw dw-delete-3'></i></a>
+                                <div class='table-actions d-flex gap-2 '>
+                                    <a href='edit-scholar.php?id=" . $row['id'] . "' 
+                                        class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
+                                        <i class='icon-copy dw dw-edit2'></i>
+                                    </a>
+                                    
+                                    <a onclick='return confirmDelete()' 
+                                        href='delete_scholar.php?id=" . $row['id'] . "' 
+                                            class='btn btn-sm btn-outline-danger shadow-sm'>
+                                        <i class='icon-copy dw dw-delete-3'></i>
+                                    </a>
                                 </div>
                             </td>";
                         echo "</tr>";
@@ -315,7 +322,7 @@ include_once "includes/connection.php";
                 </tbody>
                 <?php
                 // Display the number of results
-                echo "<div class='mb-3'>Number of results: " . $result->num_rows . "</div>";
+                    echo "<div class='mb-2 mt-2'>Number of results: " . $result->num_rows . "</div>";
                 ?>
                 <script>
                     function confirmDelete() {
@@ -369,7 +376,7 @@ include_once "includes/connection.php";
                                     echo "<option value='" . htmlspecialchars($row['school']) . "'>" . htmlspecialchars($row['school']) . "</option>";
                                 }
                                 ?>
-                                </datalist>
+                            </datalist>
                         </div>
                     </div>
                     <div class="form-row">
@@ -399,18 +406,18 @@ include_once "includes/connection.php";
                                 <option value="">Select Status</option>
                                 <?php
 
-                                    $scholStatSql = "SELECT * FROM tbl_scholar_status";
-                                    $scholStatRes = $conn->query($scholStatSql);
+                                $scholStatSql = "SELECT * FROM tbl_scholar_status";
+                                $scholStatRes = $conn->query($scholStatSql);
 
-                                    while ($row = $scholStatRes->fetch_assoc()) {
-                                        $value = $row['fld_scholarshipStatus'];
-                                        $display = $row['fld_scholarshipStatus'];
+                                while ($row = $scholStatRes->fetch_assoc()) {
+                                    $value = $row['fld_scholarshipStatus'];
+                                    $display = $row['fld_scholarshipStatus'];
 
-                                        // Check if this option should be selected
-                                        $is_selected = ($selected_status === $value) ? 'selected' : '';
+                                    // Check if this option should be selected
+                                    $is_selected = ($selected_status === $value) ? 'selected' : '';
 
-                                        echo "<option value=\"$value\" $is_selected>$display</option>";
-                                    }
+                                    echo "<option value=\"$value\" $is_selected>$display</option>";
+                                }
                                 ?>
                             </select>
                         </div>
