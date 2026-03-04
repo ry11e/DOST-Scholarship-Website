@@ -9,52 +9,127 @@ $message = '';
 $action = $_POST['action'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if ($action === 'add') {
-        $schoolName = trim($_POST['schoolName'] ?? '');
-        $address    = trim($_POST['address'] ?? '');
+    $formType = $_POST['form_type'] ?? '';
+    // Formtype is from a hidden input to manage mutliple forms in this page.
 
-        if ($schoolName !== '' && $address !== '') {
-            $stmt = $conn->prepare("
-                INSERT INTO tbl_schools (fld_schoolName, fld_address)
-                VALUES (?, ?)
-            ");
-            $stmt->bind_param("ss", $schoolName, $address);
-            $stmt->execute();
-            $message = $stmt->affected_rows > 0 ? "School added successfully." : "Error adding school.";
-            $stmt->close();
-        } else {
-            $message = "School name and address are required.";
-        }
-    } elseif ($action === 'delete' && !empty($_POST['id'])) {
-        $id = (int)$_POST['id'];
-        $stmt = $conn->prepare("DELETE FROM tbl_schools WHERE fld_ID = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $message = $stmt->affected_rows > 0 ? "School deleted." : "School not found.";
-        $stmt->close();
-    } elseif ($action === 'update' && !empty($_POST['id'])) {
-        $id         = (int)$_POST['id'];
-        $schoolName = trim($_POST['schoolName'] ?? '');
-        $address    = trim($_POST['address'] ?? '');
 
-        if ($schoolName !== '' && $address !== '') {
-            $stmt = $conn->prepare("
-                UPDATE tbl_schools 
-                SET fld_schoolName = ?, fld_address = ?
-                WHERE fld_ID = ?
-            ");
-            $stmt->bind_param("ssi", $schoolName, $address, $id);
-            $stmt->execute();
-            $message = $stmt->affected_rows > 0 ? "School updated." : "No changes or school not found.";
-            $stmt->close();
-        } else {
-            $message = "School name and address are required.";
-        }
+    switch ($formType) {
+
+        case 'edit_school':
+            if ($action === 'add') {
+                $schoolName = trim($_POST['schoolName'] ?? '');
+                $address    = trim($_POST['address'] ?? '');
+
+                if ($schoolName !== '' && $address !== '') {
+                    $stmt = $conn->prepare("
+                        INSERT INTO tbl_schools (fld_schoolName, fld_address)
+                        VALUES (?, ?)
+                    ");
+                    $stmt->bind_param("ss", $schoolName, $address);
+                    $stmt->execute();
+                    $message = $stmt->affected_rows > 0 ? "School added successfully." : "Error adding school.";
+                    $stmt->close();
+                } else {
+                    $message = "School name and address are required.";
+                }
+            } elseif ($action === 'delete' && !empty($_POST['id'])) {
+                $id = (int)$_POST['id'];
+                $stmt = $conn->prepare("Update tbl_schools set fld_status = 'inactive' WHERE fld_ID = ?");
+                $stmt->bind_param("i", $id);
+                $stmt->execute();
+                $message = $stmt->affected_rows > 0 ? "School deleted." : "School not found.";
+                $stmt->close();
+            } elseif ($action === 'update' && !empty($_POST['id'])) {
+                $id         = (int)$_POST['id'];
+                $schoolName = trim($_POST['schoolName'] ?? '');
+                $address    = trim($_POST['address'] ?? '');
+
+                if ($schoolName !== '' && $address !== '') {
+                    $stmt = $conn->prepare("
+                        UPDATE tbl_schools 
+                        SET fld_schoolName = ?, fld_address = ?
+                        WHERE fld_ID = ?
+                    ");
+                    $stmt->bind_param("ssi", $schoolName, $address, $id);
+                    $stmt->execute();
+                    $message = $stmt->affected_rows > 0 ? "School updated." : "No changes or school not found.";
+                    $stmt->close();
+                } else {
+                    $message = "School name and address are required.";
+                }
+            }
+
+            // PRG pattern - prevent resubmit on refresh
+            header("Location: " . $_SERVER['PHP_SELF'] . "?msg=" . urlencode($message));
+            exit;
+        break;
+
+
+        //Copy Pasted from edit_school 
+        case 'edit_municipality':
+
+            $message = $action;
+            
+            if ($action === 'add') {
+                $municipality = trim($_POST['municipalityName'] ?? '');
+                $district    = trim($_POST['district'] ?? '');
+
+                if ($municipality !== '' && $district !== '') {
+                    $stmt = $conn->prepare("
+                        INSERT INTO tbl_municipalities (fld_municipality, fld_district)
+                        VALUES (?, ?)
+                    ");
+                    $stmt->bind_param("ss", $municipality, $district);
+                    $stmt->execute();
+                    $message = $stmt->affected_rows > 0 ? "Municipality added successfully." : "Error adding Municipality.";
+                    $stmt->close();
+                } else {
+                    $message = "Municipality name and district are required.";
+                }
+            } elseif ($action === 'delete' && !empty($_POST['id'])) {
+                $id = (int)$_POST['id'];
+                $stmt = $conn->prepare("Update tbl_municipalities set fld_status = 'inactive' WHERE fld_ID = ?");
+                $stmt->bind_param("i", $id);
+                $stmt->execute();
+                $message = $stmt->affected_rows > 0 ? "Municipality deleted." : "Municipality not found.";
+                $stmt->close();
+            } elseif ($action === 'update' && !empty($_POST['id'])) {
+                
+                $id         = (int)$_POST['id'];
+                $municipalityName = trim($_POST['municipalityName'] ?? '');
+                $district    = trim($_POST['district'] ?? '');
+
+                if ($municipalityName !== '' && $district !== '') {
+                    $stmt = $conn->prepare("
+                        UPDATE tbl_municipalities 
+                        SET fld_municipality = ?, fld_district = ?
+                        WHERE fld_ID = ?
+                    ");
+                    $stmt->bind_param("ssi", $municipalityName, $district, $id);
+                    $stmt->execute();
+                    $message = $stmt->affected_rows > 0 ? "Municipality updated." : "No changes or municipality not found.";
+                    $stmt->close();
+                } else {
+                    $message = "Municipality name and district are required.";
+                }
+            }
+
+            // PRG pattern - prevent resubmit on refresh
+            header("Location: " . $_SERVER['PHP_SELF'] . "?msg=" . urlencode($message));
+            exit;
+        break;
+
+
+
+        default:
+            $message = "Invalid form type.";
+        break;
+
     }
 
-    // PRG pattern - prevent resubmit on refresh
-    header("Location: " . $_SERVER['PHP_SELF'] . "?msg=" . urlencode($message));
-    exit;
+
+
+
 }
 
 // Show message from redirect
@@ -63,9 +138,16 @@ if (isset($_GET['msg'])) {
 }
 
 // Load schools
-$result = $conn->query("SELECT * FROM tbl_schools ORDER BY fld_schoolName");
-$items = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+$result = $conn->query("SELECT * FROM tbl_schools where fld_status='active' ORDER BY fld_schoolName");
+$schoolItems = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
 
+// Load municipalities
+$result = $conn->query("SELECT * FROM tbl_municipalities where fld_status='active' ORDER BY fld_municipality");
+$municipalityItems = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+
+
+
+// The includes are at the end of the script because they load too early and break the page for some reason
 include_once 'includes/head.php';
 include_once 'includes/sidebar.php';
 ?>
@@ -78,22 +160,26 @@ include_once 'includes/sidebar.php';
                     <div class="d-flex justify-content-between align-items-center  pl-4 pt-3">
                         <h1 class="h1">Preferences</h1>
                     </div>
+                    <?php if ($message): ?>
+                            <div class="alert alert-info"><?= $message ?></div>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <div class="container py-5">
-                        <h3 class="mb-4">Manage Schools</h3>
 
-                        <?php if ($message): ?>
-                            <div class="alert alert-info"><?= $message ?></div>
-                        <?php endif; ?>
+                    <!--Manage Schools Suggestions -->
+                    <div class="container py-5">
+                        <h4 class="mb-4">Manage Schools</h4>
+
+                        
 
                         <!-- Add new school -->
                         <div class="card mb-4">
                             <div class="card-header">Add New School</div>
                             <div class="card-body">
                                 <form method="post">
+                                    <input type="hidden" name="form_type" value="edit_school">
                                     <input type="hidden" name="action" value="add">
                                     <div class="row g-3">
                                         <div class="col-md-6">
@@ -112,27 +198,27 @@ include_once 'includes/sidebar.php';
 
                         <!-- Schools list -->
                         <div class="card">
-                            <div class="card-header">All Schools (<?= count($items) ?>)</div>
+                            <div class="card-header">All Schools (<?= count($schoolItems) ?>)</div>
                             <div class="card-body p-0">
-                                <?php if (empty($items)): ?>
+                                <?php if (empty($schoolItems)): ?>
                                     <div class="p-4 text-muted">No schools found.</div>
                                 <?php else: ?>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover mb-0 align-middle">
+                                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                        <table class="table table-hover mb-0 align-middle" >
                                             <thead class="table-light">
                                                 <tr>
                                                     <th>School Name</th>
                                                     <th>Address</th>
-                                                    <th style="width:140px">Actions</th>
+                                                    <th style="width: 33%;">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php foreach ($items as $row): ?>
+                                                <?php foreach ($schoolItems as $row): ?>
                                                     <tr>
                                                         <td><?= htmlspecialchars($row['fld_schoolName']) ?></td>
                                                         <td><?= htmlspecialchars($row['fld_address']) ?></td>
                                                         <td>
-                                                            <button class="btn btn-sm btn-outline-primary me-1 edit-btn"
+                                                            <button class="btn btn-sm btn-outline-primary me-1 edit-school-btn"
                                                                     data-id="<?= $row['fld_ID'] ?>"
                                                                     data-schoolname="<?= htmlspecialchars($row['fld_schoolName']) ?>"
                                                                     data-address="<?= htmlspecialchars($row['fld_address']) ?>">
@@ -141,6 +227,7 @@ include_once 'includes/sidebar.php';
 
                                                             <form method="post" style="display:inline;" 
                                                                 onsubmit="return confirm('Really delete this school?');">
+                                                                <input type="hidden" name="form_type" value="edit_school">
                                                                 <input type="hidden" name="action" value="delete">
                                                                 <input type="hidden" name="id" value="<?= $row['fld_ID'] ?>">
                                                                 <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
@@ -156,6 +243,88 @@ include_once 'includes/sidebar.php';
                         </div>
                     </div>
                 </div>
+                
+
+                <!-- Manage Municipalities-->
+                <div class="col-md-6">
+                    <div class="container py-5">
+                        <h4 class="mb-4">Manage Municipalities</h4>
+
+                        
+
+                        <!-- Add new municipality -->
+                        <div class="card mb-4">
+                            <div class="card-header">Add New Municipality</div>
+                            <div class="card-body">
+                                <form method="post">
+                                    <input type="hidden" name="form_type" value="edit_municipality">
+                                    <input type="hidden" name="action" value="add">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Municipality Name</label>
+                                            <input type="text" name="municipalityName" class="form-control" required>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">District</label>
+                                            <input type="text" name="district" class="form-control" required>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-3">Add Municipality</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Municipalities list -->
+                        <div class="card">
+                            <div class="card-header">All Municipalities (<?= count($municipalityItems) ?>)</div>
+                            <div class="card-body p-0">
+                                <?php if (empty($municipalityItems)): ?>
+                                    <div class="p-4 text-muted">No municipalities found.</div>
+                                <?php else: ?>
+                                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                        <table class="table table-hover mb-0 align-middle">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Municipality Name</th>
+                                                    <th>District</th>
+                                                    <th style="width: 33%;">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($municipalityItems as $row): ?>
+                                                    <tr>
+                                                        <td><?= htmlspecialchars($row['fld_municipality']) ?></td>
+                                                        <td><?= htmlspecialchars($row['fld_district']) ?></td>
+                                                        <td>
+                                                            <button class="btn btn-sm btn-outline-primary me-1 edit-municipality-btn"
+                                                                    data-id="<?= $row['fld_ID'] ?>"
+                                                                    data-municipality="<?= htmlspecialchars($row['fld_municipality']) ?>"
+                                                                    data-district="<?= htmlspecialchars($row['fld_district']) ?>">
+                                                                Edit
+                                                            </button>
+                                                            <form method="post" style="display:inline;" 
+                                                                onsubmit="return confirm('Really delete this municipality?');">
+                                                                <input type="hidden" name="form_type" value="edit_municipality">
+                                                                <input type="hidden" name="action" value="delete">
+                                                                <input type="hidden" name="id" value="<?= $row['fld_ID'] ?>">
+                                                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                            </form>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+
+
+
             </div>
         </div>
     </div>
@@ -163,7 +332,7 @@ include_once 'includes/sidebar.php';
 
 
 
-<!-- Edit Modal (using Bootstrap-like classes your template seems to support) -->
+<!-- Edit Modal for schools (using Bootstrap-like classes) -->
 <div class="modal fade" id="editSchoolModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -174,9 +343,10 @@ include_once 'includes/sidebar.php';
                 </button>
             </div>
             <form method="post">
+                <input type="hidden" name="form_type" value="edit_school">
                 <div class="modal-body">
                     <input type="hidden" name="action" value="update">
-                    <input type="hidden" name="id" id="edit_id">
+                    <input type="hidden" name="id" id="edit_school_id">
 
                     <div class="mb-3">
                         <label class="form-label">School Name</label>
@@ -198,8 +368,44 @@ include_once 'includes/sidebar.php';
 
 
 
+<!-- Edit Modal for Municipaliyes -->
+<div class="modal fade" id="editMunicipalityModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Municipality</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <form method="post">
+                <input type="hidden" name="form_type" value="edit_municipality">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="id" id="edit_municipality_id">
 
-<!-- Your existing vendor scripts -->
+                    <div class="mb-3">
+                        <label class="form-label">Municipality Name</label>
+                        <input type="text" name="municipalityName" id="edit_municipality_name" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">District</label>
+                        <input type="text" name="district" id="edit_district" class="form-control" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- vendor scripts -->
 <script src="vendors/scripts/core.js"></script>
 <script src="vendors/scripts/script.min.js"></script>
 <script src="vendors/scripts/process.js"></script>
@@ -218,7 +424,7 @@ include_once 'includes/sidebar.php';
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const editModalEl = document.getElementById('editSchoolModal');
-    const editButtons = document.querySelectorAll('.edit-btn');
+    const editButtons = document.querySelectorAll('.edit-school-btn');
 
     editButtons.forEach(btn => {
         btn.addEventListener('click', function () {
@@ -226,11 +432,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const schoolName = this.dataset.schoolname;
             const address    = this.dataset.address || '';
 
-            document.getElementById('edit_id').value         = id;
+            document.getElementById('edit_school_id').value         = id;
             document.getElementById('edit_school_name').value = schoolName;
             document.getElementById('edit_address').value    = address;
 
-            // Show modal (using Bootstrap 4 style classes your template likely supports)
             if (typeof $ !== 'undefined' && $.fn.modal) {
                 $('#editSchoolModal').modal('show');
             } else {
@@ -256,6 +461,51 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+
+
+// FOr Municipality Modal
+document.addEventListener('DOMContentLoaded', function () {
+    const editModalEl = document.getElementById('editMunicipalityModal');
+    const editButtons = document.querySelectorAll('.edit-municipality-btn');
+
+    editButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            const id         = this.dataset.id;
+            const municipalityName = this.dataset.municipality;
+            const district    = this.dataset.district || '';
+
+            document.getElementById('edit_municipality_id').value         = id;
+            document.getElementById('edit_municipality_name').value = municipalityName;
+            document.getElementById('edit_district').value    = district;
+
+            if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#editMunicipalityModal').modal('show');
+            } else {
+                // Fallback: manual show if no jQuery modal
+                editModalEl.classList.add('show');
+                editModalEl.style.display = 'block';
+                document.body.classList.add('modal-open');
+            }
+        });
+    });
+
+    // Close modal buttons
+    const closeButtons = editModalEl.querySelectorAll('[data-dismiss="modal"]');
+    closeButtons.forEach(btn => {
+        btn.addEventListener('click', function () {
+            if (typeof $ !== 'undefined' && $.fn.modal) {
+                $('#editMunicipalityModal').modal('hide');
+            } else {
+                editModalEl.classList.remove('show');
+                editModalEl.style.display = 'none';
+                document.body.classList.remove('modal-open');
+            }
+        });
+    });
+});
+
+
 </script>
 
 
@@ -263,5 +513,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <?php
+// Close Db COnnection
 $conn->close();
 ?>
