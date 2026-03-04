@@ -171,6 +171,8 @@ $municipalitySql = "Select `district`,`municipality`, COUNT(municipality) as tot
 $resultMunicipality = $conn->query($municipalitySql);
 
 
+
+
 while ($row = $resultMunicipality->fetch_assoc()) {
 
     // echo $row["municipality"] . " - " . $row["district"] . " - " . $row["total"];
@@ -192,6 +194,8 @@ while ($row = $resultMunicipality->fetch_assoc()) {
         } else {
             echo "Error: Municipality " . $row["municipality"] . " has an invalid district value of '" . $row["district"] . "'.";
         }
+
+        //echo "Municipality: " . $row["municipality"] . " | District: " . $row["district"] . " | Total Scholars: " . $row["total"] . "<br>";
     } else {
         $outAklanMunData[] = $row["total"];
         $outAklanMunLabel[] = $row["municipality"];
@@ -199,6 +203,8 @@ while ($row = $resultMunicipality->fetch_assoc()) {
         $outAklanDataTotal += $row["total"];
     }
 }
+
+
 
 
 
@@ -261,30 +267,22 @@ function isInAklan($municipality)
     <div class="xs-pd-20-10 pd-ltr-20">
         <div class="card-box pb-10" style="padding: 4px;">
 
-            <div class="row" style="padding-bottom: 30px;" hidden>
-                <div class="col" style="display: flex;
-                                    justify-content: center;
-                                    
-                                    ;
-                                    ">
-                    <div id="reports-total-records" style="width: fit-content;
-                                                        border: 1px solid #8edbddc7;
-                                                        border-radius: 10px;
-                                                        background-color: #e5ffff85;
-                                                        padding: 30px;
-                                                        font-size: 1.1rem;
-                                                        ">
-                        Number Of Scholars: <?php echo $totalScholars ?>
-                    </div>
-                </div>
-            </div>
+            
 
             <div class="container-fluid mt-4 mb-4">
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center  pl-3">
+                            <h1 class="h1">Reports Dashboard</h1>
+                        </div>
+                    </div>
+                </div>
+                    
                 <div class="row g-4">
                     <div class="col-12 col-lg-7">
                         <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2 class="h2">Overall Scholarship Summary</h2>
+                                <h3 class="h3">Overall Scholarship Summary</h3>
                                 <span class="badge bg-primary">Combined Data</span>
                             </div>
                             <div id="scholarshipOverallChart"></div>
@@ -322,12 +320,12 @@ function isInAklan($municipality)
                         <div class="d-flex flex-column gap-4 h-100">
 
                             <div class="mb-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
-                                <h2>Status</h2>
+                                <h3>Status</h3>
                                 <div id="statusChart"></div>
                             </div>
 
                             <div class="mt-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
-                                <h2>Schools</h2>
+                                <h3>Schools</h3>
                                 <div id="schoolChart"></div>
                             </div>
 
@@ -337,7 +335,7 @@ function isInAklan($municipality)
                     <div class="col-12 col-lg-6">
                         <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2 class="h2">Year Of Award</h2>
+                                <h3 class="h3">Year Of Award</h3>
                             </div>
                             <div id="yearChart"></div>
                         </div>
@@ -361,7 +359,7 @@ function isInAklan($municipality)
                     <div class="col-12 col-xl-6">
                         <div class="reports-chart-container border p-3">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2>Within Aklan: District 1</h2>
+                                <h3>Within Aklan: District 1</h3>
                                 <span class="badge bg-secondary">Total: <?php echo ($inAklanData1stTotal) ?></span>
                             </div>
                             <div id="inAklanMun1stChart" style="height:350px;"></div>
@@ -370,7 +368,7 @@ function isInAklan($municipality)
                     <div class="col-12 col-xl-6">
                         <div class="reports-chart-container border p-3 ">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2>Within Aklan: District 2</h2>
+                                <h3>Within Aklan: District 2</h3>
                                 <span class="badge bg-secondary">Total: <?php echo ($inAklanData2ndTotal) ?></span>
                             </div>
                             <div id="inAklanMun2ndChart" style="height:350px;"></div>
@@ -385,7 +383,7 @@ function isInAklan($municipality)
                     <div class="col-12 col-xl-12`">
                         <div class="reports-chart-container border p-3">
                             <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2>Outside Aklan Municipalities</h2>
+                                <h3>Outside Aklan Municipalities</h3>
                                 <span class="badge bg-secondary">Total: <?php echo $outAklanDataTotal ?></span>
                             </div>
                             <div id="outAklanMunChart" style="height:350px;"></div>
