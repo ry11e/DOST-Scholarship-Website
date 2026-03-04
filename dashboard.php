@@ -392,7 +392,17 @@ include_once "includes/connection.php";
                     <div class="form-row">
                         <div class="col-md-6 form-group">
                             <label for="municipality">Municipality</label>
-                            <input type="text" class="form-control" id="municipality" name="municipality" required>
+                            <input list="municipalityDatalist" class="form-control" id="municipality" name="municipality" required>
+                            <datalist id="municipalityDatalist">
+                                <?php
+                                $muniSql = "SELECT fld_municipality FROM tbl_municipalities where fld_status='active' ORDER BY  fld_municipality ASC";
+                                $muniRes = $conn->query($muniSql);
+
+                                while ($row = $muniRes->fetch_assoc()) {
+                                    echo "<option value='" . htmlspecialchars($row['fld_municipality']) . "'>" . htmlspecialchars($row['fld_municipality']) . "</option>";
+                                }
+                                ?>
+                            </datalist>
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="district">District</label>

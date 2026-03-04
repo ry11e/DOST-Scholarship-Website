@@ -24,7 +24,7 @@ $scholar = $result->fetch_assoc();
 ?>
 
 <div class="main-container">
-    
+
     <div class="xs-pd-20-10 pd-ltr-20">
         <div class="card-box pb-10" style="padding: 10px;">
             <div class="h5 pd-20 mb-0">Edit Scholar Details</div>
@@ -48,16 +48,16 @@ $scholar = $result->fetch_assoc();
                     <div class="col-md-6">
                         <label for="schoolInput">School</label>
                         <input list="schoolsListDatalist" id="schoolsInput" name="school" class="form-control" value="<?php echo $scholar['school']; ?>">
-                            <datalist id="schoolsListDatalist">
-                                <?php
-                                $schoolsSql = "SELECT fld_schoolName FROM tbl_schools where fld_status='active' ORDER BY fld_schoolName ASC";
-                                $schoolsRes = $conn->query($schoolsSql);
+                        <datalist id="schoolsListDatalist">
+                            <?php
+                            $schoolsSql = "SELECT fld_schoolName FROM tbl_schools where fld_status='active' ORDER BY fld_schoolName ASC";
+                            $schoolsRes = $conn->query($schoolsSql);
 
-                                while ($row = $schoolsRes->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($row['fld_schoolName']) . "'>" . htmlspecialchars($row['fld_schoolName']) . "</option>";
-                                }
-                                ?>
-                                </datalist>
+                            while ($row = $schoolsRes->fetch_assoc()) {
+                                echo "<option value='" . htmlspecialchars($row['fld_schoolName']) . "'>" . htmlspecialchars($row['fld_schoolName']) . "</option>";
+                            }
+                            ?>
+                        </datalist>
                     </div>
                 </div>
                 <div class="form-group row">
@@ -73,7 +73,17 @@ $scholar = $result->fetch_assoc();
                 <div class="form-group row">
                     <div class="col-md-6">
                         <label for="municipality">Municipality</label>
-                        <input type="text" class="form-control" name="municipality" value="<?php echo $scholar['municipality']; ?>" />
+                        <input list="municipalityDatalist" class="form-control" id="municipality" name="municipality" value="<?php echo $scholar['municipality']; ?>" required>
+                        <datalist id="municipalityDatalist">
+                            <?php
+                            $muniSql = "SELECT fld_municipality FROM tbl_municipalities where fld_status='active' ORDER BY  fld_municipality ASC";
+                            $muniRes = $conn->query($muniSql);
+
+                            while ($row = $muniRes->fetch_assoc()) {
+                                echo "<option value='" . htmlspecialchars($row['fld_municipality']) . "'>" . htmlspecialchars($row['fld_municipality']) . "</option>";
+                            }
+                            ?>
+                        </datalist>
                     </div>
                     <div class="col-md-6">
                         <label for="district">District</label>
@@ -84,19 +94,19 @@ $scholar = $result->fetch_assoc();
                     <div class="col-md-6">
                         <label for="statusList">Status</label>
                         <input list="statusOptions" id="statusList" class="form-control" name="status" placeholder="Search by Status" value="<?php echo $scholar['status']; ?>" />
-                            <datalist id="statusOptions">
-                                <?php
-                                if ($conn->connect_error) {
-                                    die("Connection failed: " . $conn->connect_error);
-                                }
-                                // Fetch distinct statuses from the database for the datalist
-                                $statusSql = "SELECT fld_scholarshipStatus FROM tbl_scholar_status";
-                                $statusRes = $conn->query($statusSql);
-                                while ($row = $statusRes->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($row['fld_scholarshipStatus']) . "'>";
-                                }
-                                ?>
-                            </datalist>
+                        <datalist id="statusOptions">
+                            <?php
+                            if ($conn->connect_error) {
+                                die("Connection failed: " . $conn->connect_error);
+                            }
+                            // Fetch distinct statuses from the database for the datalist
+                            $statusSql = "SELECT fld_scholarshipStatus FROM tbl_scholar_status";
+                            $statusRes = $conn->query($statusSql);
+                            while ($row = $statusRes->fetch_assoc()) {
+                                echo "<option value='" . htmlspecialchars($row['fld_scholarshipStatus']) . "'>";
+                            }
+                            ?>
+                        </datalist>
                     </div>
                     <div class="col-md-6">
                         <label for="periodic_requirements">Periodic Requirements&nbsp; &nbsp;<span style="font-size: 12px; color:red; background-color:antiquewhite ;"> Note: (Filenames should not have commas(,))</span></label>
@@ -183,10 +193,10 @@ $scholar = $result->fetch_assoc();
     <!-- Result -->
     <div id="result" class="mt-3"></div>
 
-    <?php 
-        include "notification.php";
+    <?php
+    include "notification.php";
     ?>
-    
+
 
 </div>
 
@@ -254,7 +264,7 @@ $scholar = $result->fetch_assoc();
                 //resultDiv.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
                 //alert("Update Success");
                 form.reset(); // optional: clear form
-                
+
                 showNotification("Success", "success");
             } else {
                 //resultDiv.innerHTML = `<div class="alert alert-danger">${data.message || 'Error'}</div>`;
@@ -262,44 +272,43 @@ $scholar = $result->fetch_assoc();
             }
         } catch (error) {
             //resultDiv.innerHTML = `<div class="alert alert-danger">Network error: ${error.message}</div>`;
-            showNotification(`Network Error:  ${error.message}`,"error");
+            showNotification(`Network Error:  ${error.message}`, "error");
         }
     });
 
-    function showNotification(msg, status){
+    function showNotification(msg, status) {
 
         const box = document.getElementById('notification-box');
-        
-        
+
+
         console.log(box);
-        if(status = "success"){
+        if (status = "success") {
             box.style.color = 'green';
             box.style.background = 'rgb(230, 255, 238)';
-        }
-        else if(status = "error"){
+        } else if (status = "error") {
             box.style.color = 'red';
             box.style.background = '#ffd7d7';
         }
-        
 
-        if(msg != null || msg != ""){
+
+        if (msg != null || msg != "") {
             box.innerHTML = msg;
         }
-        
-        if (box) {
-        // Fade in
-        setTimeout(() => {
-            box.style.opacity = '1';
-        }, 100);
 
-        // Fade out after 4 seconds
-        setTimeout(() => {
-            box.style.opacity = '0';
-            location.reload();
-            // Optional: remove from DOM after fade
-            setTimeout(() => box.remove(), 500);
-        }, 1500);
-    }
+        if (box) {
+            // Fade in
+            setTimeout(() => {
+                box.style.opacity = '1';
+            }, 100);
+
+            // Fade out after 4 seconds
+            setTimeout(() => {
+                box.style.opacity = '0';
+                location.reload();
+                // Optional: remove from DOM after fade
+                setTimeout(() => box.remove(), 500);
+            }, 1500);
+        }
 
     }
 </script>
