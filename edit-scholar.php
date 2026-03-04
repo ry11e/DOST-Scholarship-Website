@@ -50,7 +50,7 @@ $scholar = $result->fetch_assoc();
                         <input list="schoolsListDatalist" id="schoolsInput" name="school" class="form-control" value="<?php echo $scholar['school']; ?>">
                             <datalist id="schoolsListDatalist">
                                 <?php
-                                $schoolsSql = "SELECT fld_schoolName FROM tbl_schools ORDER BY fld_schoolName ASC";
+                                $schoolsSql = "SELECT fld_schoolName FROM tbl_schools where fld_status='active' ORDER BY fld_schoolName ASC";
                                 $schoolsRes = $conn->query($schoolsSql);
 
                                 while ($row = $schoolsRes->fetch_assoc()) {
