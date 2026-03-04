@@ -50,11 +50,11 @@ $scholar = $result->fetch_assoc();
                         <input list="schoolsListDatalist" id="schoolsInput" name="school" class="form-control" value="<?php echo $scholar['school']; ?>">
                             <datalist id="schoolsListDatalist">
                                 <?php
-                                $schoolsSql = "SELECT DISTINCT school FROM scholars ORDER BY school ASC";
+                                $schoolsSql = "SELECT fld_schoolName FROM tbl_schools ORDER BY fld_schoolName ASC";
                                 $schoolsRes = $conn->query($schoolsSql);
 
                                 while ($row = $schoolsRes->fetch_assoc()) {
-                                    echo "<option value='" . htmlspecialchars($row['school']) . "'>" . htmlspecialchars($row['school']) . "</option>";
+                                    echo "<option value='" . htmlspecialchars($row['fld_schoolName']) . "'>" . htmlspecialchars($row['fld_schoolName']) . "</option>";
                                 }
                                 ?>
                                 </datalist>
