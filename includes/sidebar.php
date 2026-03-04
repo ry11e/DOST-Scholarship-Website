@@ -1,3 +1,10 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+include_once 'includes/connection.php';
+
+?>
 <div class="right-sidebar">
 	<div class="sidebar-title">
 		<h3 class="weight-600 font-16 text-blue">
@@ -159,6 +166,13 @@
 					<a href="dashboard_report.php" class="dropdown-toggle no-arrow">
 						<span class="micon bi bi-pie-chart"></span>
 						<span class="mtext">Reports</span>
+					</a>
+				</li>
+
+				<li class="<?php echo ($current_file === 'preferences.php') ? 'active' : ''; ?>">
+					<a href="preferences.php" class="dropdown-toggle no-arrow">
+						<span class="micon bi bi-gear"></span>
+						<span class="mtext">Preferences</span>
 					</a>
 				</li>
 
