@@ -114,7 +114,7 @@ $username = $_SESSION['admin_username'];
 			rel="stylesheet"
 		/>
 		<!-- CSS -->
-		<link rel="stylesheet" type="text/css" href="vendors/styles/core.css" />
+		
 		<link
 			rel="stylesheet"
 			type="text/css"
@@ -130,9 +130,13 @@ $username = $_SESSION['admin_username'];
 			type="text/css"
 			href="src/plugins/datatables/css/responsive.bootstrap4.min.css"
 		/>
-		<link rel="stylesheet" type="text/css" href="vendors/styles/style.css" />
+
+		<!-- For these last three, Bootstrap was loaded first as to not overwrite the custom style sheets -->
 		<link rel="stylesheet"
 			href="src/styles/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="vendors/styles/core.css" />
+		<link rel="stylesheet" type="text/css" href="vendors/styles/style.css" />
+		
 
 	</head>
 	<!--<style>
