@@ -162,6 +162,13 @@ include_once 'includes/connection.php';
 					</a>
 				</li>
 
+				<li class="<?php echo ($current_file === 'monitoring.php') ? 'active' : ''; ?>">
+					<a href="monitoring.php" class="dropdown-toggle no-arrow">
+						<span class="micon bi bi-bar-chart"></span>
+						<span class="mtext">Monitoring</span>
+					</a>
+				</li>
+
 				<li class="<?php echo ($current_file === 'dashboard_report.php') ? 'active' : ''; ?>">
 					<a href="dashboard_report.php" class="dropdown-toggle no-arrow">
 						<span class="micon bi bi-pie-chart"></span>
