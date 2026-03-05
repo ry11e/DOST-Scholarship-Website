@@ -11,6 +11,7 @@ $action = $_POST['action'] ?? '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formType = $_POST['form_type'] ?? '';
     // Formtype is from a hidden input to manage mutliple forms in this page.
+    // So far, only edit_school and edit_municipality exists 
 
 
     switch ($formType) {
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($action === 'add') {
                 $schoolName = trim($_POST['schoolName'] ?? '');
                 $address    = trim($_POST['address'] ?? '');
-
+                
                 if ($schoolName !== '' && $address !== '') {
                     $stmt = $conn->prepare("
                         INSERT INTO tbl_schools (fld_schoolName, fld_address)
@@ -132,7 +133,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }
 
-// Show message from redirect
+
+/**
+*@Potato
+*Potato
+*/
+//Test function
+function potato(){
+    echo "potato";
+}
+
+// Show message from redirect. Uses URL parameter to store the message sent BEFORE reloading(which comes after a form submission)
 if (isset($_GET['msg'])) {
     $message = htmlspecialchars($_GET['msg']);
 }
@@ -513,6 +524,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 <?php
-// Close Db COnnection
+// Close Db COnnection+
 $conn->close();
 ?>

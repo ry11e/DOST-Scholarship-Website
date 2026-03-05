@@ -248,7 +248,7 @@ $conn->close();
 
 
 
-
+// THis function checks whether the argument sent can be found in the municipalities list/table as well.
 function isInAklan($municipality)
 {
     global $aklanMunicipalities;
