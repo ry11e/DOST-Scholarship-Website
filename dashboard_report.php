@@ -265,25 +265,30 @@ function isInAklan($municipality)
 
 <div class="main-container">
     <div class="xs-pd-20-10 pd-ltr-20">
-        <div class="card-box pb-10" style="padding: 4px;">
+        <div class="card-box pd-30">
 
-            
+
 
             <div class="container-fluid mt-4 mb-4">
                 <div class="row mb-4">
-                    <div class="col-12">
+                    <div class="col-9">
                         <div class="d-flex justify-content-between align-items-center  pl-3">
                             <h1 class="h1">Reports Dashboard</h1>
                         </div>
                     </div>
+                    <div class="col-3 text-right">
+                        <button onclick="generateReport()" class="btn btn-primary">
+                            <i class="bi bi-printer"></i> Download Scholar Report
+                        </button>
+                    </div>
                 </div>
-                    
+
                 <div class="row g-4">
                     <div class="col-12 col-lg-7">
                         <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h3 class="h3">Overall Scholarship Summary</h3>
-                                <span class="badge bg-primary">Combined Data</span>
+                                <span class="badge bg-primary fs-6">Combined Data</span>
                             </div>
                             <div id="scholarshipOverallChart"></div>
                         </div>
@@ -360,7 +365,7 @@ function isInAklan($municipality)
                         <div class="reports-chart-container border p-3">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h3>Within Aklan: District 1</h3>
-                                <span class="badge bg-secondary">Total: <?php echo ($inAklanData1stTotal) ?></span>
+                                <span class="badge bg-secondary fs-6">Total: <?php echo ($inAklanData1stTotal) ?></span>
                             </div>
                             <div id="inAklanMun1stChart" style="height:350px;"></div>
                         </div>
@@ -369,7 +374,7 @@ function isInAklan($municipality)
                         <div class="reports-chart-container border p-3 ">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h3>Within Aklan: District 2</h3>
-                                <span class="badge bg-secondary">Total: <?php echo ($inAklanData2ndTotal) ?></span>
+                                <span class="badge bg-secondary fs-6">Total: <?php echo ($inAklanData2ndTotal) ?></span>
                             </div>
                             <div id="inAklanMun2ndChart" style="height:350px;"></div>
                         </div>
@@ -384,7 +389,7 @@ function isInAklan($municipality)
                         <div class="reports-chart-container border p-3">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h3>Outside Aklan Municipalities</h3>
-                                <span class="badge bg-secondary">Total: <?php echo $outAklanDataTotal ?></span>
+                                <span class="badge bg-secondary fs-6">Total: <?php echo $outAklanDataTotal ?></span>
                             </div>
                             <div id="outAklanMunChart" style="height:350px;"></div>
                         </div>
@@ -1202,15 +1207,6 @@ function isInAklan($municipality)
     outAklanMunChart.render();
 
 
-
-
-
-
-
-
-
-
-
     function roundUpToNearestTen(num) {
         // Divide by 10 to shift the tens place to the ones place (e.g., 23 -> 2.3)
         const divided = num / 10;
@@ -1223,4 +1219,88 @@ function isInAklan($municipality)
 
         return result;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Report Generation
+
+    async function generateReport() {
+        // 1. Convert charts to Images (Base64)
+        // Replace 'chart1' and 'chart2' with your actual ApexCharts variable names
+        const chart1Img = await scholarshipOverallChart.dataURI();
+        const chart2Img = await scholarshipUndergradChart.dataURI();
+
+        // 2. Grab the Table content
+        // Assuming your table has id="scholarTable"
+        // const tableContent = document.getElementById('scholarTable').outerHTML;
+
+        // 3. Create a new Print Window
+        const printWindow = window.open('', '_blank');
+
+        // 4. Write the HTML for the Report
+        printWindow.document.write(`
+        <html>
+            <head>
+                <title>Scholarship Program Report</title>
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+                <style>
+                    body { padding: 40px; }
+                    .report-header { text-align: center; margin-bottom: 30px; }
+                    .chart-container { margin-bottom: 50px; text-align: center; }
+                    img { max-width: 100%; height: auto; }
+                    @media print { .no-print { display: none; } }
+                </style>
+            </head>
+            <body>
+                <div class="report-header">
+                    <h1>Scholarship Management Report</h1>
+                    <p>Generated on: ${new class { toString() { return new Date().toLocaleString(); } }}</p>
+                </div>
+
+                <div class="chart-container">
+                    <h3>Overall Scholarship</h3>
+                    <img src="${chart1Img.imgURI}">
+                </div>
+
+                <div class="chart-container">
+                    <h3>Undergraduate Scholarships</h3>
+                    <img src="${chart2Img.imgURI}">
+                </div>
+
+                
+
+                <script>
+                    // Wait for images to load, then print
+                    window.onload = function() {
+                        window.print();
+                        // Optional: window.close();
+                    };
+                <\/script>
+            </body>
+        </html>
+    `);
+
+
+    /*
+    //backup
+    <div class="mt-5">
+                    <h3>Detailed Data List</h3>
+                    ${tableContent}
+                </div>
+    
+    */
+        printWindow.document.close();
+    } 
 </script>
