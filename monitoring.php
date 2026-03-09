@@ -16,13 +16,13 @@ include_once 'includes/sidebar.php';
 
 <div class="main-container">
     <div class="xs-pd-20-10 pd-ltr-20">
-        <div class="card-box pb-10" style="padding: 4px;">
+        <div class="card-box pd-30">
 
-            
+
 
             <div class="container-fluid mt-4 mb-4">
                 <div class="row mb-4">
-                    <div class="col-12">
+                    <div class="col-9">
                         <div class="d-flex justify-content-between align-items-center  pl-3">
                             <h1 class="h1">Monitoring Dashboard</h1>
                         </div>
@@ -31,6 +31,7 @@ include_once 'includes/sidebar.php';
                     
                 <div class="row g-4">
                     <div class="col-12 col-lg-7">
+                        <h5 class="h5 mb-3">Currently In Development</h5>
                     </div>
                 </div>
             </div>
