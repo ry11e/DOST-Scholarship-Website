@@ -13,7 +13,7 @@ include 'includes/connection.php';
 
 
 
-
+/*
 
 
 // Scholarship Programs
@@ -62,9 +62,45 @@ foreach ($schoolProgLabels as $i => $label) {
     $merged[$label] += $schoolProgData[$i];
 }
 
-$finalSchoolProgLabels = array_keys($merged);
-$finalSchoolProgData = array_values($merged);
+$finalScholProgLabels = array_keys($merged);
+$finalScholProgData = array_values($merged);
 
+
+*/
+
+
+$ScholProgStatuses = []; // Active, Graduated, etc.
+$ScholProgPrograms = []; // Various scholarship programs
+$ScholProgTempData = []; // Temporary storage
+
+
+$sql = "SELECT scholarship_program, status, count(scholarship_program) as total FROM `scholars` WHERE 1 group BY scholarship_program, STATUS order by scholarship_program ASC";;
+$result = $conn->query($sql);
+
+while ($row = $result->fetch_assoc()) {
+    $prog = $row["scholarship_program"];
+    $stat = $row["status"];
+    $total = (int)$row["total"];
+
+    if (!in_array($prog, $ScholProgPrograms)) { $ScholProgPrograms[] = $prog; }
+    if (!in_array($stat, $ScholProgStatuses)) { $ScholProgStatuses[] = $stat; }
+
+    // Store data in a way we can easily access by [Status][Program]
+    $ScholProgTempData[$stat][$prog] = $total;
+}
+
+$ScholProgFinalSeries = [];
+foreach ($ScholProgStatuses as $stat) {
+    $dataPoints = [];
+    foreach ($ScholProgPrograms as $prog) {
+        // If a program has no scholars for this status, use 0
+        $dataPoints[] = isset($ScholProgTempData[$stat][$prog]) ? $ScholProgTempData[$stat][$prog] : 0;
+    }
+    $ScholProgFinalSeries[] = [
+        'name' => $stat,
+        'data' => $dataPoints
+    ];
+}
 
 
 
@@ -284,7 +320,7 @@ function isInAklan($municipality)
                 </div>
 
                 <div class="row g-4">
-                    <div class="col-12 col-lg-7">
+                    <div class="col-12 col-lg-12">
                         <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h3 class="h3">Overall Scholarship Summary</h3>
@@ -294,21 +330,7 @@ function isInAklan($municipality)
                         </div>
                     </div>
 
-                    <div class="col-12 col-lg-5">
-                        <div class="d-flex flex-column gap-4 h-100">
-
-                            <div class=" mb-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
-                                <h6>Undergraduate Programs</h6>
-                                <div id="scholarshipUndergradChart"></div>
-                            </div>
-
-                            <div class="mt-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
-                                <h6>JLSS Programs</h6>
-                                <div id="scholarshipJLSSChart"></div>
-                            </div>
-
-                        </div>
-                    </div>
+                    
 
                 </div>
             </div>
@@ -440,6 +462,7 @@ function isInAklan($municipality)
         chart: {
             type: 'bar',
             height: 400,
+            stacked: true,
             toolbar: {
                 show: true
             },
@@ -461,12 +484,9 @@ function isInAklan($municipality)
             width: 2,
             colors: ['transparent']
         },
-        series: [{
-            name: 'Records',
-            data: <?= json_encode($finalSchoolProgData) ?>
-        }],
+        series: <?= json_encode($ScholProgFinalSeries) ?>,
         xaxis: {
-            categories: <?= json_encode($finalSchoolProgLabels) ?>,
+            categories: <?= json_encode($ScholProgPrograms) ?>,
             labels: {
                 rotate: -45,
                 rotateAlways: true
@@ -559,8 +579,7 @@ function isInAklan($municipality)
 
 
 
-
-
+    /*
 
 
 
@@ -725,6 +744,10 @@ function isInAklan($municipality)
     scholarshipJLSSChart.render();
 
 
+    */
+
+
+    
 
     // Year Of Award
     var awardYearOptions = {
