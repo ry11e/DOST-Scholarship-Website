@@ -69,6 +69,13 @@ $finalScholProgData = array_values($merged);
 */
 
 
+
+
+
+// Scholarship Program 
+/*  The scholarship chart is a stacked chart. The main bars are the scholarship programs,
+    and each bar is divided into stacks representing statuses
+*/
 $ScholProgStatuses = []; // Active, Graduated, etc.
 $ScholProgPrograms = []; // Various scholarship programs
 $ScholProgTempData = []; // Temporary storage
@@ -82,8 +89,12 @@ while ($row = $result->fetch_assoc()) {
     $stat = $row["status"];
     $total = (int)$row["total"];
 
-    if (!in_array($prog, $ScholProgPrograms)) { $ScholProgPrograms[] = $prog; }
-    if (!in_array($stat, $ScholProgStatuses)) { $ScholProgStatuses[] = $stat; }
+    if (!in_array($prog, $ScholProgPrograms)) {
+        $ScholProgPrograms[] = $prog;
+    }
+    if (!in_array($stat, $ScholProgStatuses)) {
+        $ScholProgStatuses[] = $stat;
+    }
 
     // Store data in a way we can easily access by [Status][Program]
     $ScholProgTempData[$stat][$prog] = $total;
@@ -105,6 +116,41 @@ foreach ($ScholProgStatuses as $stat) {
 
 
 
+//Year of award 
+
+$yearOfAwardStatuses = [];
+$yearOfAwardYears = [];
+$yearOfAwardTempData = [];
+
+$sql = "SELECT status, year_of_award, count(*) as total FROM `scholars` WHERE 1 group by status, year_of_award ";
+$result = $conn->query($sql);
+
+while ($row = $result->fetch_assoc()) {
+    $stat = $row["status"];
+    $year = $row["year_of_award"];
+    $total = (int)$row["total"];
+
+    if (!in_array($stat, $yearOfAwardStatuses)) {
+        $yearOfAwardStatuses[] = $stat;
+    }
+    if (!in_array($year, $yearOfAwardYears)) {
+        $yearOfAwardYears[] = $year;
+    }
+
+    $yearOfAwardTempData[$stat][$year] = $total;
+}
+
+$yearOfAwardFinalSeries = [];
+foreach ($yearOfAwardStatuses as $stat) {
+    $dataPoints = [];
+    foreach ($yearOfAwardYears as $year) {
+        $dataPoints[] = isset($yearOfAwardTempData[$stat][$year]) ? $yearOfAwardTempData[$stat][$year] : 0;
+    }
+    $yearOfAwardFinalSeries[] = [
+        'name' => $stat,
+        'data' => $dataPoints
+    ];
+}
 
 
 
@@ -313,7 +359,7 @@ function isInAklan($municipality)
                         </div>
                     </div>
                     <div class="col-3 text-right">
-                        <button onclick="generateReport()" class="btn btn-primary">
+                        <button onclick="generateReport()" class="btn btn-success">
                             <i class="bi bi-printer"></i> Download Scholar Report
                         </button>
                     </div>
@@ -324,13 +370,13 @@ function isInAklan($municipality)
                         <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
                             <div class="d-flex justify-content-between align-items-center mb-3">
                                 <h3 class="h3">Overall Scholarship Summary</h3>
-                                <span class="badge bg-primary fs-6">Combined Data</span>
+                                <span class="badge bg-secondary fs-6">Combined Data</span>
                             </div>
                             <div id="scholarshipOverallChart"></div>
                         </div>
                     </div>
 
-                    
+
 
                 </div>
             </div>
@@ -338,6 +384,25 @@ function isInAklan($municipality)
 
             <br>
             <br>
+
+            <div class="container-fluid mt-4 mb-4">
+                <div class="row g-4">
+                    <div class="col-12 col-lg-12">
+                        <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="h3">Year Of Award</h3>
+                            </div>
+                            <div id="yearChart"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            <br>
+            <br>
+
 
 
             <div class="container-fluid mt-4 mb-4">
@@ -351,22 +416,18 @@ function isInAklan($municipality)
                                 <div id="statusChart"></div>
                             </div>
 
-                            <div class="mt-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
-                                <h3>Schools</h3>
-                                <div id="schoolChart"></div>
-                            </div>
+
 
                         </div>
                     </div>
-
                     <div class="col-12 col-lg-6">
-                        <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h3 class="h3">Year Of Award</h3>
-                            </div>
-                            <div id="yearChart"></div>
+                        <div class="mt-1 reports-chart-container border p-3 bg-white shadow-sm rounded flex-fill">
+                            <h3>Schools</h3>
+                            <div id="schoolChart"></div>
                         </div>
                     </div>
+
+
 
 
 
@@ -473,7 +534,23 @@ function isInAklan($municipality)
             bar: {
                 horizontal: false,
                 columnWidth: '55%',
-                borderRasius: 10
+                borderRadius: 10,
+                dataLabels: {
+                    total: {
+                        enabled: true,
+                        style: {
+                            color: '#373d3f',
+                            fontSize: '18px', // Reduced slightly to avoid clipping
+                            fontWeight: 900
+                        }
+                    }
+                }
+            }
+        },
+        // Add this to give the 30px text room at the top
+        grid: {
+            padding: {
+                top: 30
             }
         },
         dataLabels: {
@@ -747,7 +824,7 @@ function isInAklan($municipality)
     */
 
 
-    
+
 
     // Year Of Award
     var awardYearOptions = {
@@ -764,12 +841,12 @@ function isInAklan($municipality)
         stroke: {
             width: 3
         },
-        series: [{
-            name: 'Records',
-            data: <?= json_encode($awardYearData) ?>
-        }],
+        dataLabels: {
+            enabled: true
+        },
+        series: <?= json_encode($yearOfAwardFinalSeries) ?>,
         xaxis: {
-            categories: <?= json_encode($awardYearLabels) ?>,
+            categories: <?= json_encode($yearOfAwardYears) ?>,
             labels: {
                 rotate: -45
             }
@@ -792,8 +869,8 @@ function isInAklan($municipality)
         }
     };
 
-    var lineChart = new ApexCharts(document.querySelector("#yearChart"), awardYearOptions);
-    lineChart.render();
+    var yearLineChart = new ApexCharts(document.querySelector("#yearChart"), awardYearOptions);
+    yearLineChart.render();
 
 
 
@@ -1263,7 +1340,7 @@ function isInAklan($municipality)
         // 1. Convert charts to Images (Base64)
         // Replace 'chart1' and 'chart2' with your actual ApexCharts variable names
         const chart1Img = await scholarshipOverallChart.dataURI();
-        const chart2Img = await scholarshipUndergradChart.dataURI();
+        const chart2Img = await yearLineChart.dataURI();
 
         // 2. Grab the Table content
         // Assuming your table has id="scholarTable"
@@ -1298,7 +1375,7 @@ function isInAklan($municipality)
                 </div>
 
                 <div class="chart-container">
-                    <h3>Undergraduate Scholarships</h3>
+                    <h3>Awards By Year</h3>
                     <img src="${chart2Img.imgURI}">
                 </div>
 
@@ -1316,14 +1393,14 @@ function isInAklan($municipality)
     `);
 
 
-    /*
-    //backup
-    <div class="mt-5">
-                    <h3>Detailed Data List</h3>
-                    ${tableContent}
-                </div>
-    
-    */
+        /*
+        //backup
+        <div class="mt-5">
+                        <h3>Detailed Data List</h3>
+                        ${tableContent}
+                    </div>
+        
+        */
         printWindow.document.close();
-    } 
+    }
 </script>
