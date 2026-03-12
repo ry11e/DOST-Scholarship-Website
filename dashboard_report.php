@@ -534,13 +534,12 @@ function isInAklan($municipality)
             bar: {
                 horizontal: false,
                 columnWidth: '55%',
-                borderRadius: 10,
                 dataLabels: {
                     total: {
                         enabled: true,
                         style: {
                             color: '#373d3f',
-                            fontSize: '18px', // Reduced slightly to avoid clipping
+                            fontSize: '15px', 
                             fontWeight: 900
                         }
                     }
@@ -554,7 +553,12 @@ function isInAklan($municipality)
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            style: {
+                color: '#00bfff',
+                fontSize: '10px', 
+                fontWeight: 90
+            }
         },
         stroke: {
             show: true,
