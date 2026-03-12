@@ -13,19 +13,16 @@ include 'includes/connection.php';
 
 
 
-/*
-
-
 // Scholarship Programs
-$schoolProgData = [];
-$schoolProgLabels = [];
+$scholProgData = [];
+$scholProgLabels = [];
 
 
-$schoolProgUndergradData = [];
-$schoolProgUndergradLabel = [];
+$scholProgUndergradData = [];
+$scholProgUndergradLabel = [];
 
-$schoolProgJLSSData = [];
-$schoolProgJLSSLabel = [];
+$scholProgJLSSData = [];
+$scholProgJLSSLabel = [];
 
 
 
@@ -37,36 +34,56 @@ $resultBar = $conn->query($sqlScholarshipPrograms);
 while ($row = $resultBar->fetch_assoc()) {
 
     if (stripos($row["scholarship_program"], "JLSS") !== false) {
-        $schoolProgJLSSLabel[] = $row['scholarship_program'];
-        $schoolProgJLSSData[]   = (int)$row['total'];
+        $scholProgJLSSLabel[] = $row['scholarship_program'];
+        $scholProgJLSSData[]   = (int)$row['total'];
 
         $finalLabel = substr($row["scholarship_program"], 0, -5);
 
-        $schoolProgLabels[] = $finalLabel;
-        $schoolProgData[]   = (int)$row['total'];
+        $scholProgLabels[] = $finalLabel;
+        $scholProgData[]   = (int)$row['total'];
     } else {
-        $schoolProgUndergradLabel[] = $row['scholarship_program'];
-        $schoolProgUndergradData[]   = (int)$row['total'];
+        $scholProgUndergradLabel[] = $row['scholarship_program'];
+        $scholProgUndergradData[]   = (int)$row['total'];
 
-        $schoolProgLabels[] = $row['scholarship_program'];
-        $schoolProgData[]   = (int)$row['total'];
+        $scholProgLabels[] = $row['scholarship_program'];
+        $scholProgData[]   = (int)$row['total'];
     }
 }
 
 $mergedScholars = [];
 
-foreach ($schoolProgLabels as $i => $label) {
+foreach ($scholProgLabels as $i => $label) {
     if (!isset($merged[$label])) {
         $merged[$label] = 0;
     }
-    $merged[$label] += $schoolProgData[$i];
+    $merged[$label] += $scholProgData[$i];
 }
 
 $finalScholProgLabels = array_keys($merged);
 $finalScholProgData = array_values($merged);
 
 
-*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -81,10 +98,13 @@ $ScholProgPrograms = []; // Various scholarship programs
 $ScholProgTempData = []; // Temporary storage
 
 
-$sql = "SELECT scholarship_program, status, count(scholarship_program) as total FROM `scholars` WHERE 1 group BY scholarship_program, STATUS order by scholarship_program ASC";;
-$result = $conn->query($sql);
+$scholTableSql = "SELECT * FROM `tbl_scholarship_programs`";
+$scholTableResult = $conn->query($scholTableSql);
 
-while ($row = $result->fetch_assoc()) {
+$ScholProgSql = "SELECT scholarship_program, status, count(scholarship_program) as total FROM `scholars` WHERE 1 group BY scholarship_program, STATUS order by scholarship_program ASC";;
+$ScholProgResult = $conn->query($ScholProgSql);
+
+while ($row = $ScholProgResult->fetch_assoc()) {
     $prog = $row["scholarship_program"];
     $stat = $row["status"];
     $total = (int)$row["total"];
@@ -111,6 +131,62 @@ foreach ($ScholProgStatuses as $stat) {
         'name' => $stat,
         'data' => $dataPoints
     ];
+}
+
+
+
+
+
+
+
+
+
+
+
+// Total Sum of scholarship programs
+// This is different from the overall summary, as this sums up all the sub-programs below the main programs, e.g. Merit = {Merit, JLSS-Merit}.
+
+// Retrieves the scholarship table and quickly convert them into a 1D array
+$scholTableSql = "SELECT DISTINCT fld_scholarshipCode FROM `tbl_scholarship_programs` Order by fld_scholarshipCode ASC";
+$scholTableResult = $conn->query($scholTableSql);
+$scholTable = array_column($scholTableResult->fetch_all(MYSQLI_ASSOC), "fld_scholarshipCode");
+
+$ScholProgSql = "SELECT scholarship_program, status, count(scholarship_program) as total FROM `scholars` WHERE 1 group BY scholarship_program, STATUS order by scholarship_program ASC";;
+$ScholProgResult = $conn->query($ScholProgSql);
+
+$tempScholData = [];
+
+// These guys are outside the scope of the loop below
+$scholTotal = [];
+$scholTotalLabel = [];
+$scCounter = -1;
+
+
+// Since the retreived records are ordered/sorted, there's no need to brute force or use complex spaghetti code(LMAOOOO look who's talking)
+// Super INefficient but it's the best I got HAHAAHaaaaaaaaaa..........
+while ($row = $ScholProgResult->fetch_assoc()) {
+    $prog = $row["scholarship_program"];
+    $stat = $row["status"];
+    $total = (int)$row["total"];
+
+    for ($i = 0; $i < count($scholTable); $i++) {
+
+        if (str_contains($prog, $scholTable[$i])) {
+            // this only inserts the scholarshipCode into the labels once,
+            if (!in_array($scholTable[$i], $scholTotalLabel)) {
+                $scholTotalLabel[] = $scholTable[$i];
+                $scCounter++;
+            }
+            // These guys on the other hand sum up all the number of scholars below their repsective main program.
+            if (isset($scholTotal[$scCounter])) {
+                $scholTotal[$scCounter] += $total;
+            } else {
+                $scholTotal[$scCounter] = $total;
+            }
+        } else {
+            //echo "not: " .$prog . " - " . $scholTable[$i] . " - "  . $stat . " - " . $total . " - " . "<br>";
+        }
+    }
 }
 
 
@@ -365,6 +441,11 @@ function isInAklan($municipality)
                     </div>
                 </div>
 
+            </div>
+
+
+            <!-- Hidden Chart. Wasn't needed, but will probably be deleted in the future -->
+            <div class="container-fluid mt-4 mb-4" style="display: none;">
                 <div class="row g-4">
                     <div class="col-12 col-lg-12">
                         <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
@@ -375,12 +456,44 @@ function isInAklan($municipality)
                             <div id="scholarshipOverallChart"></div>
                         </div>
                     </div>
-
-
-
                 </div>
             </div>
 
+            <br>
+            <br>
+
+
+            <div class="container-fluid mt-4 mb-4">
+                <div class="row g-4">
+                    <div class="col-12 col-lg-7">
+                        <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="h3">Total Scholars Per Scholarship Program</h3>
+                            </div>
+                            <div id="scholarshipTotalChart"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-5">
+                        <div class="row g-4 pb-2">
+                            <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="h4">Standard Scholarships</h4>
+                                </div>
+                                <div id="scholarshipStandardChart"></div>
+                            </div>
+                        </div>
+                        <div class="row g-4 pt-2">
+                            <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h4 class="h4">JLSS Scholarships</h4>
+                                </div>
+                                <div id="scholarshipJLSSChart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <br>
             <br>
@@ -539,7 +652,7 @@ function isInAklan($municipality)
                         enabled: true,
                         style: {
                             color: '#373d3f',
-                            fontSize: '15px', 
+                            fontSize: '15px',
                             fontWeight: 900
                         }
                     }
@@ -556,7 +669,7 @@ function isInAklan($municipality)
             enabled: true,
             style: {
                 color: '#00bfff',
-                fontSize: '10px', 
+                fontSize: '10px',
                 fontWeight: 90
             }
         },
@@ -660,19 +773,21 @@ function isInAklan($municipality)
 
 
 
-    /*
 
 
 
-    var scholarshipUndergradOptions = {
+
+
+
+
+
+    var scholarshipTotalOptions = {
         chart: {
             type: 'bar',
-            height: 200,
+            height: 500,
             toolbar: {
                 show: true
-            },
-            width: '100%',
-            redrawOnParentResize: true
+            }
         },
         plotOptions: {
             bar: {
@@ -682,7 +797,7 @@ function isInAklan($municipality)
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true
         },
         stroke: {
             show: true,
@@ -691,10 +806,10 @@ function isInAklan($municipality)
         },
         series: [{
             name: 'Records',
-            data: <?= json_encode($schoolProgUndergradData) ?>
+            data: <?= json_encode($scholTotal) ?>
         }],
         xaxis: {
-            categories: <?= json_encode($schoolProgUndergradLabel) ?>,
+            categories: <?= json_encode($scholTotalLabel) ?>,
             labels: {
                 rotate: -45,
                 rotateAlways: true
@@ -740,8 +855,97 @@ function isInAklan($municipality)
 
     };
 
-    var scholarshipUndergradChart = new ApexCharts(document.querySelector("#scholarshipUndergradChart"), scholarshipUndergradOptions);
-    scholarshipUndergradChart.render();
+    var scholarshipTotalChart = new ApexCharts(document.querySelector("#scholarshipTotalChart"), scholarshipTotalOptions);
+    scholarshipTotalChart.render();
+
+
+
+
+
+
+
+
+    var scholarshipStandardOptions = {
+        chart: {
+            type: 'bar',
+            height: 200,
+            toolbar: {
+                show: true
+            }
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: '55%',
+                borderRasius: 10
+            }
+        },
+        dataLabels: {
+            enabled: true,
+            style:{
+                fontSize: '10px',
+                fontWeight: 900
+            
+            }
+        },
+        stroke: {
+            show: true,
+            width: 2,
+            colors: ['transparent']
+        },
+        series: [{
+            name: 'Records',
+            data: <?= json_encode($scholProgUndergradData) ?>
+        }],
+        xaxis: {
+            categories: <?= json_encode($scholProgUndergradLabel) ?>,
+            labels: {
+                rotate: -45,
+                rotateAlways: true
+            }
+        },
+        yaxis: {
+            title: {
+                text: 'Number of Scholars'
+            }
+        },
+        fill: {
+            opacity: 1
+        },
+        tooltip: {
+            y: {
+                formatter: val => val + " records"
+            }
+        },
+
+
+        responsive: [{
+            breakpoint: 768, // For tablets and phones
+            options: {
+                plotOptions: {
+                    bar: {
+                        horizontal: true // Switch to horizontal for better reading
+                    }
+                },
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }, {
+            breakpoint: 480, // For small phones
+            options: {
+                xaxis: {
+                    labels: {
+                        show: false
+                    } // Hide labels if it's way too crowded
+                }
+            }
+        }]
+
+    };
+
+    var scholarshipStandardChart = new ApexCharts(document.querySelector("#scholarshipStandardChart"), scholarshipStandardOptions);
+    scholarshipStandardChart.render();
 
 
 
@@ -763,7 +967,12 @@ function isInAklan($municipality)
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            style:{
+                fontSize: '10px',
+                fontWeight: 900
+            
+            }
         },
         stroke: {
             show: true,
@@ -772,10 +981,10 @@ function isInAklan($municipality)
         },
         series: [{
             name: 'Records',
-            data: <?= json_encode($schoolProgJLSSData) ?>
+            data: <?= json_encode($scholProgJLSSData) ?>
         }],
         xaxis: {
-            categories: <?= json_encode($schoolProgJLSSLabel) ?>,
+            categories: <?= json_encode($scholProgJLSSLabel) ?>,
             labels: {
                 rotate: -45,
                 rotateAlways: true
@@ -825,7 +1034,7 @@ function isInAklan($municipality)
     scholarshipJLSSChart.render();
 
 
-    */
+
 
 
 
