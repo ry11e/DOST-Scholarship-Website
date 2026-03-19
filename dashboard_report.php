@@ -435,8 +435,8 @@ function isInAklan($municipality)
                         </div>
                     </div>
                     <div class="col-3 text-right">
-                        <button onclick="generateReport()" class="btn btn-success">
-                            <i class="bi bi-printer"></i> Download Scholar Report
+                        <button onclick="generateFullReport()" class="btn btn-success">
+                            <i class="bi bi-printer"></i> Print Scholar Report
                         </button>
                     </div>
                 </div>
@@ -607,6 +607,21 @@ function isInAklan($municipality)
 
         </div>
     </div>
+</div>
+
+
+
+
+<!-- Buffer Render for Charts -->
+<!--  
+<div id="report-buffer" style="position: absolute; left: -9999px; width: 1200px; background: white;">
+    <div id="bufferChart"></div>
+    <div id="bufferChart2"></div>
+</div>
+ -->
+
+<div id="report-buffer" style="position: absolute; left: -9999px; width: 1200px; background: white; padding: 20px;">
+    <div id="temp-slot"></div>
 </div>
 
 
@@ -787,6 +802,15 @@ function isInAklan($municipality)
             height: 500,
             toolbar: {
                 show: true
+            },
+            width: '100%',
+            redrawOnParentResize: true,
+            // Add this to prevent the chart from "jumping" during the resize
+            animations: {
+                dynamicAnimation: {
+                    enabled: true,
+                    speed: 350
+                }
             }
         },
         plotOptions: {
@@ -882,10 +906,10 @@ function isInAklan($municipality)
         },
         dataLabels: {
             enabled: true,
-            style:{
+            style: {
                 fontSize: '10px',
                 fontWeight: 900
-            
+
             }
         },
         stroke: {
@@ -968,10 +992,10 @@ function isInAklan($municipality)
         },
         dataLabels: {
             enabled: true,
-            style:{
+            style: {
                 fontSize: '10px',
                 fontWeight: 900
-            
+
             }
         },
         stroke: {
@@ -1547,73 +1571,152 @@ function isInAklan($municipality)
 
 
 
+
+
+
     // Report Generation
 
-    async function generateReport() {
-        // 1. Convert charts to Images (Base64)
-        // Replace 'chart1' and 'chart2' with your actual ApexCharts variable names
-        const chart1Img = await scholarshipOverallChart.dataURI();
-        const chart2Img = await yearLineChart.dataURI();
+    //HiResGenereation
 
-        // 2. Grab the Table content
-        // Assuming your table has id="scholarTable"
-        // const tableContent = document.getElementById('scholarTable').outerHTML;
 
-        // 3. Create a new Print Window
-        const printWindow = window.open('', '_blank');
 
-        // 4. Write the HTML for the Report
-        printWindow.document.write(`
-        <html>
+    // MAIN FUNCTION:
+    async function generateFullReport() {
+        try {
+            //  console.log("Starting report generation...");
+
+            // --- STEP A: CAPTURE YOUR CHARTS ---
+            const img1 = await getChartSnapshot(scholarshipTotalOptions);
+            const img2 = await getChartSnapshot(scholarshipStandardOptions);
+            const img3 = await getChartSnapshot(scholarshipJLSSOptions);
+            const img4 = await getChartSnapshot(awardYearOptions );
+            const img5 = await getChartSnapshot(schoolOptions);
+            const img6 = await getChartSnapshot(statusOptions);
+            const img7 = await getChartSnapshot(inAklanMun1stOptions);
+            const img8 = await getChartSnapshot(inAklanMun2ndOptions);
+            const img9 = await getChartSnapshot(outAklanMunOptions);
+
+            // --- STEP B: OPEN THE PRINT WINDOW ---
+            const printWindow = window.open('', '_blank');
+
+            printWindow.document.write(`
+            <html>
             <head>
-                <title>Scholarship Program Report</title>
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+                <title>Scholarship Statistics Report</title>
                 <style>
-                    body { padding: 40px; }
-                    .report-header { text-align: center; margin-bottom: 30px; }
-                    .chart-container { margin-bottom: 50px; text-align: center; }
-                    img { max-width: 100%; height: auto; }
-                    @media print { .no-print { display: none; } }
+                    body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 50px; line-height: 1.6; }
+                    .header { text-align: center; border-bottom: 2px solid #333; margin-bottom: 30px; }
+                    .chart-box { page-break-inside: avoid; margin-bottom: 40px; text-align: center; }
+                    img { width: 100%; border: 1px solid #ddd; margin-top: 10px; }
+                    h2 { color: #0056b3; text-align: left; }
                 </style>
             </head>
             <body>
-                <div class="report-header">
-                    <h1>Scholarship Management Report</h1>
-                    <p>Generated on: ${new class { toString() { return new Date().toLocaleString(); } }}</p>
+                <div class="header">
+                    <h1>AKLAN STATE UNIVERSITY</h1>
+                    <h3>Scholarship Management System - Annual Report</h3>
+                    <p>Generated: ${new Date().toLocaleDateString()}</p>
                 </div>
 
-                <div class="chart-container">
-                    <h3>Overall Scholarship</h3>
-                    <img src="${chart1Img.imgURI}">
+                <div class="chart-box">
+                    <h2>Overall Scholarship Programs</h2>
+                    <img src="${img1}" />
                 </div>
 
-                <div class="chart-container">
-                    <h3>Awards By Year</h3>
-                    <img src="${chart2Img.imgURI}">
+                <div class="chart-box">
+                    <h2>Undergraduate Programs</h2>
+                    <img src="${img2}" />
                 </div>
 
-                
+                <div class="chart-box">
+                    <h2>JLSS Programs</h2>
+                    <img src="${img3}" />
+                </div>
+
+                <div class="chart-box">
+                    <h2>Year Of Awards</h2>
+                    <img src="${img4}" />
+                </div>
+
+                <div class="chart-box">
+                    <h2>School</h2>
+                    <img src="${img5}" />
+                </div>
+
+                <div class="chart-box">
+                    <h2>Status</h2>
+                    <img src="${img6}" />
+                </div>
+
+                <div class="chart-box">
+                    <h2>Within Aklan: District 1</h2>
+                    <img src="${img7}" />
+                </div>
+
+                <div class="chart-box">
+                    <h2>Within Aklan: District 2</h2>
+                    <img src="${img8}" />
+                </div>
+
+                <div class="chart-box">
+                    <h2>Outside Aklan</h2>
+                    <img src="${img9}" />
+                </div>
 
                 <script>
-                    // Wait for images to load, then print
                     window.onload = function() {
                         window.print();
-                        // Optional: window.close();
                     };
                 <\/script>
             </body>
-        </html>
-    `);
+            </html>
+        `);
 
+            printWindow.document.close();
 
-        /*
-        //backup
-        <div class="mt-5">
-                        <h3>Detailed Data List</h3>
-                        ${tableContent}
-                    </div>
-        
-        */
-        printWindow.document.close();
+        } catch (error) {
+            console.error("Report failed:", error);
+            alert("There was an error generating the report images.");
+        }
     }
+
+
+
+    // HELPER: This function turns ANY chart config into a high-res image string
+    async function getChartSnapshot(chartOptions) {
+        const slot = document.querySelector("#temp-slot");
+
+        // Create high-res settings based on whatever chart we pass in
+        const highResOptions = {
+            ...chartOptions,
+            chart: {
+                ...chartOptions.chart,
+                width: 1200,
+                height: 600,
+                animations: {
+                    enabled: false
+                }
+            }
+        };
+
+        const tempChart = new ApexCharts(slot, highResOptions);
+        await tempChart.render();
+
+        // Give the browser a split second to finish the "paint"
+        await new Promise(r => setTimeout(r, 450));
+
+        const data = await tempChart.dataURI();
+
+        tempChart.destroy();
+        slot.innerHTML = ''; // Clean the slot for the next chart
+
+        return data.imgURI;
+    }
+
+
+
+
+
+
+
 </script>

@@ -22,3 +22,6 @@ A web application to digitize and manage scholarship applicants. Initial Goal wa
 - `/uploads`: Houses uploaded files
 
 ## 📝 Note
+
+## Problems
+- 
