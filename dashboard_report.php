@@ -429,15 +429,19 @@ function isInAklan($municipality)
 
             <div class="container-fluid mt-4 mb-4">
                 <div class="row mb-4">
-                    <div class="col-9">
+                    <div class="col-6">
                         <div class="d-flex justify-content-between align-items-center  pl-3">
                             <h1 class="h1">Reports Dashboard</h1>
                         </div>
                     </div>
-                    <div class="col-3 text-right">
+                    <div class="col-6 text-right">
                         <button onclick="generateFullReport()" class="btn btn-success">
                             <i class="bi bi-printer"></i> Print Scholar Report
                         </button>
+                        <button onclick="downloadPDFReport()" class="btn btn-light border text-success">
+                            <i class="bi bi-printer"></i> Download Scholar Report
+                        </button>
+
                     </div>
                 </div>
 
@@ -638,6 +642,7 @@ function isInAklan($municipality)
 <script src="src/plugins/datatables/js/dataTables.responsive.min.js"></script>
 <script src="src/plugins/datatables/js/responsive.bootstrap4.min.js"></script>
 <script src="vendors/scripts/dashboard3.js"></script>
+<script src="vendors/scripts/jspdf.umd.min.js"></script>
 
 
 
@@ -1589,7 +1594,7 @@ function isInAklan($municipality)
             const img1 = await getChartSnapshot(scholarshipTotalOptions);
             const img2 = await getChartSnapshot(scholarshipStandardOptions);
             const img3 = await getChartSnapshot(scholarshipJLSSOptions);
-            const img4 = await getChartSnapshot(awardYearOptions );
+            const img4 = await getChartSnapshot(awardYearOptions);
             const img5 = await getChartSnapshot(schoolOptions);
             const img6 = await getChartSnapshot(statusOptions);
             const img7 = await getChartSnapshot(inAklanMun1stOptions);
@@ -1613,8 +1618,9 @@ function isInAklan($municipality)
             </head>
             <body>
                 <div class="header">
-                    <h1>AKLAN STATE UNIVERSITY</h1>
-                    <h3>Scholarship Management System - Annual Report</h3>
+                    <h1>Department Of Science and Technology</h1>
+                    <h3>Aklan Field Office</h3>
+                    <h3>Scholarship Management System Report</h3>
                     <p>Generated: ${new Date().toLocaleDateString()}</p>
                 </div>
 
@@ -1716,7 +1722,69 @@ function isInAklan($municipality)
 
 
 
+    async function downloadPDFReport() {
+        const {
+            jsPDF
+        } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4'); // Portrait, Millimeters, A4 size
 
+        // Capture the images using your existing helper
+        const img1 = await getChartSnapshot(scholarshipTotalOptions);
+        const img2 = await getChartSnapshot(scholarshipStandardOptions);
+        const img3 = await getChartSnapshot(scholarshipJLSSOptions);
+        const img4 = await getChartSnapshot(awardYearOptions);
+        const img5 = await getChartSnapshot(schoolOptions);
+        const img6 = await getChartSnapshot(statusOptions);
+        const img7 = await getChartSnapshot(inAklanMun1stOptions);
+        const img8 = await getChartSnapshot(inAklanMun2ndOptions);
+        const img9 = await getChartSnapshot(outAklanMunOptions);
 
+        // Add Title
+        doc.setFontSize(20);
+        doc.text("Scholarship Report", 105, 20, {
+            align: "center"
+        });
 
+        doc.setFontSize(14);
+        doc.text("Overall Scholarship Programs", 20, 40);
+        // addImage(data, type, x, y, width, height)
+        doc.addImage(img1, 'PNG', 15, 45, 180, 90);
+
+        doc.text("Undergraduate Programs", 20, 150);
+        doc.addImage(img2, 'PNG', 15, 155, 180, 90);
+
+        doc.addPage();
+
+        doc.text("JLSS Scholarship Programs", 20, 20);
+        doc.addImage(img3, 'PNG', 15, 25, 180, 90);
+
+        doc.text("Year Of Award", 20, 130);
+        doc.addImage(img4, 'PNG', 15, 135, 180, 90);
+        
+        doc.addPage();
+
+        doc.text("Schools", 20, 20);
+        doc.addImage(img5, 'PNG', 15, 25, 180, 90);
+
+        doc.text("Status", 20, 130);
+        doc.addImage(img6, 'PNG', 15, 135, 180, 90);
+
+        doc.addPage();
+
+        doc.text("Within Aklan: District 1", 20, 20);
+        doc.addImage(img7, 'PNG', 15, 25, 180, 90);
+
+        doc.text("Within Aklan: District 2", 20, 130);
+        doc.addImage(img8, 'PNG', 15, 135, 180, 90);
+
+        doc.addPage();
+
+        doc.text("Outside Aklan", 20, 20);
+        doc.addImage(img9, 'PNG', 15, 25, 180, 90);
+
+        
+
+        // Save the file
+        doc.save("Scholarship_Report.pdf");
+    }
 </script>
