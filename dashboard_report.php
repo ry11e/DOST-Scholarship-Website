@@ -228,8 +228,6 @@ while ($row = $yearOfAwardResult->fetch_assoc()) {
     if(in_array($stat, $scholarStatusStatus )){
         $index = (int)array_search($stat, $scholarStatusStatus);
         $statusType = $scholarStatusType[$index];
-
-        echo $index . " " . $statusType . "<br>";
     }
 
     // puts the data in their respective arrays
@@ -240,7 +238,7 @@ while ($row = $yearOfAwardResult->fetch_assoc()) {
         $yearOfAwardYears[] = $year;
     }
 
-    $yearOfAwardTempData[$statusType][$year] += $total;
+    $yearOfAwardTempData[$statusType][$year] = isset($yearOfAwardTempData[$statusType][$year]) ? 0 : $total;
 }
 
 $yearOfAwardFinalSeries = [];
