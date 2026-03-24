@@ -168,8 +168,8 @@ $scholar = $result->fetch_assoc();
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
-                        <label for="delayed_requirements">Delayed Requirements</label>
-                        <input type="text" class="form-control" name="delayed_requirements" value="<?php echo $scholar['delayed_requirements']; ?>" />
+                        <label for="year_graduated">Year Graduated</label>
+                        <input type="text" class="form-control" name="year_graduated" value="<?php echo $scholar['year_graduated']; ?>" />
                     </div>
                     <div class="col-md-6">
                         <label for="lacking_requirements">Lacking Requirements</label>
@@ -181,6 +181,12 @@ $scholar = $result->fetch_assoc();
                         <label for="remarks">Remarks</label>
                         <input type="text" class="form-control" name="remarks" value="<?php echo $scholar['remarks']; ?>" />
                     </div>
+                    <div class="col-md-6">
+                        <label for="delayed_requirements">Delayed Requirements</label>
+                        <input type="text" class="form-control" name="delayed_requirements" value="<?php echo $scholar['delayed_requirements']; ?>" />
+                    </div>
+                </div>
+                <div class="form-group row">
                     <div class="col-md-12 text-right">
                         <button type="submit" class="btn btn-primary">Update</button>
                         <!-- <a href="dashboard.php" class="btn btn-secondary">Cancel</a> -->

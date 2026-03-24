@@ -455,8 +455,8 @@ include_once "includes/connection.php";
                     </div>
                     <div class="form-row">
                         <div class="col-md-6 form-group">
-                            <label for="summer">Summer</label>
-                            <input type="text" class="form-control" id="summer" name="summer">
+                            <label for="summer">Year Graduated&nbsp;<span style="font-size: 9px; color:red; background-color:antiquewhite ;"> Note: (Remain blank if not yet graduated)</span></label>
+                            <input type="text" class="form-control" id="year-graduated" name="year_graduated">
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="updated_cog">Updated COG</label>
@@ -465,8 +465,8 @@ include_once "includes/connection.php";
                     </div>
                     <div class="form-row">
                         <div class="col-md-6 form-group">
-                            <label for="delayed_requirements">Delayed Requirements</label>
-                            <input type="text" class="form-control" id="delayed_requirements" name="delayed_requirements">
+                            <label for="summer">Summer</label>
+                            <input type="text" class="form-control" id="summer" name="summer">
                         </div>
                         <div class="col-md-6 form-group">
                             <label for="lacking_requirements">Lacking Requirements</label>
@@ -474,7 +474,11 @@ include_once "includes/connection.php";
                         </div>
                     </div>
                     <div class="form-row">
-                        <div class="col-md-12 form-group">
+                        <div class="col-md-6 form-group">
+                            <label for="delayed_requirements">Delayed Requirements</label>
+                            <input type="text" class="form-control" id="delayed_requirements" name="delayed_requirements">
+                        </div>
+                        <div class="col-md-6 form-group">
                             <label for="remarks">Remarks</label>
                             <input type="text" class="form-control" id="remarks" name="remarks">
                         </div>

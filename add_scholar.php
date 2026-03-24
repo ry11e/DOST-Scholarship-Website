@@ -18,6 +18,7 @@ if (isset($_POST['add_scholar'])) {
     $lacking_requirements = $_POST['lacking_requirements'];
     $remarks = $_POST['remarks'];
     $status = $_POST['status'];
+    $year_graduated = $_POST['year_graduated'];
 
     // Establish a connection to the database
     $conn = new mysqli("localhost", "root", "", "scholarship_db");
@@ -64,10 +65,10 @@ if (isset($_POST['add_scholar'])) {
     // Insert the new scholar into the database
     $sql = "INSERT INTO scholars (name, year_of_award, scholarship_program, school, course, contact_no, municipality, district, 
             periodic_requirements, summer, updated_cog_filename, updated_cog_upload_date, delayed_requirements, 
-            lacking_requirements, remarks, status) 
+            lacking_requirements, remarks, status, year_graduated) 
             VALUES ('$name', '$year_of_award', '$scholarship_program', '$school', '$course', '$contact_no', 
             '$municipality', '$district', '$periodic_requirements', '$summer', 
-            '$updated_cog_filename', '$updated_cog_upload_date', '$delayed_requirements', '$lacking_requirements', '$remarks', '$status')";
+            '$updated_cog_filename', '$updated_cog_upload_date', '$delayed_requirements', '$lacking_requirements', '$remarks', '$status', '$year_graduated')";
 
     if ($conn->query($sql) === TRUE) {
         $_SESSION['message'] = 'New Scholar Added Successfully!';
