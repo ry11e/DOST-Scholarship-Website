@@ -29,6 +29,7 @@ A web application to digitize and manage scholarship applicants. Initial Goal wa
 ## Goals
 - / Export Reports to word
 - / In the Graphs/charts, the timeline should only show Ongoing and Graduated
+- Edit Everything to accomodate new "year_graduated" field in scholars table
 - In the Status Charts, it should show (ongoing-updated), (ongoing-problematic), and graduated
 - The Monitoring should show scholars who are problematic, preferably shown in a table.
 - When you click on a scholar, a new page pops up. In it is a table with the  coloumns date and details. Users have the option to add more of these.

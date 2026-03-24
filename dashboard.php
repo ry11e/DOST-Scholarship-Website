@@ -95,21 +95,30 @@ include_once "includes/connection.php";
 
 
 
-                    <!-- Year Selector -->
+                    <!-- Year Selector of Award-->
                     <div class="col-md-auto">
-                        <input list="years" name="selected_year" id="year-input" class="form-control" placeholder="Search By Year" value="<?php echo isset($_GET['selected_year']) ? $_GET['selected_year'] : ''; ?>">
+                        <input list="years" name="selected_year" id="year-input" class="form-control" placeholder="Search By Year Of Award" value="<?php echo isset($_GET['selected_year']) ? $_GET['selected_year'] : ''; ?>">
 
-                        <datalist id="years">
-                            <?php
-                            $currentYear = date("Y");
-                            $startYear   = $currentYear - 20;
-
-                            for ($year = $currentYear; $year >= $startYear; $year--) {
-                                echo "<option value=\"$year\">";
-                            }
-                            ?>
-                        </datalist>
                     </div>
+                    <!-- Year Selector for Graduated Scholars -->
+                    <div class="col-md-auto">
+                        <input list="years" name="graduated_year" id="graduated-year-input" class="form-control" placeholder="Search By Graduate Year" value="<?php echo isset($_GET['graduated_year']) ? $_GET['graduated_year'] : ''; ?>">
+
+                    </div>
+
+                    <!-- Datalist for Year Selectors -->
+                    <datalist id="years">
+                        <?php
+                        $currentYear = date("Y");
+                        $startYear   = $currentYear - 20;
+
+                        for ($year = $currentYear; $year >= $startYear; $year--) {
+                            echo "<option value=\"$year\">";
+                        }
+                        ?>
+                    </datalist>
+
+
 
                     <script>
                         document.getElementById('statusSelect').addEventListener('change', function() {
@@ -150,6 +159,7 @@ include_once "includes/connection.php";
                         <th class="datatable-nosort">CONTACT NO.</th>
                         <th class="datatable-nosort">MUNICIPALITY</th>
                         <th class="datatable-nosort">STATUS</th>
+                        <th class="datatable-nosort">YEAR GRADUATED</th>
                         <th class="datatable-nosort">PERIODIC REQUIREMENTS</th>
 
                         <th class="datatable-nosort">SUMMER</th>
@@ -204,6 +214,12 @@ include_once "includes/connection.php";
                     if (isset($_GET['selected_year']) && $_GET['selected_year'] != "") {
                         $year = (int)$_GET['selected_year'];
                         $sql .= " AND year_of_award = $year";
+                        $_SESSION['currentYear'] = $year;
+                    }
+
+                    if (isset($_GET['graduated_year']) && $_GET['graduated_year'] != "") {
+                        $year = (int)$_GET['graduated_year'];
+                        $sql .= " AND year_graduated = $year";
                         $_SESSION['currentYear'] = $year;
                     }
 
@@ -265,6 +281,7 @@ include_once "includes/connection.php";
                         echo "<td>" . $row['contact_no'] . "</td>";
                         echo "<td>" . $row['municipality'] . "</td>";
                         echo "<td class='$statusClass'>" . $row['status'] . "</td>";
+                        echo "<td>" . $row['year_graduated'] ?? "". "</td>";
                         echo "<td>";
                         if (!empty($row['periodic_requirements'])) {
                             $files = explode(',', $row['periodic_requirements']);
