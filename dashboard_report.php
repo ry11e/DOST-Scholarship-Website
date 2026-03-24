@@ -439,7 +439,10 @@ function isInAklan($municipality)
                             <i class="bi bi-printer"></i> Print Scholar Report
                         </button>
                         <button onclick="downloadPDFReport()" class="btn btn-light border text-success">
-                            <i class="bi bi-printer"></i> Download Scholar Report
+                            <i class="bi bi-printer"></i> Download PDF
+                        </button>
+                        <button onclick="downloadWordReport()" class="btn btn-light border text-success">
+                            <i class="fas fa-file-word"></i> Download Word
                         </button>
 
                     </div>
@@ -1588,8 +1591,6 @@ function isInAklan($municipality)
     // MAIN FUNCTION:
     async function generateFullReport() {
         try {
-            //  console.log("Starting report generation...");
-
             // --- STEP A: CAPTURE YOUR CHARTS ---
             const img1 = await getChartSnapshot(scholarshipTotalOptions);
             const img2 = await getChartSnapshot(scholarshipStandardOptions);
@@ -1760,7 +1761,7 @@ function isInAklan($municipality)
 
         doc.text("Year Of Award", 20, 130);
         doc.addImage(img4, 'PNG', 15, 135, 180, 90);
-        
+
         doc.addPage();
 
         doc.text("Schools", 20, 20);
@@ -1782,9 +1783,120 @@ function isInAklan($municipality)
         doc.text("Outside Aklan", 20, 20);
         doc.addImage(img9, 'PNG', 15, 25, 180, 90);
 
-        
+
 
         // Save the file
         doc.save("Scholarship_Report.pdf");
+    }
+
+
+
+
+    // Download in Word Format
+    async function downloadWordReport() {
+        console.log("Preparing Word Document...");
+
+        // variables to adjust width and height
+        const chartWidth = 600;
+        const chartHeight = 300;
+
+        // 1. Capture the images
+        const img1 = await getChartSnapshot(scholarshipTotalOptions);
+        const img2 = await getChartSnapshot(scholarshipStandardOptions);
+        const img3 = await getChartSnapshot(scholarshipJLSSOptions);
+        const img4 = await getChartSnapshot(awardYearOptions);
+        const img5 = await getChartSnapshot(schoolOptions);
+        const img6 = await getChartSnapshot(statusOptions);
+        const img7 = await getChartSnapshot(inAklanMun1stOptions);
+        const img8 = await getChartSnapshot(inAklanMun2ndOptions);
+        const img9 = await getChartSnapshot(outAklanMunOptions);
+
+        // 2. Build the Word-friendly HTML structure
+        // use MSOffice XML namespaces to help Word understand the file
+        const header = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                xmlns:w='urn:schemas-microsoft-com:office:word' 
+                xmlns='http://www.w3.org/TR/REC-html40'>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                <title>Scholarship Report</title>
+                <style>
+                    /* Using system fonts like Arial or Calibri ensures it works without internet */
+                    body { font-family: 'Calibri', 'Arial', sans-serif; }
+                    h1 { text-align: center; color: #0056b3; }
+                    h2 { color: #333; border-bottom: 1px solid #ccc; margin-top: 30px; }
+                    .chart-wrapper { text-align: center; margin-bottom: 20px; }
+                    /* We keep the height:auto but remember our 'Ironclad' attributes from before */
+                    img { display: block; margin: 0 auto; } 
+                </style>
+            </head>
+            <body>`;
+
+        const content = `
+            <h1 style="text-align:center; font-family:Arial;">Scholarship Report</h1>
+            <p style="text-align:center;">Generated on: ${new Date().toLocaleDateString()}</p>
+
+            <h2 style="">Overall Scholarship Programs</h2>
+            <div style="text-align:center;">
+                <img src="${img1}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+            </div>
+
+            <h2 style="">Undergraduate Programs</h2>
+            <div style="text-align:center;">
+                <img src="${img2}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+            </div>
+
+            <h2 style="page-break-before: always;">JLSS Scholarship Programs</h2>
+            <div style="text-align:center;">
+                <img src="${img3}" width="${chartWidth}" height="${chartHeight}" height:auto;">
+            </div>
+
+            <h2 style="">Year Of Award</h2>
+            <div style="text-align:center;">
+                <img src="${img4}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+            </div>
+
+            <h2 style="page-break-before: always;">Schools</h2>
+            <div style="text-align:center;">
+                <img src="${img5}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+            </div>
+
+            <h2 style="">Status</h2>
+            <div style="text-align:center;">
+                <img src="${img6}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+            </div>
+
+            <h2 style="page-break-before: always;">Within Aklan: District 1</h2>
+            <div style="text-align:center;">
+                <img src="${img7}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+            </div>
+
+            <h2 style="">Within Aklan: District 2</h2>
+            <div style="text-align:center;">
+                <img src="${img8}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+            </div>
+
+            <h2 style="page-break-before: always;">Outside Aklan</h2>
+            <div style="text-align:center;">
+                <img src="${img9}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+            </div>
+        `;
+        const footer = "</body></html>";
+        const fullHtml = header + content + footer;
+
+        // 3. Create a Blob and trigger the download
+        const blob = new Blob(['\ufeff', fullHtml], {
+            type: 'application/msword'
+        });
+
+        // Create a temporary link to click
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "Scholarship_Report.doc";
+
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
     }
 </script>
