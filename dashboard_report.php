@@ -14,6 +14,8 @@ include 'includes/connection.php';
 
 
 // Scholarship Programs
+
+// THis is for the Standard Scholarships adnd JLSS Scholarships
 $scholProgData = [];
 $scholProgLabels = [];
 
@@ -90,9 +92,10 @@ $finalScholProgData = array_values($merged);
 
 
 // Scholarship Program 
-/*  The scholarship chart is a stacked chart. The main bars are the scholarship programs,
-    and each bar is divided into stacks representing statuses
-*/
+// UNUSED
+//  The scholarship chart is a stacked chart. The main bars are the scholarship programs,
+//  and each bar is divided into stacks representing statuses
+
 $ScholProgStatuses = []; // Active, Graduated, etc.
 $ScholProgPrograms = []; // Various scholarship programs
 $ScholProgTempData = []; // Temporary storage
@@ -144,6 +147,7 @@ foreach ($ScholProgStatuses as $stat) {
 
 
 // Total Sum of scholarship programs
+// This one is used
 // This is different from the overall summary, as this sums up all the sub-programs below the main programs, e.g. Merit = {Merit, JLSS-Merit}.
 
 // Retrieves the scholarship table and quickly convert them into a 1D array
@@ -194,32 +198,56 @@ while ($row = $ScholProgResult->fetch_assoc()) {
 
 //Year of award 
 
-$yearOfAwardStatuses = [];
-$yearOfAwardYears = [];
-$yearOfAwardTempData = [];
+$yearOfAwardStatuses = [];  //array for status
+$yearOfAwardYears = [];     //array for the year
+$yearOfAwardTempData = [];  //temporary array
 
-$sql = "SELECT status, year_of_award, count(*) as total FROM `scholars` WHERE 1 group by status, year_of_award ";
-$result = $conn->query($sql);
 
-while ($row = $result->fetch_assoc()) {
+//Sql for Status table
+$scholarStatusSql = "Select fld_scholarshipStatus, fld_type from tbl_scholar_status where fld_status = 'active'";
+$scholarStatusResult = $conn->query($scholarStatusSql);
+$scholarStatusAllData = $scholarStatusResult->fetch_all(MYSQLI_ASSOC);
+$scholarStatusStatus = array_column($scholarStatusAllData, "fld_scholarshipStatus");
+$scholarStatusType = array_column($scholarStatusAllData, "fld_type");
+
+
+// SQL and results for Year of Award
+$yearOfAwardSql = "SELECT status, year_of_award, count(*) as total FROM `scholars` WHERE 1 group by status, year_of_award order by year_of_award asc";
+$yearOfAwardResult = $conn->query($yearOfAwardSql);
+
+
+while ($row = $yearOfAwardResult->fetch_assoc()) {
     $stat = $row["status"];
     $year = $row["year_of_award"];
     $total = (int)$row["total"];
 
-    if (!in_array($stat, $yearOfAwardStatuses)) {
-        $yearOfAwardStatuses[] = $stat;
+
+    $statusType = $row["status"];
+    // checks if the status the scholar has on their record matches one on the scholar status table, 
+    // and if so, uses the scholar status type instead
+    if(in_array($stat, $scholarStatusStatus )){
+        $index = (int)array_search($stat, $scholarStatusStatus);
+        $statusType = $scholarStatusType[$index];
+
+        echo $index . " " . $statusType . "<br>";
+    }
+
+    // puts the data in their respective arrays
+    if (!in_array($statusType, $yearOfAwardStatuses)) {
+        $yearOfAwardStatuses[] = $statusType;
     }
     if (!in_array($year, $yearOfAwardYears)) {
         $yearOfAwardYears[] = $year;
     }
 
-    $yearOfAwardTempData[$stat][$year] = $total;
+    $yearOfAwardTempData[$statusType][$year] += $total;
 }
 
 $yearOfAwardFinalSeries = [];
 foreach ($yearOfAwardStatuses as $stat) {
     $dataPoints = [];
     foreach ($yearOfAwardYears as $year) {
+        //if the array index is empty, just put zero
         $dataPoints[] = isset($yearOfAwardTempData[$stat][$year]) ? $yearOfAwardTempData[$stat][$year] : 0;
     }
     $yearOfAwardFinalSeries[] = [
