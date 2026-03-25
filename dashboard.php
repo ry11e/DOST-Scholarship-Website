@@ -151,15 +151,15 @@ include_once "includes/connection.php";
                 <thead>
                     <tr style="background-color: rgba(0, 0, 0, 0.39);">
                         <th class="table-plus">#</th>
-                        <th class="datatable-nosort">YEAR OF AWARD</th>
-                        <th class="datatable-nosort">SCHOLARSHIP PROGRAM</th>
-                        <th class="datatable-nosort">NAME OF SCHOLAR</th>
-                        <th class="datatable-nosort">SCHOOL</th>
-                        <th class="datatable-nosort">COURSE</th>
+                        <th class="datatable">YEAR OF AWARD</th>
+                        <th class="datatable">SCHOLARSHIP PROGRAM</th>
+                        <th class="datatable">NAME OF SCHOLAR</th>
+                        <th class="datatable">SCHOOL</th>
+                        <th class="datatable">COURSE</th>
                         <th class="datatable-nosort">CONTACT NO.</th>
-                        <th class="datatable-nosort">MUNICIPALITY</th>
-                        <th class="datatable-nosort">STATUS</th>
-                        <th class="datatable-nosort">YEAR GRADUATED</th>
+                        <th class="datatable">MUNICIPALITY</th>
+                        <th class="datatable">STATUS</th>
+                        <th class="datatable">YEAR GRADUATED</th>
                         <th class="datatable-nosort">PERIODIC REQUIREMENTS</th>
 
                         <th class="datatable-nosort">SUMMER</th>
