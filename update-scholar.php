@@ -32,6 +32,9 @@ $delayed_requirements = $_POST['delayed_requirements'];
 $lacking_requirements = $_POST['lacking_requirements'];
 $remarks = $_POST['remarks'];
 
+
+//---------------------------------Uploaded Files-----------------------------------------//
+
 // Fetch existing file information
 $sql = "SELECT periodic_requirements, updated_cog_filename, updated_cog_upload_date FROM scholars WHERE id = '$id'";
 
@@ -93,28 +96,45 @@ if (!empty($_FILES["updated_cog"]["name"][0])) {
     $updated_cog_upload_date = $existing_files['updated_cog_upload_date'];
 }
 
+//------------------------------------------------------------------------------------------//
+
+
+// If the user erased/left the year_graduated textbox blank, then update the field in the database to be null
+if($year_graduated < 1901 || $year_graduated > 2155){
+    $year_graduated = NULL;
+}
+
 // Update scholar's info in the database
 $sql = "UPDATE scholars SET 
-    name = '$name', 
-    year_of_award = '$year_of_award', 
-    scholarship_program = '$scholarship_program', 
-    school = '$school', 
-    course = '$course', 
-    contact_no = '$contact_no', 
-    municipality = '$municipality', 
-    district = '$district', 
-    status = '$status', 
-    year_graduated = '$year_graduated', 
-    summer = '$summer',
-    periodic_requirements = '$periodic_requirements',
-    updated_cog_filename = '$updated_cog_filename',
-    updated_cog_upload_date = '$updated_cog_upload_date',
-    delayed_requirements = '$delayed_requirements',
-    lacking_requirements = '$lacking_requirements',
-    remarks = '$remarks' 
-    WHERE id = '$id'";
+    name = ?, 
+    year_of_award = ?, 
+    scholarship_program = ?, 
+    school = ?, 
+    course = ?, 
+    contact_no = ?, 
+    municipality = ?, 
+    district = ?, 
+    status = ?, 
+    year_graduated = ?, 
+    summer = ?,
+    periodic_requirements = ?,
+    updated_cog_filename = ?,
+    updated_cog_upload_date = ?,
+    delayed_requirements = ?,
+    lacking_requirements = ?,
+    remarks = ? 
+    WHERE id = ?";
 
-if ($conn->query($sql) === TRUE) {
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("sssssssssssssssssi", $name, $year_of_award, $scholarship_program, $school, $course, $contact_no
+                                      , $municipality, $district, $status, $year_graduated
+                                      , $summer, $periodic_requirements, $updated_cog_filename
+                                      , $updated_cog_upload_date, $delayed_requirements, $lacking_requirements
+                                      ,$remarks, $id);
+
+
+if ($stmt->execute() === TRUE) {
 
     echo json_encode([
         'success' => true,

@@ -168,8 +168,8 @@ $scholar = $result->fetch_assoc();
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
-                        <label for="year_graduated">Year Graduated</label>
-                        <input type="text" class="form-control" name="year_graduated" value="<?php echo $scholar['year_graduated']; ?>" />
+                        <label for="year_graduated">Year Graduated <span style="font-size: 9px; color:red; background-color:antiquewhite ;"> Note: (Remain blank if not yet graduated)</span></label>
+                        <input type="number" class="form-control" name="year_graduated" value="<?php echo $scholar['year_graduated']; ?>" />
                     </div>
                     <div class="col-md-6">
                         <label for="lacking_requirements">Lacking Requirements</label>
