@@ -62,15 +62,25 @@ if (isset($_POST['add_scholar'])) {
         move_uploaded_file($_FILES["updated_cog"]["tmp_name"], $updated_cog);
     }
 
+
+    // This one makes sure that if the user types a year exceeding the limit, or just blank, then the system inserts null instead
+    if($year_graduated < 1901 || $year_graduated > 2155){
+        $year_graduated = NULL;
+    }
+
     // Insert the new scholar into the database
     $sql = "INSERT INTO scholars (name, year_of_award, scholarship_program, school, course, contact_no, municipality, district, 
             periodic_requirements, summer, updated_cog_filename, updated_cog_upload_date, delayed_requirements, 
             lacking_requirements, remarks, status, year_graduated) 
-            VALUES ('$name', '$year_of_award', '$scholarship_program', '$school', '$course', '$contact_no', 
-            '$municipality', '$district', '$periodic_requirements', '$summer', 
-            '$updated_cog_filename', '$updated_cog_upload_date', '$delayed_requirements', '$lacking_requirements', '$remarks', '$status', '$year_graduated')";
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    if ($conn->query($sql) === TRUE) {
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("sssssssssssssssss", $name, $year_of_award, $scholarship_program, $school, $course, 
+                                           $contact_no, $municipality, $district, $periodic_requirements,
+                                           $summer, $updated_cog_filename, $updated_cog_upload_date, $delayed_requirements,
+                                           $lacking_requirements, $remarks, $status, $year_graduated);
+
+    if ($stmt->execute() === TRUE) {
         $_SESSION['message'] = 'New Scholar Added Successfully!';
         $_SESSION['message_type'] = 'success';
         header("Location: dashboard.php");
@@ -82,6 +92,7 @@ if (isset($_POST['add_scholar'])) {
         exit();
     }
 
+    $stmt->close();
     $conn->close();
 }
 ?>
