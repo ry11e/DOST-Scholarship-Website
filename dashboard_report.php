@@ -196,12 +196,16 @@ while ($row = $ScholProgResult->fetch_assoc()) {
 
 
 
+
+
+// Timeline Chart
+
+
 //Year of award 
 
 $yearOfAwardStatuses = [];  //array for status
 $yearOfAwardYears = [];     //array for the year
 $yearOfAwardTempData = [];  //temporary array
-
 
 //Sql for Status table
 $scholarStatusSql = "Select fld_scholarshipStatus, fld_type from tbl_scholar_status where fld_status = 'active'";
@@ -210,11 +214,133 @@ $scholarStatusAllData = $scholarStatusResult->fetch_all(MYSQLI_ASSOC);
 $scholarStatusStatus = array_column($scholarStatusAllData, "fld_scholarshipStatus");
 $scholarStatusType = array_column($scholarStatusAllData, "fld_type");
 
+// SQL and results for Year of Award
+$yearOfAwardSql = "SELECT status, year_of_award, count(*) as total FROM `scholars` WHERE 1 group by status, year_of_award order by year_of_award asc";
+$yearOfAwardResult = $conn->query($yearOfAwardSql);
+
+// SQL and result for Year Of Graduation
+$yearOfGraduationSQL = "Select year_graduated, count(year_graduated) as total from scholars where 1 group by year_graduated order by year_graduated ASC";
+$yearOfGraduationResult = $conn->query($yearOfGraduationSQL);
+
+// 1. First, get your Graduation data into a simple array
+$graduationData = [];
+while ($row = $yearOfGraduationResult->fetch_assoc()) {
+    $year = $row["year_graduated"];
+    // If year_graduated is NULL or 0 in DB, you might want to skip it
+    if ($year) {
+        $graduationData[(string)$year] = (int)$row["total"];
+    }
+}
+
+// 2. Process your Award Years
+while ($row = $yearOfAwardResult->fetch_assoc()) {
+    $stat = $row["status"];
+    $year = (string)$row["year_of_award"]; // Cast to string for array key consistency
+    $total = (int)$row["total"];
+
+    // ... your existing logic to get $statusType ...
+    if (in_array($stat, $scholarStatusStatus)) {
+        $index = (int)array_search($stat, $scholarStatusStatus);
+        $statusType = $scholarStatusType[$index];
+    } else {
+        $statusType = $stat;
+    }
+
+    if (!in_array($statusType, $yearOfAwardStatuses)) {
+        $yearOfAwardStatuses[] = $statusType;
+    }
+
+    // Store the data
+    $yearOfAwardTempData[$statusType][$year] = $total;
+}
+
+// 3. MERGE ALL YEARS to find the absolute Start and End
+$allRawYears = array_merge(
+    array_keys($graduationData),
+    array_column($yearOfAwardResult->fetch_all(MYSQLI_ASSOC), "year_of_award") // Note: Result was already fetched, better to use the loop above
+);
+
+// Better way to get all years:
+$allFoundYears = [];
+foreach ($yearOfAwardTempData as $s) {
+    $allFoundYears = array_merge($allFoundYears, array_keys($s));
+}
+$allFoundYears = array_merge($allFoundYears, array_keys($graduationData));
+
+if (!empty($allFoundYears)) {
+    $minYear = min($allFoundYears);
+    $maxYear = max($allFoundYears);
+
+    // 4. Create the CONTINUOUS timeline (Solves the gap problem)
+    $finalTimelineYears = [];
+    for ($y = $minYear; $y <= $maxYear; $y++) {
+        $finalTimelineYears[] = (string)$y;
+    }
+}
+
+// 5. Build the Final Series (Including Graduation)
+$yearOfAwardFinalSeries = [];
+
+// A. Add your existing status types (Awarded)
+foreach ($yearOfAwardStatuses as $stat) {
+    $dataPoints = [];
+    foreach ($finalTimelineYears as $year) {
+        $dataPoints[] = isset($yearOfAwardTempData[$stat][$year]) ? $yearOfAwardTempData[$stat][$year] : 0;
+    }
+    $yearOfAwardFinalSeries[] = [
+        'name' => ucfirst($stat),
+        'data' => $dataPoints
+    ];
+}
+
+// B. Add the "Graduated" line as its own series
+$gradDataPoints = [];
+foreach ($finalTimelineYears as $year) {
+    $gradDataPoints[] = isset($graduationData[$year]) ? $graduationData[$year] : 0;
+}
+$yearOfAwardFinalSeries[] = [
+    'name' => 'Graduated',
+    'data' => $gradDataPoints
+];
+
+/*
+//debug
+echo "<pre>";
+print_r($yearOfAwardFinalSeries);
+echo "</pre>";
+*/
+
+
+
+
+
+
+
+
+
+
+/*
+
+//Year of award 
+
+$yearOfAwardStatuses = [];  //array for status
+$yearOfAwardYears = [];     //array for the year
+$yearOfAwardTempData = [];  //temporary array
+
+//Sql for Status table
+$scholarStatusSql = "Select fld_scholarshipStatus, fld_type from tbl_scholar_status where fld_status = 'active'";
+$scholarStatusResult = $conn->query($scholarStatusSql);
+$scholarStatusAllData = $scholarStatusResult->fetch_all(MYSQLI_ASSOC);
+$scholarStatusStatus = array_column($scholarStatusAllData, "fld_scholarshipStatus");
+$scholarStatusType = array_column($scholarStatusAllData, "fld_type");
 
 // SQL and results for Year of Award
 $yearOfAwardSql = "SELECT status, year_of_award, count(*) as total FROM `scholars` WHERE 1 group by status, year_of_award order by year_of_award asc";
 $yearOfAwardResult = $conn->query($yearOfAwardSql);
 
+// SQL and result for Year Of Graduation
+$yearOfGraduationSQL = "Select year_graduated, count(year_graduated) as total from scholars where 1 group by year_graduated order by year_graduated ASC";
+$yearOfGraduationResult = $conn->query($yearOfGraduationSQL);
 
 while ($row = $yearOfAwardResult->fetch_assoc()) {
     $stat = $row["status"];
@@ -254,7 +380,7 @@ foreach ($yearOfAwardStatuses as $stat) {
     ];
 }
 
-
+*/
 
 
 
@@ -1117,7 +1243,7 @@ function isInAklan($municipality)
         },
         series: <?= json_encode($yearOfAwardFinalSeries) ?>,
         xaxis: {
-            categories: <?= json_encode($yearOfAwardYears) ?>,
+            categories: <?= json_encode($finalTimelineYears) ?>,
             labels: {
                 rotate: -45
             }
