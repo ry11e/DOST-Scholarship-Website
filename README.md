@@ -33,3 +33,4 @@ A web application to digitize and manage scholarship applicants. Initial Goal wa
 - In the Status Charts, it should show (ongoing-updated), (ongoing-problematic), and graduated
 - The Monitoring should show scholars who are problematic, preferably shown in a table.
 - When you click on a scholar, a new page pops up. In it is a table with the  coloumns date and details. Users have the option to add more of these.
+- Add record_status to scholar DB to soft delete them instead

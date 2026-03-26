@@ -6,6 +6,11 @@ if (session_status() === PHP_SESSION_NONE) {
 include_once 'includes/connection.php';
 
 
+// Retrieve Everything
+$sql = "Select * From scholars where 1";
+$allResult = $conn->query($sql);
+
+
 
 
 
@@ -28,10 +33,46 @@ include_once 'includes/sidebar.php';
                         </div>
                     </div>
                 </div>
-                    
+
                 <div class="row g-4">
                     <div class="col-12 col-lg-7">
                         <h5 class="h5 mb-3">Currently In Development</h5>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-12 col-lg-12">
+                        <table class="data-table table no-wrap table-hover table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="datatable">#</th>
+                                    <th class="datatable">Name</th>
+                                    <th class="datatable">Status</th>
+                                    <th class="datatable">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                // start of table loop A
+                                while ($row = $allResult->fetch_assoc()):
+                                ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($row["id"]) ?></td>
+                                        <td><?= htmlspecialchars($row["name"]) ?></td>
+                                        <td><?= htmlspecialchars($row["status"]) ?></td>
+                                        <td>
+                                            <div class='table-actions d-flex gap-2 '>
+                                                <a href=<?= "monitor_scholar.php?id=". $row["id"]; ?> class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
+                                                    <i class='icon-copy dw dw-edit2'></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                <?php endwhile; // End of table loop A
+                                ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -61,5 +102,5 @@ include_once 'includes/sidebar.php';
 
 
 <?php
-    $conn->close();
+$conn->close();
 ?>
