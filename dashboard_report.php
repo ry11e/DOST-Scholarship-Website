@@ -226,7 +226,7 @@ $yearOfGraduationResult = $conn->query($yearOfGraduationSQL);
 $graduationData = [];
 while ($row = $yearOfGraduationResult->fetch_assoc()) {
     $year = $row["year_graduated"];
-    // If year_graduated is NULL or 0 in DB, you might want to skip it
+    // If year_graduated is NULL or 0 in DB, to skip it
     if ($year) {
         $graduationData[(string)$year] = (int)$row["total"];
     }
@@ -238,7 +238,9 @@ while ($row = $yearOfAwardResult->fetch_assoc()) {
     $year = (string)$row["year_of_award"]; // Cast to string for array key consistency
     $total = (int)$row["total"];
 
-    // ... your existing logic to get $statusType ...
+    // checks if the status in the scholars table is also found in the scholar_status table, if so, 
+    // uses it's corresponing status_type as status.
+    // THis is used to categorize between Undergraduate, Graduate, and Others(status not found in the status table)
     if (in_array($stat, $scholarStatusStatus)) {
         $index = (int)array_search($stat, $scholarStatusStatus);
         $statusType = $scholarStatusType[$index];
@@ -313,77 +315,6 @@ echo "</pre>";
 
 
 
-
-
-
-
-
-
-/*
-
-//Year of award 
-
-$yearOfAwardStatuses = [];  //array for status
-$yearOfAwardYears = [];     //array for the year
-$yearOfAwardTempData = [];  //temporary array
-
-//Sql for Status table
-$scholarStatusSql = "Select fld_scholarshipStatus, fld_type from tbl_scholar_status where fld_status = 'active'";
-$scholarStatusResult = $conn->query($scholarStatusSql);
-$scholarStatusAllData = $scholarStatusResult->fetch_all(MYSQLI_ASSOC);
-$scholarStatusStatus = array_column($scholarStatusAllData, "fld_scholarshipStatus");
-$scholarStatusType = array_column($scholarStatusAllData, "fld_type");
-
-// SQL and results for Year of Award
-$yearOfAwardSql = "SELECT status, year_of_award, count(*) as total FROM `scholars` WHERE 1 group by status, year_of_award order by year_of_award asc";
-$yearOfAwardResult = $conn->query($yearOfAwardSql);
-
-// SQL and result for Year Of Graduation
-$yearOfGraduationSQL = "Select year_graduated, count(year_graduated) as total from scholars where 1 group by year_graduated order by year_graduated ASC";
-$yearOfGraduationResult = $conn->query($yearOfGraduationSQL);
-
-while ($row = $yearOfAwardResult->fetch_assoc()) {
-    $stat = $row["status"];
-    $year = $row["year_of_award"];
-    $total = (int)$row["total"];
-
-
-    $statusType = $row["status"];
-    // checks if the status the scholar has on their record matches one on the scholar status table, 
-    // and if so, uses the scholar status type instead
-    if(in_array($stat, $scholarStatusStatus )){
-        $index = (int)array_search($stat, $scholarStatusStatus);
-        $statusType = $scholarStatusType[$index];
-    }
-
-    // puts the data in their respective arrays
-    if (!in_array($statusType, $yearOfAwardStatuses)) {
-        $yearOfAwardStatuses[] = $statusType;
-    }
-    if (!in_array($year, $yearOfAwardYears)) {
-        $yearOfAwardYears[] = $year;
-    }
-
-    $yearOfAwardTempData[$statusType][$year] = isset($yearOfAwardTempData[$statusType][$year]) ? 0 : $total;
-}
-
-$yearOfAwardFinalSeries = [];
-foreach ($yearOfAwardStatuses as $stat) {
-    $dataPoints = [];
-    foreach ($yearOfAwardYears as $year) {
-        //if the array index is empty, just put zero
-        $dataPoints[] = isset($yearOfAwardTempData[$stat][$year]) ? $yearOfAwardTempData[$stat][$year] : 0;
-    }
-    $yearOfAwardFinalSeries[] = [
-        'name' => $stat,
-        'data' => $dataPoints
-    ];
-}
-
-*/
-
-
-
 // Year Of Award
 $awardYearData = [];
 $awardYearLabels = [];
@@ -397,6 +328,11 @@ while ($row = $resultAwardYear->fetch_assoc()) {
     $awardYearLabels[] = $row['year_of_award'];
     $awardYearData[]   = (int)$row['total'];
 }
+
+
+
+
+
 
 
 // Scholarship Programs
