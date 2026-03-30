@@ -157,9 +157,9 @@ include_once "includes/connection.php";
                         <th class="datatable">SCHOOL</th>
                         <th class="datatable">COURSE</th>
                         <th class="datatable-nosort">CONTACT NO.</th>
-                        <th class="datatable">MUNICIPALITY</th>
                         <th class="datatable">STATUS</th>
                         <th class="datatable">YEAR GRADUATED</th>
+                        <th class="datatable">MUNICIPALITY</th>
                         <th class="datatable-nosort">PERIODIC REQUIREMENTS</th>
 
                         <th class="datatable-nosort">SUMMER</th>
@@ -264,13 +264,22 @@ include_once "includes/connection.php";
                     $count = 1;
                     while ($row = $result->fetch_assoc()) {
 
-
+                        //status
                         $statusClass = '';
                         if ($row['status'] == 'Ongoing') {
-                            $statusClass = 'bg-success';
+                            $statusClass = 'bg-primary';
                         } elseif ($row['status'] == 'Problematic') {
                             $statusClass = 'bg-danger';
+                        } elseif($row['status'] == 'Updated'){
+                            $statusClass = 'bg-info';
                         }
+
+                        //year graduated
+                        $yearGraduatedClass = '';
+                        if(!empty($row['year_graduated'])){
+                            $yearGraduatedClass = 'bg-success';
+                        }
+
                         echo "<tr>";
                         echo "<td class='table-plus'>" . $count . "</td>";
                         echo "<td>" . $row['year_of_award'] . "</td>";
@@ -279,9 +288,9 @@ include_once "includes/connection.php";
                         echo "<td>" . $row['school'] . "</td>";
                         echo "<td>" . $row['course'] . "</td>";
                         echo "<td>" . $row['contact_no'] . "</td>";
-                        echo "<td>" . $row['municipality'] . "</td>";
                         echo "<td class='$statusClass'>" . $row['status'] . "</td>";
-                        echo "<td>" . $row['year_graduated'] ?? "". "</td>";
+                        echo "<td class='$yearGraduatedClass'>" . $row['year_graduated'] ?? "". "</td>";
+                        echo "<td>" . $row['municipality'] . "</td>";
                         echo "<td>";
                         if (!empty($row['periodic_requirements'])) {
                             $files = explode(',', $row['periodic_requirements']);
