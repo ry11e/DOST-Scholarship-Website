@@ -6,7 +6,7 @@ if (session_status() === PHP_SESSION_NONE) {
 include_once 'includes/connection.php';
 
 
-$task=$_GET['task'];
+$task=$_GET['task'] ?? "";
 if($task == "resetSearch"){
     resetSearchQueries();
 }
@@ -14,32 +14,48 @@ if($task == "resetSearch"){
 $defaultStatus = "Problematic";
 $sql = "SELECT * FROM scholars WHERE status = '$defaultStatus'";
 
+$name ="";
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Reset SQL to a base query
     $sql = "SELECT * FROM scholars WHERE 1";
 
     $_SESSION['monitor_scholar_status_search'] = $_POST['status'] ?? null;
+    $_SESSION['monitor_scholar_name_search'] = $_POST['name'] ?? null;
 
     if (!empty($_POST['status'])) {
         $status = $_POST['status'];
         // Override the default with the user's selection
         $sql .= " AND status = '$status'";
     }
+    if(!empty($_POST['name'])){
+        $name = $_POST['name'];
+        $sql.= " AND name LIKE '%$name%'";
+    }
 }
-else if(!empty($_SESSION['monitor_scholar_status_search'])){
+else if((!empty($_SESSION['monitor_scholar_status_search'])) || (!empty($_SESSION['monitor_scholar_name_search']))) {
     $sql = "SELECT * FROM scholars WHERE 1";
-    $status = $_SESSION['monitor_scholar_status_search'];
-    $sql .= " AND status = '$status'";
+    if(!empty($_SESSION['monitor_scholar_status_search'])){
+        $status = $_SESSION['monitor_scholar_status_search'];
+        $sql .= " AND status = '$status'";
+    }
+    if(!empty($_SESSION['monitor_scholar_name_search'])){
+        $name = $_POST['name'];
+        $sql.= " AND name LIKE '%$name%'";
+    }  
 }
 
+echo $sql;
 
 $currentStatus = $status;
+$currentName = $name;
 $allResult = $conn->query($sql);
 
 
 
 function resetSearchQueries(){
     unset($_SESSION['monitor_scholar_status_search']);
+    unset($_SESSION['monitor_scholar_name_search']);
 }
 
 
@@ -63,11 +79,11 @@ include_once 'includes/sidebar.php';
                 </div>
 
                 <div class="row g-4">
-                    <div class="col-12 col-lg-7">
+                    <div class="col-12 col-lg-12">
                         <form method="POST" action="monitoring.php">
                             <!-- Status Selector -->
                             <div class="row">
-                                <div class="col-6">
+                                <div class="col-4">
                                     <input list="statusOptions" class="form-control" name="status" placeholder="Search by Status" value="<?= $currentStatus ?? $defaultStatus ?>"/>
                                     <datalist id="statusOptions">
                                         <?php
@@ -84,7 +100,10 @@ include_once 'includes/sidebar.php';
                                     </datalist>
                                     
                                 </div>
-                                <div class="col-6">
+                                <div class="col-4">
+                                    <input type="text" class="form-control" name="name" placeholder="Search By Name" value="<?= $currentName ?? $name ?>">
+                                </div>
+                                <div class="col-4">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                     <a href="monitoring.php?task=resetSearch" class="btn btn-secondary">Reload</a>
                                 </div>
