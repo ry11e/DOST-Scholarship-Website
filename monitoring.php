@@ -40,7 +40,7 @@ else if((!empty($_SESSION['monitor_scholar_status_search'])) || (!empty($_SESSIO
         $sql .= " AND status = '$status'";
     }
     if(!empty($_SESSION['monitor_scholar_name_search'])){
-        $name = $_POST['name'];
+        $name = $_SESSION['monitor_scholar_name_search'];
         $sql.= " AND name LIKE '%$name%'";
     }  
 }
