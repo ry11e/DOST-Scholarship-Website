@@ -67,6 +67,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             header("Location: {$_SERVER['PHP_SELF']}?id={$scholarId}&msg=" . urlencode($message));
             break;
+        case"add_new_record":
+            $addRecSql = "Insert Into monitor_scholars(scholar_id, date, details) Values(?, ? , ?);";
+            $stmt = $conn->prepare($addRecSql);
+            $stmt->bind_param("iss", $scholarId, $date, $details);
+            $stmt->execute();
+
+            $message = $stmt->affected_rows > 0 ? "Entry Added." : "No changes or entry inserted.";
+            $stmt->close();
+
+            header("Location: {$_SERVER['PHP_SELF']}?id={$scholarId}&msg=" . urlencode($message));
+        break;
 
         default:
     }
@@ -123,11 +134,14 @@ include_once 'includes/sidebar.php';
                     <a href="monitoring.php" class="btn btn-secondary">Back</a>
                     </div>
                     <div class="col-6 col-lg-6 text-end">
-                        <form action="monitor_scholar.php" method="POST">
-                            <input type="text" name="action_type" value="add_new_entry" hidden>
-                            <input type="number" name="scholar_id" value="<?= $scholarId ?>" hidden>
-                            <input type="submit" value="Add New Entry" class="btn btn-success">
-                        </form>
+                        <button type="button"
+                            class="btn btn-success"
+                            data-bs-toggle="modal"
+                            data-bs-target="#addModal"
+                            data-bs-scholar-id="<?= $scholarId ?>">
+                            
+                            Add New Entry
+                        </button>
                     </div>
                 </div>
 
@@ -203,12 +217,12 @@ include_once 'includes/sidebar.php';
 
                     <div class="mb-3">
                         <label for="modal_date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="modal_date" name="date" required>
+                        <input type="date" class="form-control" id="modal_date" name="date" >
                     </div>
 
                     <div class="mb-3">
                         <label for="modal_details" class="form-label">Details</label>
-                        <textarea class="form-control" id="modal_details" name="details" rows="4" required></textarea>
+                        <textarea class="form-control" id="modal_details" name="details" rows="4" ></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -221,6 +235,38 @@ include_once 'includes/sidebar.php';
 </div>
 
 
+
+<div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addModalLabel">Edit Monitoring Entry</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="monitor_scholar.php" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="action_type" value="add_new_record">
+                    <input type="hidden" name="scholar_id" value="<?= $scholarId ?>">
+                    <input type="hidden" id="add_modal_entry_id" name="entry_id">
+
+                    <div class="mb-3">
+                        <label for="modal_date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="add_modal_date" name="date" >
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="modal_details" class="form-label">Details</label>
+                        <textarea class="form-control" id="add_modal_details" name="details" rows="4" ></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 
 
@@ -274,6 +320,8 @@ document.addEventListener('DOMContentLoaded', function () {
         modalDetails.value = details;
     });
 });
+
+
 
 
 </script>
