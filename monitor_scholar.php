@@ -88,6 +88,14 @@ if ($scholarId) {
 }
 
 
+// Use Prepared Statements here too for safety!
+    $sql = "SELECT * FROM scholars WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("i", $scholarId);
+    $stmt->execute();
+    $scholar = $stmt->get_result();
+    $scholarArray = $scholar->fetch_all(MYSQLI_ASSOC);
+
 
 echo $scholarId;
 
@@ -105,13 +113,14 @@ include_once 'includes/sidebar.php';
                 <div class="row mb-4">
                     <div class="col-9">
                         <div class="d-flex justify-content-between align-items-center  pl-3">
-                            <h1 class="h1">Monitoring</h1>
+                            <h1 class="h1"><?= $scholarArray[0]['name'] ?></h1>
                         </div>
                     </div>
                 </div>
 
                 <div class="row g-4">
                     <div class="col-6 col-lg-6">
+                    <a href="monitoring.php" class="btn btn-secondary">Back</a>
                     </div>
                     <div class="col-6 col-lg-6 text-end">
                         <form action="monitor_scholar.php" method="POST">

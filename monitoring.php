@@ -6,13 +6,41 @@ if (session_status() === PHP_SESSION_NONE) {
 include_once 'includes/connection.php';
 
 
-// Retrieve Everything
-$sql = "Select * From scholars where 1";
+$task=$_GET['task'];
+if($task == "resetSearch"){
+    resetSearchQueries();
+}
+
+$defaultStatus = "Problematic";
+$sql = "SELECT * FROM scholars WHERE status = '$defaultStatus'";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Reset SQL to a base query
+    $sql = "SELECT * FROM scholars WHERE 1";
+
+    $_SESSION['monitor_scholar_status_search'] = $_POST['status'] ?? null;
+
+    if (!empty($_POST['status'])) {
+        $status = $_POST['status'];
+        // Override the default with the user's selection
+        $sql .= " AND status = '$status'";
+    }
+}
+else if(!empty($_SESSION['monitor_scholar_status_search'])){
+    $sql = "SELECT * FROM scholars WHERE 1";
+    $status = $_SESSION['monitor_scholar_status_search'];
+    $sql .= " AND status = '$status'";
+}
+
+
+$currentStatus = $status;
 $allResult = $conn->query($sql);
 
 
 
-
+function resetSearchQueries(){
+    unset($_SESSION['monitor_scholar_status_search']);
+}
 
 
 include_once 'includes/head.php';
@@ -36,7 +64,32 @@ include_once 'includes/sidebar.php';
 
                 <div class="row g-4">
                     <div class="col-12 col-lg-7">
-                        <h5 class="h5 mb-3">Currently In Development</h5>
+                        <form method="POST" action="monitoring.php">
+                            <!-- Status Selector -->
+                            <div class="row">
+                                <div class="col-6">
+                                    <input list="statusOptions" class="form-control" name="status" placeholder="Search by Status" value="<?= $currentStatus ?? $defaultStatus ?>"/>
+                                    <datalist id="statusOptions">
+                                        <?php
+                                        if ($conn->connect_error) {
+                                            die("Connection failed: " . $conn->connect_error);
+                                        }
+                                        // Fetch distinct statuses from the database for the datalist
+                                        $statusSql = "SELECT fld_scholarshipStatus FROM tbl_scholar_status";
+                                        $statusRes = $conn->query($statusSql);
+                                        while ($row = $statusRes->fetch_assoc()) {
+                                            echo "<option value='" . htmlspecialchars($row['fld_scholarshipStatus']) . "'>";
+                                        }
+                                        ?>
+                                    </datalist>
+                                    
+                                </div>
+                                <div class="col-6">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                    <a href="monitoring.php?task=resetSearch" class="btn btn-secondary">Reload</a>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
@@ -45,10 +98,10 @@ include_once 'includes/sidebar.php';
                         <table class="data-table table no-wrap table-hover table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th class="datatable">#</th>
-                                    <th class="datatable">Name</th>
-                                    <th class="datatable">Status</th>
-                                    <th class="datatable">Action</th>
+                                    <th class="datatable" style="width: 15%">#</th>
+                                    <th class="datatable" style="width: 35%">Name</th>
+                                    <th class="datatable" style="width: 35%">Status</th>
+                                    <th class="datatable" style="width: 15%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -62,7 +115,7 @@ include_once 'includes/sidebar.php';
                                         <td><?= htmlspecialchars($row["status"]) ?></td>
                                         <td>
                                             <div class='table-actions d-flex gap-2 '>
-                                                <a href=<?= "monitor_scholar.php?id=". $row["id"]; ?> class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
+                                                <a href=<?= "monitor_scholar.php?id=" . $row["id"]; ?> class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
                                                     <i class='icon-copy dw dw-edit2'></i>
                                                 </a>
                                             </div>
