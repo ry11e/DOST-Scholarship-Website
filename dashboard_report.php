@@ -197,7 +197,6 @@ while ($row = $ScholProgResult->fetch_assoc()) {
 
 
 
-
 // Timeline Chart
 
 
@@ -214,86 +213,80 @@ $scholarStatusAllData = $scholarStatusResult->fetch_all(MYSQLI_ASSOC);
 $scholarStatusStatus = array_column($scholarStatusAllData, "fld_scholarshipStatus");
 $scholarStatusType = array_column($scholarStatusAllData, "fld_type");
 
-// SQL and results for Year of Award
-$yearOfAwardSql = "SELECT status, year_of_award, count(*) as total FROM `scholars` WHERE 1 group by status, year_of_award order by year_of_award asc";
-$yearOfAwardResult = $conn->query($yearOfAwardSql);
 
-// SQL and result for Year Of Graduation
-$yearOfGraduationSQL = "Select year_graduated, count(year_graduated) as total from scholars where 1 group by year_graduated order by year_graduated ASC";
-$yearOfGraduationResult = $conn->query($yearOfGraduationSQL);
+// SQL and result for Year Of Graduation And Year of Award
+$scholarTableSql = "Select year_of_award, year_graduated from scholars where 1 order by id ASC";
+$scholarTableResult = $conn->query($scholarTableSql);
+$scholarTabaleData = $scholarTableResult->fetch_all(MYSQLI_ASSOC);
+$scholarTableArray_YearOfAward = array_column($scholarTabaleData, "year_of_award");
+$scholarTableArray_YearGraduated = array_column($scholarTabaleData, "year_graduated");
 
-// 1. First, get your Graduation data into a simple array
+
+$currentYear = date("Y");
+
+
+
 $graduationData = [];
-while ($row = $yearOfGraduationResult->fetch_assoc()) {
-    $year = $row["year_graduated"];
+for ($i = 0; $i < count($scholarTableArray_YearGraduated); $i++) {
+    $year = $scholarTableArray_YearGraduated[$i];
     // If year_graduated is NULL or 0 in DB, to skip it
     if ($year) {
-        $graduationData[(string)$year] = (int)$row["total"];
+        $graduationData[(string)$year] = ($graduationData[(string)$year] ?? 0) + 1;
     }
 }
 
-// 2. Process your Award Years
-while ($row = $yearOfAwardResult->fetch_assoc()) {
-    $stat = $row["status"];
-    $year = (string)$row["year_of_award"]; // Cast to string for array key consistency
-    $total = (int)$row["total"];
 
-    // checks if the status in the scholars table is also found in the scholar_status table, if so, 
-    // uses it's corresponing status_type as status.
-    // THis is used to categorize between Undergraduate, Graduate, and Others(status not found in the status table)
-    if (in_array($stat, $scholarStatusStatus)) {
-        $index = (int)array_search($stat, $scholarStatusStatus);
-        $statusType = $scholarStatusType[$index];
-    } else {
-        $statusType = $stat;
-    }
 
-    if (!in_array($statusType, $yearOfAwardStatuses)) {
-        $yearOfAwardStatuses[] = $statusType;
-    }
 
-    // Store the data
-    $yearOfAwardTempData[$statusType][$year] = $total;
-}
-
-// 3. MERGE ALL YEARS to find the absolute Start and End
+// MERGE ALL YEARS to find the absolute Start and End
 $allRawYears = array_merge(
-    array_keys($graduationData),
-    array_column($yearOfAwardResult->fetch_all(MYSQLI_ASSOC), "year_of_award") // Note: Result was already fetched, better to use the loop above
+    $scholarTableArray_YearOfAward,
+    $scholarTableArray_YearGraduated
 );
 
-// Better way to get all years:
-$allFoundYears = [];
-foreach ($yearOfAwardTempData as $s) {
-    $allFoundYears = array_merge($allFoundYears, array_keys($s));
-}
-$allFoundYears = array_merge($allFoundYears, array_keys($graduationData));
+// Filters out the empty years 
+$filteredRawYears = array_filter($allRawYears, function ($year) {
+    return !empty($year) && $year != "0";
+});
 
-if (!empty($allFoundYears)) {
-    $minYear = min($allFoundYears);
-    $maxYear = max($allFoundYears);
+if (!empty($filteredRawYears)) {
+    $minYear = min($filteredRawYears);
+    $maxYear = max($filteredRawYears);
 
-    // 4. Create the CONTINUOUS timeline (Solves the gap problem)
+    //Create the CONTINUOUS timeline (Solves the gap problem)
     $finalTimelineYears = [];
     for ($y = $minYear; $y <= $maxYear; $y++) {
         $finalTimelineYears[] = (string)$y;
     }
 }
 
+$tempOngoingData = [];
+for ($i = 0; $i < count($scholarTableArray_YearOfAward); $i++) {
+    $yearStart = $scholarTableArray_YearOfAward[$i];
+    $yearEnd = $scholarTableArray_YearGraduated[$i] ?? $currentYear;
+
+    // Essentially adds 1 to each year that the scholar is active and ends when graduated or the current year
+    for ($j =  $yearStart; $j <= $yearEnd; $j++) {
+        $tempOngoingData["Ongoing"][$j] = ($tempOngoingData["Ongoing"][$j] ?? 0) + 1;
+    }
+}
+
+
+
+unset($dataPoints);
 // 5. Build the Final Series (Including Graduation)
 $yearOfAwardFinalSeries = [];
 
-// A. Add your existing status types (Awarded)
-foreach ($yearOfAwardStatuses as $stat) {
-    $dataPoints = [];
-    foreach ($finalTimelineYears as $year) {
-        $dataPoints[] = isset($yearOfAwardTempData[$stat][$year]) ? $yearOfAwardTempData[$stat][$year] : 0;
-    }
-    $yearOfAwardFinalSeries[] = [
-        'name' => ucfirst($stat),
-        'data' => $dataPoints
-    ];
+foreach ($finalTimelineYears as $year) {
+    $dataPoints[] = isset($tempOngoingData["Ongoing"][$year]) ? $tempOngoingData["Ongoing"][$year] : 0;
 }
+$yearOfAwardFinalSeries[] = [
+    'name' => "Ongoing",
+    'data' => $dataPoints
+];
+
+
+
 
 // B. Add the "Graduated" line as its own series
 $gradDataPoints = [];
@@ -305,12 +298,27 @@ $yearOfAwardFinalSeries[] = [
     'data' => $gradDataPoints
 ];
 
+
+
 /*
+
+echo "<pre>";
+print_r($tempOngoingData);
+echo "</pre>";
+
+
+
+
+echo "<br><br>";
 //debug
 echo "<pre>";
 print_r($yearOfAwardFinalSeries);
 echo "</pre>";
+
 */
+
+
+
 
 
 
@@ -597,8 +605,15 @@ function isInAklan($municipality)
                 <div class="row g-4">
                     <div class="col-12 col-lg-12">
                         <div class="reports-chart-container border p-4 shadow-sm bg-white rounded h-100">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h3 class="h3">Year Of Award</h3>
+                            <div class="row d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center">
+                                    <h3 class="h3">Timeline</h3>
+                                    <span class="ms-2"
+                                        title="The 'Graduated' series are not related to all the other field records. 'Graduated' is the year that the scholars have graduated. All others are the year in which the scholars have been awarded a scholarship.">
+                                        <mark>note</mark>
+                                    </span>
+                                </div>
+
                             </div>
                             <div id="yearChart"></div>
                         </div>
