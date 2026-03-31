@@ -150,7 +150,7 @@ include_once 'includes/sidebar.php';
 
                 <div class="row g-4">
                     <div class="col-12 col-lg-12">
-                        <table class="data-table table no-wrap table-hover table-bordered table-striped">
+                        <table id="monitorTable" class="data-table table no-wrap table-hover table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th class="datatable" style="width: 15%">Date</th>
@@ -318,6 +318,32 @@ include_once 'includes/sidebar.php';
             modalDetails.value = details;
         });
     });
+
+
+
+
+    $(document).ready(function() {
+        // Check if the table exists on this page to avoid errors
+        if ($('#monitorTable').length > 0) {
+
+            // Destroy the default initialization if it was already created by script.min.js
+            if ($.fn.DataTable.isDataTable('#monitorTable')) {
+                $('#monitorTable').DataTable().destroy();
+            }
+
+            // Re-initialize with your custom settings
+            $('#monitorTable').DataTable({
+                "paging": false, // This completely removes the "Next/Previous" buttons
+                "info": false, // "Showing 1 of X entries" text
+                "responsive": true, // Keeps it mobile friendly
+                "searching": false, // Search bar
+                "lengthChange": false, // Hides the "Show X entries" dropdown
+                // OR if you want to keep paging but just show a lot of rows:
+                // "pageLength": 100 
+            });
+        }
+    });
+
 
 
 
