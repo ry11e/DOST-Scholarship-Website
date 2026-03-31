@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             header("Location: {$_SERVER['PHP_SELF']}?id={$scholarId}&msg=" . urlencode($message));
             break;
-        case"add_new_record":
+        case "add_new_record":
             $addRecSql = "Insert Into monitor_scholars(scholar_id, date, details) Values(?, ? , ?);";
             $stmt = $conn->prepare($addRecSql);
             $stmt->bind_param("iss", $scholarId, $date, $details);
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->close();
 
             header("Location: {$_SERVER['PHP_SELF']}?id={$scholarId}&msg=" . urlencode($message));
-        break;
+            break;
 
         default:
     }
@@ -100,15 +100,15 @@ if ($scholarId) {
 
 
 // Use Prepared Statements here too for safety!
-    $sql = "SELECT * FROM scholars WHERE id = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("i", $scholarId);
-    $stmt->execute();
-    $scholar = $stmt->get_result();
-    $scholarArray = $scholar->fetch_all(MYSQLI_ASSOC);
+$sql = "SELECT * FROM scholars WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $scholarId);
+$stmt->execute();
+$scholar = $stmt->get_result();
+$scholarArray = $scholar->fetch_all(MYSQLI_ASSOC);
 
 
-echo $scholarId;
+//echo $scholarId;
 
 include_once 'includes/head.php';
 include_once 'includes/sidebar.php';
@@ -120,7 +120,7 @@ include_once 'includes/sidebar.php';
 
 
 
-            <div class="container-fluid mt-4 mb-4">
+            <div id="report-area" class="container-fluid mt-4 mb-4">
                 <div class="row mb-4">
                     <div class="col-9">
                         <div class="d-flex justify-content-between align-items-center  pl-3">
@@ -131,16 +131,19 @@ include_once 'includes/sidebar.php';
 
                 <div class="row g-4">
                     <div class="col-6 col-lg-6">
-                    <a href="monitoring.php" class="btn btn-secondary">Back</a>
+                        <a href="monitoring.php" class="btn btn-secondary mon-schol-no-pdf">Back</a>
                     </div>
                     <div class="col-6 col-lg-6 text-end">
                         <button type="button"
-                            class="btn btn-success"
+                            class="btn btn-success mon-schol-no-pdf"
                             data-bs-toggle="modal"
                             data-bs-target="#addModal"
                             data-bs-scholar-id="<?= $scholarId ?>">
-                            
+
                             Add New Entry
+                        </button>
+                        <button onclick="downloadPDF()" class="btn btn-outline-success mon-schol-no-pdf">
+                            Download PDF
                         </button>
                     </div>
                 </div>
@@ -152,7 +155,7 @@ include_once 'includes/sidebar.php';
                                 <tr>
                                     <th class="datatable" style="width: 15%">Date</th>
                                     <th class="datatable" style="width: 65%">Details</th>
-                                    <th class="datatable" style="width: 20%">Actions</th>
+                                    <th class="datatable mon-schol-no-pdf" style="width: 20%">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -161,7 +164,7 @@ include_once 'includes/sidebar.php';
                                     <tr>
                                         <td><?= $row['date'] ?></td> <!--Edit Form-->
                                         <td><?= $row['details'] ?></td> <!--Edit Form-->
-                                        <td>
+                                        <td class="mon-schol-no-pdf">
                                             <div class="row">
                                                 <div class="col-6 text-center">
                                                     <button type="button"
@@ -180,7 +183,7 @@ include_once 'includes/sidebar.php';
                                                         <input type="text" name="action_type" value="delete" hidden>
                                                         <input type="number" name="scholar_id" value="<?= $scholarId ?>" hidden>
                                                         <input type="number" name="entry_id" value="<?= htmlspecialchars($row['id']) ?>" hidden>
-                                                        <button type="submit" class="btn btn-danger btn-sm" >Delete</button>
+                                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                                     </form>
                                                 </div>
                                             </div>
@@ -217,12 +220,12 @@ include_once 'includes/sidebar.php';
 
                     <div class="mb-3">
                         <label for="modal_date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="modal_date" name="date" >
+                        <input type="date" class="form-control" id="modal_date" name="date">
                     </div>
 
                     <div class="mb-3">
                         <label for="modal_details" class="form-label">Details</label>
-                        <textarea class="form-control" id="modal_details" name="details" rows="4" ></textarea>
+                        <textarea class="form-control" id="modal_details" name="details" rows="4"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -240,7 +243,7 @@ include_once 'includes/sidebar.php';
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addModalLabel">Edit Monitoring Entry</h5>
+                <h5 class="modal-title" id="addModalLabel">Add Monitoring Entry</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="monitor_scholar.php" method="POST">
@@ -251,12 +254,12 @@ include_once 'includes/sidebar.php';
 
                     <div class="mb-3">
                         <label for="modal_date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="add_modal_date" name="date" >
+                        <input type="date" class="form-control" id="add_modal_date" name="date">
                     </div>
 
                     <div class="mb-3">
                         <label for="modal_details" class="form-label">Details</label>
-                        <textarea class="form-control" id="add_modal_details" name="details" rows="4" ></textarea>
+                        <textarea class="form-control" id="add_modal_details" name="details" rows="4"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -273,15 +276,13 @@ include_once 'includes/sidebar.php';
 
 
 
-
-
-
 <!-- JS Scripts -->
 <script src="vendors/scripts/core.js"></script>
 <script src="vendors/scripts/script.min.js"></script>
 <script src="vendors/scripts/bootstrap.min.js"></script>
 <script src="vendors/scripts/process.js"></script>
 <script src="vendors/scripts/layout-settings.js"></script>
+<script src="vendors/scripts/html2pdf.bundle.min.js"></script>
 <script src="src/plugins/apexcharts/apexcharts.min.js"></script>
 <script src="src/plugins/datatables/js/jquery.dataTables.min.js"></script>
 <script src="src/plugins/datatables/js/dataTables.bootstrap4.min.js"></script>
@@ -294,36 +295,68 @@ include_once 'includes/sidebar.php';
 
 
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const editModal = document.getElementById('editModal');
 
+        // Bootstrap event that fires right before the modal is shown
+        editModal.addEventListener('show.bs.modal', function(event) {
+            // Button that triggered the modal
+            const button = event.relatedTarget;
 
+            // Extract info from data-bs-* attributes
+            const id = button.getAttribute('data-bs-id');
+            const date = button.getAttribute('data-bs-date');
+            const details = button.getAttribute('data-bs-details');
 
-document.addEventListener('DOMContentLoaded', function () {
-    const editModal = document.getElementById('editModal');
-    
-    // Bootstrap event that fires right before the modal is shown
-    editModal.addEventListener('show.bs.modal', function (event) {
-        // Button that triggered the modal
-        const button = event.relatedTarget;
-        
-        // Extract info from data-bs-* attributes
-        const id = button.getAttribute('data-bs-id');
-        const date = button.getAttribute('data-bs-date');
-        const details = button.getAttribute('data-bs-details');
+            // Update the modal's content
+            const modalEntryId = editModal.querySelector('#modal_entry_id');
+            const modalDate = editModal.querySelector('#modal_date');
+            const modalDetails = editModal.querySelector('#modal_details');
 
-        // Update the modal's content
-        const modalEntryId = editModal.querySelector('#modal_entry_id');
-        const modalDate = editModal.querySelector('#modal_date');
-        const modalDetails = editModal.querySelector('#modal_details');
-
-        modalEntryId.value = id;
-        modalDate.value = date;
-        modalDetails.value = details;
+            modalEntryId.value = id;
+            modalDate.value = date;
+            modalDetails.value = details;
+        });
     });
-});
 
 
 
 
+
+    function downloadPDF() {
+        const element = document.getElementById('report-area');
+        const actionElements = document.querySelectorAll('.mon-schol-no-pdf');
+
+        // 1. Temporarily hide the elements on the screen
+        actionElements.forEach(el => {
+            el.style.display = 'none';
+            console.log('Hiding element:', el);
+        });
+
+        const opt = {
+            margin: 0.5,
+            filename: 'Scholar_Report.pdf',
+            image: {
+                type: 'jpeg',
+                quality: 0.98
+            },
+            html2canvas: {
+                scale: 2,
+                useCORS: true
+            },
+            jsPDF: {
+                unit: 'in',
+                format: 'letter',
+                orientation: 'portrait'
+            }
+        };
+
+        // 2. Generate the PDF
+        html2pdf().set(opt).from(element).save().then(() => {
+            // 3. Bring them back after the PDF is generated!
+            actionElements.forEach(el => el.style.display = '');
+        });
+    }
 </script>
 
 

@@ -136,6 +136,7 @@ $username = $_SESSION['admin_username'];
 			href="src/styles/bootstrap.min.css"/>
 		<link rel="stylesheet" type="text/css" href="vendors/styles/core.css" />
 		<link rel="stylesheet" type="text/css" href="vendors/styles/style.css" />
+		<link rel="stylesheet" type="text/css" href="vendors/styles/custom-css.css" />
 		
 
 	</head>
