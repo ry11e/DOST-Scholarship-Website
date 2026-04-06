@@ -266,7 +266,10 @@ include_once "includes/connection.php";
 
                         //status
                         $statusClass = '';
-                        if ($row['status'] == 'Ongoing') {
+                        if($row['year_graduated']){
+                            $statusClass = 'bg-success';
+                        }
+                        else if ($row['status'] == 'Ongoing') {
                             $statusClass = 'bg-primary';
                         } elseif ($row['status'] == 'Problematic') {
                             $statusClass = 'bg-danger';
@@ -288,7 +291,7 @@ include_once "includes/connection.php";
                         echo "<td>" . $row['school'] . "</td>";
                         echo "<td>" . $row['course'] . "</td>";
                         echo "<td>" . $row['contact_no'] . "</td>";
-                        echo "<td class='$statusClass'>" . $row['status'] . "</td>";
+                        echo "<td class='$statusClass'>" . ($row['year_graduated'] ? "Graduated" : $row['status']) . "</td>";
                         echo "<td class='$yearGraduatedClass'>" . $row['year_graduated'] ?? "". "</td>";
                         echo "<td>" . $row['municipality'] . "</td>";
                         echo "<td>";
