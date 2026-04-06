@@ -168,7 +168,7 @@ include_once 'includes/sidebar.php';
                                             <div class="row">
                                                 <div class="col-6 text-center">
                                                     <button type="button"
-                                                        class="btn btn-success btn-sm edit-btn"
+                                                        class="btn btn-primary btn-sm edit-btn"
                                                         data-bs-toggle="modal"
                                                         data-bs-target="#editModal"
                                                         data-bs-id="<?= $row['id'] ?>"
