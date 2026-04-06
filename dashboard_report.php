@@ -364,8 +364,15 @@ $statusLabels = [];
 $statusData = [];
 
 $statusSql = "Select `status` , Count(`status`) as total from `scholars` group by `status`";
+$graduatedStatusSql = "Select Count(`year_graduated`) as total from `scholars`";
+
 
 $statusResult = $conn->query($statusSql);
+$graduatedStatusResult = $conn->query($graduatedStatusSql);
+
+$graduatedStatusAll = $graduatedStatusResult->fetch_all(MYSQLI_ASSOC);
+$graduatedStatesData  = array_column($graduatedStatusAll, 'total');
+
 while ($row = $statusResult->fetch_assoc()) {
 
     $status = "AAA";
@@ -378,6 +385,15 @@ while ($row = $statusResult->fetch_assoc()) {
     $statusLabels[] = $status;
     $statusData[] = (int)$row['total'];
 }
+
+if($graduatedStatesData[0] > 0){
+    $statusLabels[] = "Graduated";
+    $statusData[] = $graduatedStatesData[0] ?? 0;
+
+}
+
+
+
 
 
 /*
@@ -1226,7 +1242,7 @@ function isInAklan($municipality)
     var schoolOptions = {
         chart: {
             type: 'bar',
-            height: 200,
+            height: 350,
             toolbar: {
                 show: true
             },
@@ -1311,7 +1327,7 @@ function isInAklan($municipality)
     var statusOptions = {
         chart: {
             type: 'bar',
-            height: 200,
+            height: 350,
             toolbar: {
                 show: true
             },
