@@ -7,12 +7,12 @@ if (isset($_GET['id'])) {
     // Sanitize the input to prevent SQL Injection
     $scholar_id = $conn->real_escape_string($_GET['id']);
 
-    // Prepare the SQL query to delete the scholar by id
-    $sql = "DELETE FROM scholars WHERE id = '$scholar_id'";
+    // Prepare the SQL query to update the scholar's status to 'inactive' instead of deleting the record
+    $sql = "UPDATE scholars SET record_status = 'inactive' WHERE id = '$scholar_id'";
 
     // Execute the query
     if ($conn->query($sql) === TRUE) {
-        // If deletion is successful, redirect to the dashboard or scholar list page
+        // If the update is successful, redirect to the dashboard or scholar list page
         header('Location: dashboard.php?message=deleted');
         exit();  // Ensure the script stops executing here
     } else {

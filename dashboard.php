@@ -192,7 +192,7 @@ include_once "includes/connection.php";
                     }
 
                     // Build the query based on search inputs
-                    $sql = "SELECT * FROM scholars WHERE 1";
+                    $sql = "SELECT * FROM scholars ";
 
 
                     // Filters
@@ -225,7 +225,7 @@ include_once "includes/connection.php";
 
 
                     // appends a sort query
-                    $sql = $sql . " ORDER BY YEAR(year_of_award) DESC";
+                    $sql = $sql . " WHERE record_status = 'active' ORDER BY YEAR(year_of_award) DESC";
 
 
 
@@ -270,11 +270,14 @@ include_once "includes/connection.php";
                             $statusClass = 'bg-success';
                         }
                         else if ($row['status'] == 'Ongoing') {
-                            $statusClass = 'bg-primary';
+                            $statusClass = 'bg-info';
                         } elseif ($row['status'] == 'Problematic') {
                             $statusClass = 'bg-danger';
                         } elseif($row['status'] == 'Updated'){
                             $statusClass = 'bg-info';
+                        }
+                        else{
+                            $statusClass = 'bg-secondary';
                         }
 
                         //year graduated
@@ -445,7 +448,7 @@ include_once "includes/connection.php";
                                 <option value="">Select Status</option>
                                 <?php
 
-                                $scholStatSql = "SELECT * FROM tbl_scholar_status";
+                                $scholStatSql = "SELECT * FROM tbl_scholar_status WHERE fld_status = 'active'";
                                 $scholStatRes = $conn->query($scholStatSql);
 
                                 while ($row = $scholStatRes->fetch_assoc()) {
