@@ -624,10 +624,6 @@ function isInAklan($municipality)
                             <div class="row d-flex justify-content-between align-items-center mb-3">
                                 <div class="d-flex align-items-center">
                                     <h3 class="h3">Timeline</h3>
-                                    <span class="ms-2"
-                                        title="The 'Graduated' series are not related to all the other field records. 'Graduated' is the year that the scholars have graduated. All others are the year in which the scholars have been awarded a scholarship.">
-                                        <mark>note</mark>
-                                    </span>
                                 </div>
 
                             </div>
