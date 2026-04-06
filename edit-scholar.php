@@ -92,7 +92,7 @@ $scholar = $result->fetch_assoc();
                 </div>
                 <div class="form-group row">
                     <div class="col-md-6">
-                        <label for="statusList">Status</label>
+                        <label for="statusList">Status <span style="font-size: 9px; color:red; background-color:antiquewhite ;"> Note: (Last status before graduation)</span></label>
                         <input list="statusOptions" id="statusList" class="form-control" name="status" placeholder="Search by Status" value="<?php echo $scholar['status']; ?>" />
                         <datalist id="statusOptions">
                             <?php
@@ -100,7 +100,7 @@ $scholar = $result->fetch_assoc();
                                 die("Connection failed: " . $conn->connect_error);
                             }
                             // Fetch distinct statuses from the database for the datalist
-                            $statusSql = "SELECT fld_scholarshipStatus FROM tbl_scholar_status";
+                            $statusSql = "SELECT fld_scholarshipStatus FROM tbl_scholar_status WHERE fld_status='active'";
                             $statusRes = $conn->query($statusSql);
                             while ($row = $statusRes->fetch_assoc()) {
                                 echo "<option value='" . htmlspecialchars($row['fld_scholarshipStatus']) . "'>";
