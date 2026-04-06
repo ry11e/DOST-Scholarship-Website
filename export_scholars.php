@@ -6,10 +6,10 @@ $rows = [
     ["LIST OF DOST-SEI SCHOLARS IN THE PROVINCE OF AKLAN"],
     ['SY 2024-2025'],
     [], // empty line
-    ['ID', 'Year of Award', 'Scholarship Program', 'Name', 'School', 'Course', 'Contact No', 'Municipality', 'District', 'Status']
+    ['ID', 'Year of Award', 'Scholarship Program', 'Name', 'School', 'Course', 'Contact No', 'Municipality', 'District', 'Status', 'Year Graduated']
 ];
 
-$sql = "SELECT id, year_of_award, scholarship_program, name, school, course, contact_no, municipality, district, status 
+$sql = "SELECT id, year_of_award, scholarship_program, name, school, course, contact_no, municipality, district, status, year_graduated
         FROM scholars";
 $result = $conn->query($sql);
 
@@ -22,10 +22,11 @@ while ($row = $result->fetch_assoc()) {
         $row['name'],
         $row['school'],
         $row['course'],
-        $row['contact_no'],
+        $row['contact_no'], 
         $row['municipality'],
         $row['district'],
-        $row['status']
+        $row['year_graduated'] ? "Graduated" : $row['status'],  // Show "Graduated" if year_graduated is not empty, otherwise show status   
+        $row['year_graduated']
     ];
 }
 
@@ -42,6 +43,7 @@ $xlsx->setColWidth(6,  35);
 $xlsx->setColWidth(7,  20);
 $xlsx->setColWidth(8,  20);
 $xlsx->setColWidth(9,  15);
+$xlsx->setColWidth(10,  15);
 
 // Download
 $xlsx->downloadAs('scholars.xlsx');
