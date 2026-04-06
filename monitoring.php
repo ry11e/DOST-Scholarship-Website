@@ -12,6 +12,7 @@ if($task == "resetSearch"){
 }
 
 $defaultStatus = "Problematic";
+$status = $defaultStatus;
 $sql = "SELECT * FROM scholars WHERE status = '$defaultStatus'";
 
 $name ="";
@@ -45,7 +46,6 @@ else if((!empty($_SESSION['monitor_scholar_status_search'])) || (!empty($_SESSIO
     }  
 }
 
-echo $sql;
 
 $currentStatus = $status;
 $currentName = $name;
@@ -128,10 +128,27 @@ include_once 'includes/sidebar.php';
                                 // start of table loop A
                                 while ($row = $allResult->fetch_assoc()):
                                 ?>
+
+                                <?php
+                                    $statusClass = "";
+                                    switch ($row["status"]) {
+                                        case "Updated":
+                                            $statusClass = "badge badge-success";
+                                            break;
+                                        case "Graduated":
+                                            $statusClass = "badge badge-primary";
+                                            break;
+                                        case "Problematic":
+                                            $statusClass = "badge badge-danger";
+                                            break;
+                                        default:
+                                            $statusClass = "badge badge-secondary";
+                                    }
+                                ?>
                                     <tr>
                                         <td><?= htmlspecialchars($row["id"]) ?></td>
                                         <td><?= htmlspecialchars($row["name"]) ?></td>
-                                        <td><?= htmlspecialchars($row["status"]) ?></td>
+                                        <td><span class="<?= $statusClass ?>"><?= htmlspecialchars($row["status"]) ?></span></td>
                                         <td>
                                             <div class='table-actions d-flex gap-2 '>
                                                 <a href=<?= "monitor_scholar.php?id=" . $row["id"]; ?> class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
