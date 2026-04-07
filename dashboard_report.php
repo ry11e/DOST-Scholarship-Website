@@ -807,8 +807,25 @@ function isInAklan($municipality)
             enabled: true,
             style: {
                 color: '#00bfff',
-                fontSize: '10px',
+                fontSize: '12px',
                 fontWeight: 90
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 4,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#fff',
+                opacity: 0.9
+            },
+            dropshadow: {
+                enabled: true,
+                top: 1,
+                left: 1,
+                blur: 1,
+                color: '#000',
+                opacity: 0.5
             }
         },
         stroke: {
@@ -944,7 +961,29 @@ function isInAklan($municipality)
             }
         },
         dataLabels: {
-            enabled: true
+            enabled: true,
+            style: {
+                color: '#00bfff',
+                fontSize: '12px',
+                fontWeight: 90
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 4,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#fff',
+                opacity: 0.9
+            },
+            dropshadow: {
+                enabled: true,
+                top: 1,
+                left: 1,
+                blur: 1,
+                color: '#000',
+                opacity: 0.5
+            }
         },
         stroke: {
             show: true,
@@ -1030,9 +1069,26 @@ function isInAklan($municipality)
         dataLabels: {
             enabled: true,
             style: {
-                fontSize: '10px',
-                fontWeight: 900
-
+                color: '#00bfff',
+                fontSize: '12px',
+                fontWeight: 90
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 4,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#fff',
+                opacity: 0.9
+            },
+            dropshadow: {
+                enabled: true,
+                top: 1,
+                left: 1,
+                blur: 1,
+                color: '#000',
+                opacity: 0.5
             }
         },
         stroke: {
@@ -1116,9 +1172,26 @@ function isInAklan($municipality)
         dataLabels: {
             enabled: true,
             style: {
-                fontSize: '10px',
-                fontWeight: 900
-
+                color: '#00bfff',
+                fontSize: '12px',
+                fontWeight: 90
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 4,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#fff',
+                opacity: 0.9
+            },
+            dropshadow: {
+                enabled: true,
+                top: 1,
+                left: 1,
+                blur: 1,
+                color: '#000',
+                opacity: 0.5
             }
         },
         stroke: {
@@ -1253,7 +1326,29 @@ function isInAklan($municipality)
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            style: {
+                color: '#00bfff',
+                fontSize: '12px',
+                fontWeight: 90
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 4,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#fff',
+                opacity: 0.9
+            },
+            dropshadow: {
+                enabled: true,
+                top: 1,
+                left: 1,
+                blur: 1,
+                color: '#000',
+                opacity: 0.5
+            }
         },
         stroke: {
             show: true,
@@ -1338,7 +1433,29 @@ function isInAklan($municipality)
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            style: {
+                color: '#00bfff',
+                fontSize: '12px',
+                fontWeight: 90
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 4,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#fff',
+                opacity: 0.9
+            },
+            dropshadow: {
+                enabled: true,
+                top: 1,
+                left: 1,
+                blur: 1,
+                color: '#000',
+                opacity: 0.5
+            }
         },
         stroke: {
             show: true,
@@ -1429,7 +1546,21 @@ function isInAklan($municipality)
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            style: {
+                color: '#00bfff',
+                fontSize: '12px',
+                fontWeight: 90
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 1,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#fff',
+                opacity: 0.9
+            }
         },
         stroke: {
             show: true,
@@ -1517,7 +1648,21 @@ function isInAklan($municipality)
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            style: {
+                color: '#00bfff',
+                fontSize: '12px',
+                fontWeight: 90
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 2,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#fff',
+                opacity: 0.9
+            }
         },
         stroke: {
             show: true,
@@ -1603,7 +1748,21 @@ function isInAklan($municipality)
             }
         },
         dataLabels: {
-            enabled: false
+            enabled: true,
+            style: {
+                color: '#00bfff',
+                fontSize: '12px',
+                fontWeight: 90
+            },
+            background: {
+                enabled: true,
+                foreColor: '#000000',
+                padding: 2,
+                borderRadius: 2,
+                borderWidth: 1,
+                borderColor: '#fff',
+                opacity: 0.9
+            }
         },
         stroke: {
             show: true,
