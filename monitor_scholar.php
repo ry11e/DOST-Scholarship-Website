@@ -122,13 +122,39 @@ include_once 'includes/sidebar.php';
 
             <div id="report-area" class="container-fluid mt-4 mb-4">
                 <div class="row mb-4">
-                    <div class="col-9">
+                    <div class="col-12">
                         <div class="d-flex justify-content-between align-items-center  pl-3">
-                            <h1 class="h1"><?= $scholarArray[0]['name'] ?></h1>
+                            <h2 class="h2"><?= $scholarArray[0]['name'] ?></h2>
                         </div>
                     </div>
                 </div>
+                <div class="row g-1">
+                    <div class="col-6">
+                        <h6 class="h6">School:<u> <?= $scholarArray[0]['school'] ?> </u> </h6>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="h6">Scholarship Program:<u> <?= $scholarArray[0]['scholarship_program'] ?> </u> </h6>
+                    </div>
+                </div>
+                <div class="row g-1">
+                    <div class="col-6">
+                        <h6 class="h6">Course:<u> <?= $scholarArray[0]['course'] ?></u> </h6>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="h6">Year of Award:<u> <?= $scholarArray[0]['year_of_award'] ?></u> </h6>
+                    </div>
+                </div>
+                <div class="row g-1">
+                    <div class="col-6">
+                        <h6 class="h6">Contact No.:<u> <?= $scholarArray[0]['contact_no'] ?></u> </h6>
+                    </div>
+                    <div class="col-6">
+                        <h6 class="h6">Status:<u> <?= $scholarArray[0]['status'] ?></u> </h6>
+                    </div>
+                </div>
+                <div class="row mb-3">
 
+                </div>
                 <div class="row g-4">
                     <div class="col-6 col-lg-6">
                         <a href="monitoring.php" class="btn btn-secondary mon-schol-no-pdf">Back</a>
@@ -380,6 +406,9 @@ include_once 'includes/sidebar.php';
             html2canvas: {
                 scale: 2,
                 useCORS: true
+            },
+            pagebreak: {
+                mode: ['legacy', 'css']
             },
             jsPDF: {
                 unit: 'in',

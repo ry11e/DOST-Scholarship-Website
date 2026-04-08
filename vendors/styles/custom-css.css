@@ -6,3 +6,26 @@
 .mon-schol-yes-pdf {
     display: none; 
 }
+
+@media print {
+    /* Prevent the table itself from being sliced if possible */
+    table {
+        page-break-inside: auto;
+    }
+
+    /* CRITICAL: Prevent rows from breaking in the middle */
+    tr {
+        page-break-inside: avoid !important;
+        page-break-after: auto;
+    }
+
+    /* Ensure table headers repeat on every new page */
+    thead {
+        display: table-header-group;
+    }
+
+    /* Optional: Prevents images or large text blocks from splitting */
+    img, blockquote, .card {
+        page-break-inside: avoid;
+    }
+}
