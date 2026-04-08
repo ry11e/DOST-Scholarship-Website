@@ -388,10 +388,9 @@ while ($row = $statusResult->fetch_assoc()) {
     $statusData[] = (int)$row['total'];
 }
 
-if($graduatedStatesData[0] > 0){
+if ($graduatedStatesData[0] > 0) {
     $statusLabels[] = "Graduated";
     $statusData[] = $graduatedStatesData[0] ?? 0;
-
 }
 
 
@@ -543,22 +542,32 @@ function isInAklan($municipality)
 
             <div class="container-fluid mt-4 mb-4">
                 <div class="row mb-4">
-                    <div class="col-6">
+                    <div class="col-9">
                         <div class="d-flex justify-content-between align-items-center  pl-3">
                             <h1 class="h1">Reports Dashboard</h1>
                         </div>
                     </div>
-                    <div class="col-6 text-right">
-                        <button onclick="generateFullReport()" class="btn btn-success">
-                            <i class="bi bi-printer"></i> Print Scholar Report
-                        </button>
-                        <button onclick="downloadPDFReport()" class="btn btn-light border text-success">
-                            <i class="bi bi-printer"></i> Download PDF
-                        </button>
-                        <button onclick="downloadWordReport()" class="btn btn-light border text-success">
-                            <i class="fas fa-file-word"></i> Download Word
-                        </button>
+                    <div class="col-3">
+                        <div class="d-flex gap-2">
+                            <div class="flex-fill p-2 border rounded bg-white text-center">
+                                <small class="d-block mb-1 text-muted">Print</small>
+                                <button onclick="generateFullReport()" class="btn btn-success btn-sm w-100">
+                                    <i class="bi bi-printer"></i>
+                                </button>
+                            </div>
 
+                            <div class="flex-fill p-2 border rounded bg-white text-center">
+                                <small class="d-block mb-1 text-muted">Export</small>
+                                <div class="d-flex gap-1">
+                                    <button onclick="downloadPDFReport()" class="btn btn-light btn-sm border text-success flex-fill">
+                                        PDF
+                                    </button>
+                                    <button onclick="downloadWordReport()" class="btn btn-light btn-sm border text-success flex-fill">
+                                        Word
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
