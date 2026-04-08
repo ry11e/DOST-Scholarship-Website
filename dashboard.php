@@ -192,7 +192,7 @@ include_once "includes/connection.php";
                     }
 
                     // Build the query based on search inputs
-                    $sql = "SELECT * FROM scholars ";
+                    $sql = "SELECT * FROM scholars Where 1 ";
 
 
                     // Filters
@@ -225,9 +225,10 @@ include_once "includes/connection.php";
 
 
                     // appends a sort query
-                    $sql = $sql . " WHERE record_status = 'active' ORDER BY YEAR(year_of_award) DESC";
+                    $sql = $sql . " AND record_status = 'active' ORDER BY YEAR(year_of_award) DESC";
 
 
+                    
 
 
                     // ------------------------------------------------------------//
