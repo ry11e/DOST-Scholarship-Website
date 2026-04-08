@@ -360,7 +360,7 @@ while ($row = $resultBar->fetch_assoc()) {
 }
 
 
-
+/*
 
 $statusLabels = [];
 $statusData = [];
@@ -393,6 +393,61 @@ if ($graduatedStatesData[0] > 0) {
     $statusData[] = $graduatedStatesData[0] ?? 0;
 }
 
+*/
+
+
+
+$statusLabels = [];
+$statusData = [];
+
+$statusSql = "Select `status`, `year_graduated` from `scholars` where 1";
+$statusLabelSql = "Select `status`, COUNT(`status`) as total from `scholars` group by `status`";
+// $graduatedStatusSql = "Select `year_graduated` from `scholars`";
+
+
+$graduatedStatusSql = "Select Count(`year_graduated`) as total from `scholars`";
+$graduatedStatusResult = $conn->query($graduatedStatusSql);
+$graduatedStatusAll = $graduatedStatusResult->fetch_all(MYSQLI_ASSOC);
+$graduatedStatesData  = array_column($graduatedStatusAll, 'total');
+
+$statusResult = $conn->query($statusSql);
+$statusAllArray = $statusResult->fetch_all(MYSQLI_ASSOC);
+
+$statusLabelResult = $conn->query($statusLabelSql);
+$statusLabelsArray = array_column($statusLabelResult->fetch_all(MYSQLI_ASSOC), 'status');
+
+$statusArray = array_column($statusAllArray, 'status');
+$graduatedArray = array_column($statusAllArray, 'year_graduated');
+
+
+$currentYear = date("Y");
+
+$statusLabels = $statusLabelsArray; // Use the grouped status labels for the chart labels
+$tempStatusData = [];
+for($i = 0; $i < count($statusArray); $i++){
+    $currentStatus = $statusArray[$i];
+    if(in_array($currentStatus, $statusLabels)){
+        if(!empty($graduatedArray[$i])){
+            continue; // Skip graduated scholars in the status count
+        }
+        
+        $tempStatusData[(string)$currentStatus] = ($tempStatusData[(string)$currentStatus] ?? 0) + 1;
+    }
+    else{
+        $tempStatusData["<blank>"] = ($tempStatusData["<blank>"] ?? 0) + 1;
+    }
+}
+
+
+$statusData = [];
+foreach($statusLabels as $label){
+    $statusData[] = $tempStatusData[$label] ?? 0;
+}
+
+if ($graduatedStatesData[0] > 0) {
+    $statusLabels[] = "Graduated";
+    $statusData[] = $graduatedStatesData[0] ?? 0;
+}
 
 
 
