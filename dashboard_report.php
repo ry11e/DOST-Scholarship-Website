@@ -266,7 +266,7 @@ for ($i = 0; $i < count($scholarTableArray_YearOfAward); $i++) {
     $yearStart = $scholarTableArray_YearOfAward[$i];
     $yearEnd = $scholarTableArray_YearGraduated[$i] ?? $currentYear;
 
-    echo $yearStart . " - " . $yearEnd . "<br>";
+    //echo $yearStart . " - " . $yearEnd . "<br>";
     // Essentially adds 1 to each year that the scholar is active and ends when graduated or the current year
     for ($j =  $yearStart; $j < $yearEnd; $j++) {
         $tempOngoingData["Ongoing"][$j] = ($tempOngoingData["Ongoing"][$j] ?? 0) + 1;
@@ -303,12 +303,12 @@ $yearOfAwardFinalSeries[] = [
 
 
 
+/*
+
 
 echo "<pre>";
 print_r($graduationData);
 echo "</pre>";
-
-/*
 
 
 echo "<br><br>";
