@@ -197,7 +197,12 @@ include_once 'includes/sidebar.php';
                     </div>
                 </div>
 
-
+                <div class="text-right mon-schol-yes-pdf">
+                    <br>
+                    <br>
+                    <br>
+                    Prepared By:_________________________
+                </div>
             </div>
         </div>
     </div>
@@ -352,11 +357,17 @@ include_once 'includes/sidebar.php';
     function downloadPDF() {
         const element = document.getElementById('report-area');
         const actionElements = document.querySelectorAll('.mon-schol-no-pdf');
+        const showElements = document.querySelectorAll('.mon-schol-yes-pdf');
 
         // 1. Temporarily hide the elements on the screen
         actionElements.forEach(el => {
             el.style.display = 'none';
             console.log('Hiding element:', el);
+        });
+
+        showElements.forEach(el => {
+            el.style.display = 'block';
+            console.log('Showing element:', el);
         });
 
         const opt = {
@@ -381,6 +392,7 @@ include_once 'includes/sidebar.php';
         html2pdf().set(opt).from(element).save().then(() => {
             // 3. Bring them back after the PDF is generated!
             actionElements.forEach(el => el.style.display = '');
+            showElements.forEach(el => el.style.display = 'none');
         });
     }
 </script>

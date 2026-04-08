@@ -2,3 +2,7 @@
 .mon-schol-no-pdf {
     /* display: block !important; */
 }
+
+.mon-schol-yes-pdf {
+    display: none; 
+}
