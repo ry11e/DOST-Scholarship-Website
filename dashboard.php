@@ -225,7 +225,7 @@ include_once "includes/connection.php";
 
 
                     // appends a sort query
-                    $sql = $sql . " AND record_status = 'active' ORDER BY YEAR(year_of_award) DESC";
+                    $sql = $sql . " AND record_status = 'active' ORDER BY YEAR(year_of_award) DESC, name ASC";
 
 
 
