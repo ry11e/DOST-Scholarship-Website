@@ -125,6 +125,12 @@ $scholar = $result->fetch_assoc();
                                     </svg>
 
                                     <a href="uploads/<?php echo $filename; ?>" target="_blank"><?php echo $filename; ?></a>
+                                    <a href="uploads/<?php echo $filename; ?>"
+                                        class="btn btn-primary btn-sm"
+                                        target="_blank"
+                                        download>
+                                        Download
+                                    </a>
                                     <button type="button" class="btn btn-danger btn-sm" onclick="removeFile('<?php echo $filename; ?>')">X</button>
                                     <br>
                                     (Uploaded on: <?php echo date('m/d/Y', strtotime($upload_date)); ?>)
@@ -145,7 +151,15 @@ $scholar = $result->fetch_assoc();
                             <?php
                             $files = explode(',', $scholar['updated_cog_filename']);
                             foreach ($files as $file):
-                                list($filename, $upload_date) = explode('|', $file);
+                                //list($filename, $upload_date) = explode('|', $file);
+
+                                if (strpos($file, '|') !== false) {
+                                    list($filename, $upload_date) = explode('|', $file);
+                                } else {
+                                    // Fallback if the data is malformed or old
+                                    $filename = $file;
+                                    $upload_date = null;
+                                }
                             ?>
                                 <p style="font-size: 14px; background-color:beige;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 424 511.543">
@@ -156,6 +170,12 @@ $scholar = $result->fetch_assoc();
                                     </svg>
 
                                     <a href="uploads/<?php echo $filename; ?>" target="_blank"><?php echo $filename; ?></a>
+                                    <a href="uploads/<?php echo $filename; ?>"
+                                        class="btn btn-primary btn-sm"
+                                        target="_blank"
+                                        download>
+                                        Download
+                                    </a>
                                     <button type="button" class="btn btn-danger btn-sm" onclick="removeCOGFile('<?php echo $filename; ?>')">X</button>
                                     <br>
                                     (Uploaded on: <?php echo date('m/d/Y', strtotime($upload_date)); ?>)

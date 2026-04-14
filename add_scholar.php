@@ -1,6 +1,8 @@
 <?php
 include('includes/connection.php');
-session_start();
+if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
 
 // Add Scholar logic
 if (isset($_POST['add_scholar'])) {

@@ -1,11 +1,10 @@
 <?php
 // remove-file.php
-
-$conn = new mysqli("localhost", "root", "", "scholarship_db");
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if (session_status() === PHP_SESSION_NONE) {
+        session_start();
 }
+
+include('includes/connection.php');
 
 $filename = $_POST['filename'];
 $field = $_POST['field'] ?? 'periodic_requirements'; // Default to periodic_requirements

@@ -8,12 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 
 // Establish a connection to your database
-$conn = new mysqli("localhost", "root", "", "scholarship_db");
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include('includes/connection.php');
 
 // Get the form data
 $id = $_POST['id'];
