@@ -77,7 +77,7 @@ include_once "includes/connection.php";
                     <!-- Status Selector -->
                     <div class="col-md-auto">
 
-                        <input list="statusOptions" class="form-control" name="status" placeholder="Search by Status" />
+                        <input list="statusOptions" class="form-control" name="status" placeholder="Search by Status" value="<?php echo isset($_GET['status']) ? $_GET['status'] : ''; ?>" />
                         <datalist id="statusOptions">
                             <?php
                             if ($conn->connect_error) {
@@ -208,7 +208,12 @@ include_once "includes/connection.php";
 
                     if (isset($_GET['status']) && $_GET['status'] != "") {
                         $status = $conn->real_escape_string($_GET['status']);
-                        $sql .= " AND status = '$status'";
+                        if($status == "Graduated"){
+                            $sql .=" AND year_graduated IS NOT NULL AND year_graduated <> '' ";
+                        }
+                        else{
+                            $sql .= " AND status = '$status'";
+                        }
                     }
 
                     if (isset($_GET['selected_year']) && $_GET['selected_year'] != "") {
