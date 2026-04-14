@@ -330,9 +330,9 @@ include_once "includes/connection.php";
                                 }
 
                                 echo "<p style='font-size: 12px; background-color:beige;'>
-                                    <svg>...</svg>
-                                    <a href='uploads/$filename' target='_blank'>$filename</a>
-                                    <br>";
+                                        <svg xmlns='http://www.w3.org/2000/svg' width='20' height='20'>...</svg>
+                                        <a href='uploads/$filename' target='_blank'>$filename</a>
+                                        <br>";
 
                                 // Only show the date if it actually exists
                                 if ($upload_date) {
