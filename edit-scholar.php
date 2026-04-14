@@ -32,7 +32,7 @@ $scholar = $result->fetch_assoc();
                 <input type="hidden" name="id" value="<?php echo $scholar['id']; ?>" />
                 <div class="form-group row">
                     <div class="col-md-6">
-                        <label for="name">Name</label>
+                        <label for="name">Name&nbsp; &nbsp;<span style="font-size: 12px; color:red; background-color:antiquewhite ;"> Format: (Lastname, Firstname)</span></label>
                         <input type="text" class="form-control" name="name" value="<?php echo $scholar['name']; ?>" />
                     </div>
                     <div class="col-md-6">
