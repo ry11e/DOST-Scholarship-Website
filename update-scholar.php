@@ -39,7 +39,7 @@ $existing_files = $result->fetch_assoc();
 $periodic_requirements = $existing_files['periodic_requirements'];
 $updated_cog_filename = $existing_files['updated_cog_filename'];
 
-$target_dir = "uploads/";
+$target_dir = "uploads/scholars/{$id}/";
 $current_date = date('Y-m-d H:i:s');
 
 // ===== Handle MULTIPLE periodic requirements upload =====

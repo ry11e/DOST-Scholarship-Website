@@ -110,6 +110,7 @@ $scholar = $result->fetch_assoc();
                     </div>
                     <div class="col-md-6">
                         <label for="periodic_requirements">Periodic Requirements&nbsp; &nbsp;<span style="font-size: 12px; color:red; background-color:antiquewhite ;"> Note: (Filenames should not have commas(,))</span></label>
+                        <!-- THIS IS THE LIST OF UPLOADS -->
                         <?php if (!empty($scholar['periodic_requirements'])): ?>
                             <?php
                             $files = explode(',', $scholar['periodic_requirements']);
@@ -124,19 +125,20 @@ $scholar = $result->fetch_assoc();
                                         <path fill="#fff" fill-rule="nonzero" d="M334.136 399.617l17.346 6.065c11.471 4.405 23.271-3.713 14.378-13.819-10.821-12.445-27.258-29.548-39.216-40.938-7.427-7.423-11.734-7.488-19.187-.061-13.237 12.997-26.232 27.437-39.17 40.871-9.254 10.06 2.291 18.552 14.272 13.947l17.166-6.004c-1.258 16.274-2.825 31.833-3.775 48.096 0 2.994 2.503 5.388 5.425 5.613 10.31 0 20.837.242 31.12 0 2.918-.225 5.422-2.622 5.422-5.613l-3.781-48.157z" />
                                     </svg>
 
-                                    <a href="uploads/<?php echo $filename; ?>" target="_blank"><?php echo $filename; ?></a>
-                                    <a href="uploads/<?php echo $filename; ?>"
+                                    <a href="uploads/scholars/<?php echo $scholar_id . "/" . $filename; ?>" target="_blank"><?php echo $filename; ?></a>
+                                    <a href="uploads/scholars/<?php echo $scholar_id . "/" . $filename; ?>"
                                         class="btn btn-primary btn-sm"
                                         target="_blank"
                                         download>
                                         Download
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeFile('<?php echo $filename; ?>')">X</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeFile('<?= $filename ?>', '<?= $scholar_id ?>', 'periodic_requirements')">X</button>
                                     <br>
                                     (Uploaded on: <?php echo date('m/d/Y', strtotime($upload_date)); ?>)
                                 </p>
                             <?php endforeach; ?>
                         <?php endif; ?>
+                        <!-- THIS IS THE UPLOAD AREA -->
                         <input type="file" class="form-control" name="periodic_requirements[]" accept=".pdf,.doc,.docx" multiple />
                     </div>
                 </div>
@@ -169,14 +171,14 @@ $scholar = $result->fetch_assoc();
                                         <path fill="#fff" fill-rule="nonzero" d="M334.136 399.617l17.346 6.065c11.471 4.405 23.271-3.713 14.378-13.819-10.821-12.445-27.258-29.548-39.216-40.938-7.427-7.423-11.734-7.488-19.187-.061-13.237 12.997-26.232 27.437-39.17 40.871-9.254 10.06 2.291 18.552 14.272 13.947l17.166-6.004c-1.258 16.274-2.825 31.833-3.775 48.096 0 2.994 2.503 5.388 5.425 5.613 10.31 0 20.837.242 31.12 0 2.918-.225 5.422-2.622 5.422-5.613l-3.781-48.157z" />
                                     </svg>
 
-                                    <a href="uploads/<?php echo $filename; ?>" target="_blank"><?php echo $filename; ?></a>
-                                    <a href="uploads/<?php echo $filename; ?>"
+                                    <a href="uploads/scholars/<?php echo $scholar_id . "/" . $filename; ?>" target="_blank"><?php echo $filename; ?></a>
+                                    <a href="uploads/scholars/<?php echo $scholar_id . "/" . $filename; ?>"
                                         class="btn btn-primary btn-sm"
                                         target="_blank"
                                         download>
                                         Download
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeCOGFile('<?php echo $filename; ?>')">X</button>
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeFile('<?= $filename ?>', '<?= $scholar_id ?>', 'updated_cog_filename')">X</button>
                                     <br>
                                     (Uploaded on: <?php echo date('m/d/Y', strtotime($upload_date)); ?>)
                                 </p>
@@ -240,18 +242,24 @@ $scholar = $result->fetch_assoc();
 
 
 <script>
-    function removeFile(filename) {
+    function removeFile(filename, scholarId, fieldName) {
         if (confirm('Are you sure you want to delete this file?')) {
             var xhr = new XMLHttpRequest();
             xhr.open('POST', 'remove-file.php', true);
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4 && xhr.status == 200) {
-                    alert('File removed successfully');
+                    alert(xhr.responseText); // Display the actual response from PHP
                     location.reload();
                 }
             };
-            xhr.send('filename=' + encodeURIComponent(filename));
+
+            // Send filename, scholarId, and the database field name
+            var params = 'filename=' + encodeURIComponent(filename) +
+                '&scholar_id=' + encodeURIComponent(scholarId) +
+                '&field=' + encodeURIComponent(fieldName);
+            xhr.send(params);
         }
     }
 
