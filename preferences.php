@@ -718,14 +718,14 @@ include_once 'includes/sidebar.php';
         });
 
         // Close modal buttons
-        const closeButtons = editModalEl.querySelectorAll('[data-dismiss="modal"]');
+        const closeButtons = addModalEl.querySelectorAll('[data-dismiss="modal"]');
         closeButtons.forEach(btn => {
             btn.addEventListener('click', function() {
                 if (typeof $ !== 'undefined' && $.fn.modal) {
                     $('#addSchoolModal').modal('hide');
                 } else {
-                    editModalEl.classList.remove('show');
-                    editModalEl.style.display = 'none';
+                    addModalEl.classList.remove('show');
+                    addModalEl.style.display = 'none';
                     document.body.classList.remove('modal-open');
                 }
             });
