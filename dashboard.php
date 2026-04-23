@@ -121,17 +121,21 @@ include_once "includes/connection.php";
 
 
                     <script>
-                        document.getElementById('statusSelect').addEventListener('change', function() {
-                            if (this.value === 'others') {
-                                var input = document.createElement('input');
-                                input.type = 'text';
-                                input.name = 'status';
-                                input.className = 'form-control';
-                                input.placeholder = 'Enter custom status';
-                                input.id = 'statusInput';
-                                this.parentNode.replaceChild(input, this);
-                            }
-                        });
+                        const statusSelect = document.getElementById('statusSelect');
+                        if(statusSelect){
+                            statusSelect.addEventListener('change', function() {
+                                if (this.value === 'others') {
+                                    var input = document.createElement('input');
+                                    input.type = 'text';
+                                    input.name = 'status';
+                                    input.className = 'form-control';
+                                    input.placeholder = 'Enter custom status';
+                                    input.id = 'statusInput';
+                                    this.parentNode.replaceChild(input, this);
+                                }
+                            });
+                        }
+                        
                     </script>
 
                     <div class="col-md-auto">
@@ -567,7 +571,7 @@ include_once "includes/connection.php";
     }
 
 
-
+    /*
     // Handle status field
     var statusSelect = document.getElementById('edit_status');
     if (status.startsWith('others:')) {
@@ -593,6 +597,9 @@ include_once "includes/connection.php";
             this.parentNode.replaceChild(input, this);
         }
     });
+    */
+
+
 </script>
 <!-- JS Scripts -->
 <script src="vendors/scripts/core.js"></script>

@@ -258,7 +258,7 @@ var options4 = {
 	},
 	labels: ['Flu', 'Covid-19', 'Pheumoniae', 'Diabeties'],
 };
-
+/*
 var chart = new ApexCharts(document.querySelector("#activities-chart"), options);
 chart.render();
 
@@ -270,6 +270,7 @@ chart3.render();
 
 var chart4 = new ApexCharts(document.querySelector("#diseases-chart"), options4);
 chart4.render();
+*/
 
 // datatable init
 $('document').ready(function(){
