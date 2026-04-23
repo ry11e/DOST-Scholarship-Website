@@ -124,7 +124,9 @@ if (isset($_POST['add_scholar'])) {
             if (!empty($filename)) {
                 $original_filename = pathinfo($filename, PATHINFO_FILENAME);
                 $extension = pathinfo($filename, PATHINFO_EXTENSION);
-                $new_filename = $original_filename . "." . $extension;
+                $timestamp = date("Ymd_His");
+
+                $new_filename = $original_filename . "_" . $timestamp . "." . $extension;
                 $target_file = $target_dir . $new_filename;
                 if (move_uploaded_file($_FILES["periodic_requirements"]["tmp_name"][$key], $target_file)) {
                     $uploaded_files[] = $new_filename . "|" . $current_date;
@@ -148,7 +150,9 @@ if (isset($_POST['add_scholar'])) {
 
         $original_filename = pathinfo($_FILES["updated_cog"]["name"], PATHINFO_FILENAME);
         $extension = pathinfo($_FILES["updated_cog"]["name"], PATHINFO_EXTENSION);
-        $updated_cog_filename = $original_filename . "." . $extension;
+        $timestamp = date("Ymd_His");
+
+        $updated_cog_filename = $original_filename . "_" . $timestamp . "." . $extension;
         $updated_cog = $target_dir . $updated_cog_filename;
         $updated_cog_upload_date = $current_date;
         move_uploaded_file($_FILES["updated_cog"]["tmp_name"], $updated_cog);

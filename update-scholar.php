@@ -53,7 +53,13 @@ if (!empty($_FILES["periodic_requirements"]["name"][0])) {
         if (!empty($filename)) {
             $filename = str_replace(',', '', $filename); // sanitize
             $tmp_name = $_FILES["periodic_requirements"]["tmp_name"][$key];
-            $new_filename = basename($filename);
+            $timestamp = date("Ymd_His");
+
+            $file_parts = pathinfo($filename);
+            $name_only = $file_parts['filename']; // "document"
+            $extension = $file_parts['extension']; // "pdf"
+
+            $new_filename = $name_only . "_" . $timestamp . "." . $extension;
             $target_file = $target_dir . $new_filename;
 
             if (move_uploaded_file($tmp_name, $target_file)) {
@@ -80,7 +86,13 @@ if (!empty($_FILES["updated_cog"]["name"][0])) {
         if (!empty($filename)) {
             $filename = str_replace(',', '', $filename); // sanitize
             $tmp_name = $_FILES["updated_cog"]["tmp_name"][$key];
-            $new_filename = basename($filename);
+            $timestamp = date("Ymd_His");
+
+            $file_parts = pathinfo($filename);
+            $name_only = $file_parts['filename']; // "document"
+            $extension = $file_parts['extension']; // "pdf"
+
+            $new_filename = $name_only . "_" . $timestamp . "." . $extension;
             $target_file = $target_dir . $new_filename;
 
             if (move_uploaded_file($tmp_name, $target_file)) {
