@@ -49,6 +49,13 @@ if ($scholar) {
     if ($updateStmt->execute()) {
         // 5. Delete the physical file from the new scholar-specific folder
         $filePath = "uploads/scholars/$scholarId/$filename";
+
+        if($field == "periodic_requirements" ){
+            $filePath = "uploads/scholars/$scholarId/periodic_requirements/$filename";
+        }
+        else{
+            $filePath = "uploads/scholars/$scholarId/updated_cog_filename/$filename";
+        }
         
         if (file_exists($filePath)) {
             unlink($filePath);

@@ -45,6 +45,10 @@ $current_date = date('Y-m-d H:i:s');
 // ===== Handle MULTIPLE periodic requirements upload =====
 if (!empty($_FILES["periodic_requirements"]["name"][0])) {
     $uploaded_files = [];
+    $target_dir .= "periodic_requirements/";
+    if(!file_exists($target_dir)){
+        mkdir($target_dir, 0777, true);
+    }
     foreach ($_FILES["periodic_requirements"]["name"] as $key => $filename) {
         if (!empty($filename)) {
             $filename = str_replace(',', '', $filename); // sanitize
@@ -64,9 +68,14 @@ if (!empty($_FILES["periodic_requirements"]["name"][0])) {
     }
 }
 
+$target_dir = "uploads/scholars/{$id}/";
 // ===== Handle MULTIPLE updated COG upload =====
 if (!empty($_FILES["updated_cog"]["name"][0])) {
     $new_cog_files = [];
+    $target_dir .= "updated_cog_filename/";
+    if(!file_exists($target_dir)){
+            mkdir($target_dir, 0777, true);
+        }
     foreach ($_FILES["updated_cog"]["name"] as $key => $filename) {
         if (!empty($filename)) {
             $filename = str_replace(',', '', $filename); // sanitize

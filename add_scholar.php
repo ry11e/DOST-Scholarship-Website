@@ -114,6 +114,11 @@ if (isset($_POST['add_scholar'])) {
     // Handle multiple file uploads for periodic requirements
     $periodic_requirements = '';
     if (!empty($_FILES["periodic_requirements"]["name"][0])) {
+        
+        $target_dir.= "periodic_requirements/";
+        if(!file_exists($target_dir)){
+            mkdir($target_dir, 0777, true);
+        }
         $uploaded_files = [];
         foreach ($_FILES["periodic_requirements"]["name"] as $key => $filename) {
             if (!empty($filename)) {
@@ -131,10 +136,16 @@ if (isset($_POST['add_scholar'])) {
         }
     }
 
+    $target_dir = $source_dir . "scholars/" . $new_scholar_id. "/";
     // Handle single file upload for updated COG
     $updated_cog_filename = '';
     $updated_cog_upload_date = '';
     if (!empty($_FILES["updated_cog"]["name"])) {
+        $target_dir.= "updated_cog_filename/";
+        if(!file_exists($target_dir)){
+            mkdir($target_dir, 0777, true);
+        }
+
         $original_filename = pathinfo($_FILES["updated_cog"]["name"], PATHINFO_FILENAME);
         $extension = pathinfo($_FILES["updated_cog"]["name"], PATHINFO_EXTENSION);
         $updated_cog_filename = $original_filename . "." . $extension;

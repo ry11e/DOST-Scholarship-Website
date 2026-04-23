@@ -125,8 +125,8 @@ $scholar = $result->fetch_assoc();
                                         <path fill="#fff" fill-rule="nonzero" d="M334.136 399.617l17.346 6.065c11.471 4.405 23.271-3.713 14.378-13.819-10.821-12.445-27.258-29.548-39.216-40.938-7.427-7.423-11.734-7.488-19.187-.061-13.237 12.997-26.232 27.437-39.17 40.871-9.254 10.06 2.291 18.552 14.272 13.947l17.166-6.004c-1.258 16.274-2.825 31.833-3.775 48.096 0 2.994 2.503 5.388 5.425 5.613 10.31 0 20.837.242 31.12 0 2.918-.225 5.422-2.622 5.422-5.613l-3.781-48.157z" />
                                     </svg>
 
-                                    <a href="uploads/scholars/<?php echo $scholar_id . "/" . $filename; ?>" target="_blank"><?php echo $filename; ?></a>
-                                    <a href="uploads/scholars/<?php echo $scholar_id . "/" . $filename; ?>"
+                                    <a href="uploads/scholars/<?php echo $scholar_id . "/periodic_requirements/" . $filename; ?>" target="_blank"><?php echo $filename; ?></a>
+                                    <a href="uploads/scholars/<?php echo $scholar_id . "/periodic_requirements/" . $filename; ?>"
                                         class="btn btn-primary btn-sm"
                                         target="_blank"
                                         download>
@@ -171,8 +171,8 @@ $scholar = $result->fetch_assoc();
                                         <path fill="#fff" fill-rule="nonzero" d="M334.136 399.617l17.346 6.065c11.471 4.405 23.271-3.713 14.378-13.819-10.821-12.445-27.258-29.548-39.216-40.938-7.427-7.423-11.734-7.488-19.187-.061-13.237 12.997-26.232 27.437-39.17 40.871-9.254 10.06 2.291 18.552 14.272 13.947l17.166-6.004c-1.258 16.274-2.825 31.833-3.775 48.096 0 2.994 2.503 5.388 5.425 5.613 10.31 0 20.837.242 31.12 0 2.918-.225 5.422-2.622 5.422-5.613l-3.781-48.157z" />
                                     </svg>
 
-                                    <a href="uploads/scholars/<?php echo $scholar_id . "/" . $filename; ?>" target="_blank"><?php echo $filename; ?></a>
-                                    <a href="uploads/scholars/<?php echo $scholar_id . "/" . $filename; ?>"
+                                    <a href="uploads/scholars/<?php echo $scholar_id . "/updated_cog_filename/" . $filename; ?>" target="_blank"><?php echo $filename; ?></a>
+                                    <a href="uploads/scholars/<?php echo $scholar_id . "/updated_cog_filename/" . $filename; ?>"
                                         class="btn btn-primary btn-sm"
                                         target="_blank"
                                         download>
