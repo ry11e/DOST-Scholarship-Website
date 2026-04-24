@@ -25,9 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['monitor_scholar_name_search'] = $_POST['name'] ?? null;
 
     if (!empty($_POST['status'])) {
-        $status = $_POST['status'];
-        // Override the default with the user's selection
-        $sql .= " AND status = '$status'";
+        if( strtolower($_SESSION['monitor_scholar_status_search'])  == "graduated" ){
+            $sql .= " AND year_graduated IS NOT NULL";
+        }  
+        else{
+            $status = $_POST['status'];
+            $sql .= " AND status = '$status'";
+        }
+        
     }
     if(!empty($_POST['name'])){
         $name = $_POST['name'];
@@ -37,8 +42,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 else if((!empty($_SESSION['monitor_scholar_status_search'])) || (!empty($_SESSION['monitor_scholar_name_search']))) {
     $sql = "SELECT * FROM scholars WHERE 1";
     if(!empty($_SESSION['monitor_scholar_status_search'])){
-        $status = $_SESSION['monitor_scholar_status_search'];
-        $sql .= " AND status = '$status'";
+        if( strtolower($_SESSION['monitor_scholar_status_search'])  == "graduated"){
+            $sql .= " AND year_graduated IS NOT NULL";
+        }
+        else{
+            $status = $_SESSION['monitor_scholar_status_search'];
+            $sql .= " AND status = '$status'";
+        }
+        
     }
     if(!empty($_SESSION['monitor_scholar_name_search'])){
         $name = $_SESSION['monitor_scholar_name_search'];
@@ -47,7 +58,7 @@ else if((!empty($_SESSION['monitor_scholar_status_search'])) || (!empty($_SESSIO
 }
 
 
-$currentStatus = $status;
+$currentStatus = $_SESSION['monitor_scholar_status_search'];
 $currentName = $name;
 $allResult = $conn->query($sql);
 
@@ -148,7 +159,7 @@ include_once 'includes/sidebar.php';
                                     <tr>
                                         <td><?= htmlspecialchars($row["id"]) ?></td>
                                         <td><?= htmlspecialchars($row["name"]) ?></td>
-                                        <td><span class="<?= $statusClass ?>"><?= htmlspecialchars($row["status"]) ?></span></td>
+                                        <td><span class="<?= $statusClass ?>"> <?= htmlspecialchars( $row['year_graduated'] ? 'Graduated' : $row["status"]) ?> </span></td>
                                         <td>
                                             <div class='table-actions d-flex gap-2 '>
                                                 <a href=<?= "monitor_scholar.php?id=" . $row["id"]; ?> class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
