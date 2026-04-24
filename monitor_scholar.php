@@ -107,6 +107,7 @@ $stmt->execute();
 $scholar = $stmt->get_result();
 $scholarArray = $scholar->fetch_all(MYSQLI_ASSOC);
 
+$scholarName = $scholarArray[0]['name'];
 
 //echo $scholarId;
 
@@ -398,7 +399,7 @@ include_once 'includes/sidebar.php';
 
         const opt = {
             margin: 0.5,
-            filename: 'Scholar_Report.pdf',
+            filename: 'Scholar_Report' + '_<?= ($scholarArray[0]['name']) ?>_' + Date.now() +  '.pdf',
             image: {
                 type: 'jpeg',
                 quality: 0.98
