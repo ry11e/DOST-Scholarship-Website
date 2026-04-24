@@ -50,3 +50,21 @@
 .fs-9 {
     font-size: 0.5rem !important;
 }
+
+
+
+.bg-info-subtle-1 {
+    background-color: #abf0ff !important;
+}
+
+.bg-success-subtle-1 {
+    background-color: #b3ffc5 !important;
+}
+
+.bg-danger-subtle-1 {
+    background-color: #ffb0b8 !important;
+}
+
+.bg-warning-subtle-1 {
+    background-color: #ffeaaa !important;
+}

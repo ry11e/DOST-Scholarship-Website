@@ -139,7 +139,7 @@ include_once "includes/connection.php";
 
                 <div class="mt-2 mx-2 fs-7 d-flex align-items-center"> 
                     Total Results:
-                    <div id="dashboard-total-results-display" class=" bg-success-subtle px-1 rounded-2">
+                    <div id="dashboard-total-results-display" class=" bg-success-subtle-1 px-1 rounded-2">
                         
                     </div>
                 </div>
@@ -270,22 +270,27 @@ include_once "includes/connection.php";
 
                             //status
                             $statusClass = '';
-                            if ($row['year_graduated']) {
-                                $statusClass = 'bg-success';
+                            if ($row['year_graduated'] && ($row['status'] != 'Problematic')) {
+                                $statusClass = 'bg-success-subtle-1';
                             } else if ($row['status'] == 'Ongoing') {
-                                $statusClass = 'bg-info';
+                                $statusClass = 'bg-info-subtle-1';
                             } elseif ($row['status'] == 'Problematic') {
-                                $statusClass = 'bg-danger';
+                                if(!empty($row['year_graduated'])){
+                                    $statusClass = 'bg-warning-subtle-1';
+                                }
+                                else{
+                                    $statusClass = 'bg-danger-subtle-1';
+                                }
                             } elseif ($row['status'] == 'Updated') {
-                                $statusClass = 'bg-info';
+                                $statusClass = 'bg-info-subtle-1';
                             } else {
-                                $statusClass = 'bg-secondary';
+                                $statusClass = 'bg-secondary-subtle-1';
                             }
 
                             //year graduated
                             $yearGraduatedClass = '';
                             if (!empty($row['year_graduated'])) {
-                                $yearGraduatedClass = 'bg-success';
+                                $yearGraduatedClass = 'bg-success-subtle-1';
                             }
 
                             echo "<tr>";
@@ -296,7 +301,11 @@ include_once "includes/connection.php";
                             echo "<td>" . $row['school'] . "</td>";
                             echo "<td>" . $row['course'] . "</td>";
                             echo "<td>" . $row['contact_no'] . "</td>";
-                            echo "<td class='$statusClass'>" . ($row['year_graduated'] ? "Graduated" : $row['status']) . "</td>";
+
+                            echo "<td class='$statusClass'>" . 
+                                    ($row['year_graduated'] ? (($row['status']=="Problematic") ? "Problematic yet Graduated" : "Graduated") : $row['status']) 
+                                ."</td>";
+
                             echo "<td class='$yearGraduatedClass'>" . $row['year_graduated'] ?? "" . "</td>";
                             echo "<td>" . $row['municipality'] . "</td>";
                             echo "<td>";
