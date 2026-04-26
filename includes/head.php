@@ -172,7 +172,12 @@ input:focus, textarea:focus, select:focus {
 				<div class="menu-icon bi bi-list"></div>
 			
 				<div class="header-search">
-				
+					<div class="">
+						<div class="row d-flex justify-content-start align-items-center px-6">
+								<img src="assets/images/Dost Logo Vector.svg .png" class="img-fluid" style="max-width: 75px;">
+								<img src="assets/images/AKSIS Word.png" class="img-fluid" style="max-width: 200px;"> 
+						</div>
+					</div>
 				</div>
 			</div>
 			<div class="header-right">
