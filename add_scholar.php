@@ -1,8 +1,8 @@
 <?php
 include('includes/connection.php');
 if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    session_start();
+}
 
 // Add Scholar logic
 if (isset($_POST['add_scholar'])) {
@@ -71,7 +71,7 @@ if (isset($_POST['add_scholar'])) {
     $updateSuccess = false;
 
     // This one makes sure that if the user types a year exceeding the limit, or just blank, then the system inserts null instead
-    if($year_graduated < 1901 || $year_graduated > 2155){
+    if ($year_graduated < 1901 || $year_graduated > 2155) {
         $year_graduated = NULL;
     }
 
@@ -81,17 +81,28 @@ if (isset($_POST['add_scholar'])) {
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ssssssssssssss",    $name, $year_of_award, $scholarship_program, $school, $course, 
-                                           $contact_no, $municipality, $district,
-                                           $summer, $delayed_requirements,
-                                           $lacking_requirements, $remarks, $status, $year_graduated);
+    $stmt->bind_param(
+        "ssssssssssssss",
+        $name,
+        $year_of_award,
+        $scholarship_program,
+        $school,
+        $course,
+        $contact_no,
+        $municipality,
+        $district,
+        $summer,
+        $delayed_requirements,
+        $lacking_requirements,
+        $remarks,
+        $status,
+        $year_graduated
+    );
 
     if ($stmt->execute() === TRUE) {
 
         $new_scholar_id = $conn->insert_id; // ID to be used for folder creation.
         $insertSuccess = true;
-        
-        
     } else {
         $insertSuccess = false;
         $_SESSION['message'] = 'Error: Insert Error: ' . $sql . '<br>' . $conn->error;
@@ -101,22 +112,25 @@ if (isset($_POST['add_scholar'])) {
     }
 
     // Once a new record of the scholar is made, proceed to creating a new folder for them and upload thier files.
-    
+
 
     $source_dir = "uploads/";
-    $target_dir = $source_dir . "scholars/" . $new_scholar_id. "/";
+    $target_dir = $source_dir . "scholars/" . $new_scholar_id . "/";
     $current_date = date('Y-m-d H:i:s');
 
-    if(!file_exists($target_dir)){
+    $uploadedFileSuccess = [];
+    $insertFileSuccess = false;
+
+    if (!file_exists($target_dir)) {
         mkdir($target_dir, 0777, true);
     }
 
     // Handle multiple file uploads for periodic requirements
     $periodic_requirements = '';
     if (!empty($_FILES["periodic_requirements"]["name"][0])) {
-        
-        $target_dir.= "periodic_requirements/";
-        if(!file_exists($target_dir)){
+
+        $target_dir .= "periodic_requirements/";
+        if (!file_exists($target_dir)) {
             mkdir($target_dir, 0777, true);
         }
         $uploaded_files = [];
@@ -125,11 +139,26 @@ if (isset($_POST['add_scholar'])) {
                 $original_filename = pathinfo($filename, PATHINFO_FILENAME);
                 $extension = pathinfo($filename, PATHINFO_EXTENSION);
                 $timestamp = date("Ymd_His");
+                $upload_type = "periodic_requirements";
 
                 $new_filename = $original_filename . "_" . $timestamp . "." . $extension;
                 $target_file = $target_dir . $new_filename;
                 if (move_uploaded_file($_FILES["periodic_requirements"]["tmp_name"][$key], $target_file)) {
                     $uploaded_files[] = $new_filename . "|" . $current_date;
+                }
+
+                $sql = "INSERT iNTO uploaded_files(fld_scholar_ID, fld_upload_type, fld_filename, fld_uploaded_at) VALUES(?, ?, ?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("isss", $new_scholar_id, $upload_type , $new_filename, $timestamp);
+
+                if ($stmt->execute() === TRUE) {
+                    $uploadedFileSuccess[] = $new_filename . " successfully inserted";
+                    $insertFileSuccess = true;
+                } else {
+                    $_SESSION['message'] = 'Error: Update Error: ' . $sql . '<br>' . $conn->error;
+                    $_SESSION['message_type'] = 'danger';
+                    header("Location: dashboard.php");
+                    exit();
                 }
             }
         }
@@ -138,43 +167,64 @@ if (isset($_POST['add_scholar'])) {
         }
     }
 
-    $target_dir = $source_dir . "scholars/" . $new_scholar_id. "/";
+
+    $target_dir = $source_dir . "scholars/" . $new_scholar_id . "/";
     // Handle single file upload for updated COG
     $updated_cog_filename = '';
     $updated_cog_upload_date = '';
     if (!empty($_FILES["updated_cog"]["name"])) {
-        $target_dir.= "updated_cog_filename/";
-        if(!file_exists($target_dir)){
+        $target_dir .= "updated_cog_filename/";
+        if (!file_exists($target_dir)) {
             mkdir($target_dir, 0777, true);
         }
 
         $original_filename = pathinfo($_FILES["updated_cog"]["name"], PATHINFO_FILENAME);
         $extension = pathinfo($_FILES["updated_cog"]["name"], PATHINFO_EXTENSION);
         $timestamp = date("Ymd_His");
+        $upload_type = "updated_cog_filename";
 
         $updated_cog_filename = $original_filename . "_" . $timestamp . "." . $extension;
         $updated_cog = $target_dir . $updated_cog_filename;
         $updated_cog_upload_date = $current_date;
         move_uploaded_file($_FILES["updated_cog"]["tmp_name"], $updated_cog);
+
+
+        $sql = "INSERT iNTO uploaded_files(fld_scholar_ID, fld_upload_type, fld_filename, fld_uploaded_at) VALUES(?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("isss", $new_scholar_id, $upload_type, $updated_cog_filename, $timestamp);
+
+        if ($stmt->execute() === TRUE) {
+            $uploadedFileSuccess[] = $updated_cog_filename . " successfully inserted";
+            $insertFileSuccess = true;
+        } else {
+            $_SESSION['message'] = 'Error: Update Error: ' . $sql . '<br>' . $conn->error;
+            $_SESSION['message_type'] = 'danger';
+            header("Location: dashboard.php");
+            exit();
+        }
     }
 
 
+
+    
+    /*
     $sql = "UPDATE scholars SET periodic_requirements = ?, updated_cog_filename = ?, updated_cog_upload_date = ? WHERE id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("sssi", $periodic_requirements, $updated_cog_filename, $updated_cog_upload_date, $new_scholar_id);
     
-    if($stmt->execute() === TRUE){
+
+    if ($stmt->execute() === TRUE) {
         $updateSuccess = true;
-    }
-    else{
+    } else {
         $updateSuccess = false;
         $_SESSION['message'] = 'Error: Update Error: ' . $sql . '<br>' . $conn->error;
         $_SESSION['message_type'] = 'danger';
         header("Location: dashboard.php");
         exit();
     }
+        */
 
-    if($updateSuccess && $insertSuccess){
+    if ($insertFileSuccess && $insertSuccess) {
         $_SESSION['message'] = 'New Scholar Added Successfully!';
         $_SESSION['message_type'] = 'success';
     }
@@ -185,4 +235,3 @@ if (isset($_POST['add_scholar'])) {
     $stmt->close();
     $conn->close();
 }
-?>

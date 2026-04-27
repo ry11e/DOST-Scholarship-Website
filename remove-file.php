@@ -22,29 +22,18 @@ if (!in_array($field, ['periodic_requirements', 'updated_cog_filename'])) {
 }
 
 // 2. Get the current file list for THIS specific scholar
-$sql = "SELECT $field FROM scholars WHERE id = ?";
+$sql = "SELECT * FROM uploaded_files WHERE fld_scholar_ID = ?";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $scholarId);
 $stmt->execute();
 $result = $stmt->get_result();
-$scholar = $result->fetch_assoc();
+$fileRecord = $result->fetch_assoc();
 
-if ($scholar) {
-    $fileList = explode(',', $scholar[$field]);
+if ($fileRecord) {
 
-    // 3. Filter out the file to be deleted
-    // Works with 'filename|date' format too
-    $updatedList = array_filter($fileList, function ($fileEntry) use ($filename) {
-        $parts = explode('|', trim($fileEntry));
-        return $parts[0] !== $filename;
-    });
-
-    $updatedString = implode(',', $updatedList);
-
-    // 4. Update the Database
-    $updateSql = "UPDATE scholars SET $field = ? WHERE id = ?";
+    $updateSql = "UPDATE uploaded_files SET fld_record_status = 'inactive' WHERE fld_scholar_ID = ? AND fld_filename = ? AND fld_upload_type = ?";
     $updateStmt = $conn->prepare($updateSql);
-    $updateStmt->bind_param("si", $updatedString, $scholarId);
+    $updateStmt->bind_param("iss", $scholarId, $filename, $field);
 
     if ($updateStmt->execute()) {
         // 5. Delete the physical file from the new scholar-specific folder
@@ -53,8 +42,11 @@ if ($scholar) {
         if($field == "periodic_requirements" ){
             $filePath = "uploads/scholars/$scholarId/periodic_requirements/$filename";
         }
-        else{
+        else if($field == "updated_cog_filename" ){
             $filePath = "uploads/scholars/$scholarId/updated_cog_filename/$filename";
+        }
+        else{
+            echo "Upload Type Not Found";
         }
         
         if (file_exists($filePath)) {
@@ -68,7 +60,7 @@ if ($scholar) {
     }
     $updateStmt->close();
 } else {
-    echo "Scholar not found.";
+    echo "File Record not found.";
 }
 
 $conn->close();

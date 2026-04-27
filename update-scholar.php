@@ -1,10 +1,13 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 header('Content-Type: application/json');
 
 if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    session_start();
+}
 
 
 // Establish a connection to your database
@@ -30,30 +33,23 @@ $remarks = $_POST['remarks'];
 
 //---------------------------------Uploaded Files-----------------------------------------//
 
-// Fetch existing file information
-$sql = "SELECT periodic_requirements, updated_cog_filename, updated_cog_upload_date FROM scholars WHERE id = '$id'";
-
-$result = $conn->query($sql);
-$existing_files = $result->fetch_assoc();
-
-$periodic_requirements = $existing_files['periodic_requirements'];
-$updated_cog_filename = $existing_files['updated_cog_filename'];
 
 $target_dir = "uploads/scholars/{$id}/";
 $current_date = date('Y-m-d H:i:s');
+$uploadFileSuccess = [];
+$uploadFileError = [];
 
 // ===== Handle MULTIPLE periodic requirements upload =====
 if (!empty($_FILES["periodic_requirements"]["name"][0])) {
-    $uploaded_files = [];
     $target_dir .= "periodic_requirements/";
-    if(!file_exists($target_dir)){
+    if (!file_exists($target_dir)) {
         mkdir($target_dir, 0777, true);
     }
     foreach ($_FILES["periodic_requirements"]["name"] as $key => $filename) {
         if (!empty($filename)) {
-            $filename = str_replace(',', '', $filename); // sanitize
             $tmp_name = $_FILES["periodic_requirements"]["tmp_name"][$key];
             $timestamp = date("Ymd_His");
+            $upload_type = "periodic_requirements";
 
             $file_parts = pathinfo($filename);
             $name_only = $file_parts['filename']; // "document"
@@ -63,30 +59,34 @@ if (!empty($_FILES["periodic_requirements"]["name"][0])) {
             $target_file = $target_dir . $new_filename;
 
             if (move_uploaded_file($tmp_name, $target_file)) {
-                $uploaded_files[] = $new_filename . "|" . $current_date;
+            }
+
+            $sql = "INSERT iNTO uploaded_files(fld_scholar_ID, fld_upload_type, fld_filename, fld_uploaded_at) VALUES(?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("isss", $id, $upload_type, $new_filename, $timestamp);
+
+            if ($stmt->execute() === TRUE) {
+                $uploadFileSuccess[] = "Uploaded: " . $new_filename;
+            } else {
+                $uploadFileError[] = "Failed: " . $new_filename;
+                die("MySQL Error: " . $stmt->error);
             }
         }
-    }
-
-    if (!empty($uploaded_files)) {
-        $periodic_requirements_array = !empty($periodic_requirements) ? explode(',', $periodic_requirements) : [];
-        $periodic_requirements = implode(',', array_merge($periodic_requirements_array, $uploaded_files));
     }
 }
 
 $target_dir = "uploads/scholars/{$id}/";
 // ===== Handle MULTIPLE updated COG upload =====
 if (!empty($_FILES["updated_cog"]["name"][0])) {
-    $new_cog_files = [];
     $target_dir .= "updated_cog_filename/";
-    if(!file_exists($target_dir)){
-            mkdir($target_dir, 0777, true);
-        }
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
     foreach ($_FILES["updated_cog"]["name"] as $key => $filename) {
         if (!empty($filename)) {
-            $filename = str_replace(',', '', $filename); // sanitize
             $tmp_name = $_FILES["updated_cog"]["tmp_name"][$key];
             $timestamp = date("Ymd_His");
+            $upload_type = "updated_cog_filename";
 
             $file_parts = pathinfo($filename);
             $name_only = $file_parts['filename']; // "document"
@@ -96,27 +96,28 @@ if (!empty($_FILES["updated_cog"]["name"][0])) {
             $target_file = $target_dir . $new_filename;
 
             if (move_uploaded_file($tmp_name, $target_file)) {
-                $new_cog_files[] = $new_filename . "|" . $current_date;
+                
+            }
+
+            $sql = "INSERT iNTO uploaded_files(fld_scholar_ID, fld_upload_type, fld_filename, fld_uploaded_at) VALUES(?, ?, ?, ?)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("isss", $id, $upload_type, $new_filename, $timestamp);
+
+            if ($stmt->execute() === TRUE) {
+                $uploadFileSuccess[] = "Uploaded: " . $new_filename;
+            } else {
+                $uploadFileError[] = "Failed: " . $new_filename;
+                die("MySQL Error: " . $stmt->error);
             }
         }
     }
-
-    if (!empty($new_cog_files)) {
-        $existing_cog_files = !empty($updated_cog_filename) ? explode(',', $updated_cog_filename) : [];
-        $updated_cog_filename = implode(',', array_merge($existing_cog_files, $new_cog_files));
-        $updated_cog_upload_date = $current_date;
-    } else {
-        $updated_cog_upload_date = $existing_files['updated_cog_upload_date'];
-    }
-} else {
-    $updated_cog_upload_date = $existing_files['updated_cog_upload_date'];
-}
+} 
 
 //------------------------------------------------------------------------------------------//
 
 
 // If the user erased/left the year_graduated textbox blank, then update the field in the database to be null
-if($year_graduated < 1901 || $year_graduated > 2155){
+if ($year_graduated < 1901 || $year_graduated > 2155) {
     $year_graduated = NULL;
 }
 
@@ -133,9 +134,6 @@ $sql = "UPDATE scholars SET
     status = ?, 
     year_graduated = ?, 
     summer = ?,
-    periodic_requirements = ?,
-    updated_cog_filename = ?,
-    updated_cog_upload_date = ?,
     delayed_requirements = ?,
     lacking_requirements = ?,
     remarks = ? 
@@ -143,21 +141,35 @@ $sql = "UPDATE scholars SET
 
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("sssssssssssssssssi", $name, $year_of_award, $scholarship_program, $school, $course, $contact_no
-                                      , $municipality, $district, $status, $year_graduated
-                                      , $summer, $periodic_requirements, $updated_cog_filename
-                                      , $updated_cog_upload_date, $delayed_requirements, $lacking_requirements
-                                      ,$remarks, $id);
+$stmt->bind_param(
+    "ssssssssssssssi",
+    $name,
+    $year_of_award,
+    $scholarship_program,
+    $school,
+    $course,
+    $contact_no,
+    $municipality,
+    $district,
+    $status,
+    $year_graduated,
+    $summer,
+    $delayed_requirements,
+    $lacking_requirements,
+    $remarks,
+    $id
+);
 
 
-if ($stmt->execute() === TRUE) {
+if ($stmt->execute() === TRUE && empty($uploadFileError)) {
 
     echo json_encode([
         'success' => true,
         'message' => 'Record Updated'
     ]);
     //echo "<script>alert('Scholar data successfully edited'); window.location.href='dashboard.php';</script>";
-} else {
+} 
+else {
     echo json_encode([
         'success' => false,
         'message' => 'Edit Failed'
@@ -166,4 +178,3 @@ if ($stmt->execute() === TRUE) {
 }
 
 $conn->close();
-?>

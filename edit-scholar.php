@@ -19,6 +19,15 @@ $sql = "SELECT * FROM scholars WHERE id = '$scholar_id'";
 $result = $conn->query($sql);
 $scholar = $result->fetch_assoc();
 
+$periodicFilesSql = "Select * from uploaded_files Where fld_upload_type = 'periodic_requirements' and fld_scholar_ID = $scholar_id and fld_record_status = 'active'";
+$updatedCOGSql = "Select * from uploaded_files Where fld_upload_type = 'updated_cog_filename' and fld_scholar_ID = $scholar_id and fld_record_status = 'active'";
+
+$periodicFiles = $conn->query($periodicFilesSql);
+$updatedCOGs = $conn->query($updatedCOGSql);
+
+$periodicFilesArray = $periodicFiles->fetch_all(MYSQLI_ASSOC);
+$updatedCOGsArray = $updatedCOGs->fetch_all(MYSQLI_ASSOC);
+
 // Close the connection
 //$conn->close();
 ?>
@@ -111,12 +120,12 @@ $scholar = $result->fetch_assoc();
                     <div class="col-md-6">
                         <label for="periodic_requirements">Periodic Requirements&nbsp; &nbsp;<span style="font-size: 12px; color:red; background-color:antiquewhite ;"> Note: (Filenames should not have commas(,))</span></label>
                         <!-- THIS IS THE LIST OF UPLOADS -->
-                        <?php if (!empty($scholar['periodic_requirements'])): ?>
-                            <?php
-                            $files = explode(',', $scholar['periodic_requirements']);
-                            foreach ($files as $file):
-                                list($filename, $upload_date) = explode('|', $file);
-                            ?>
+                        <?php
+                        if (!empty($periodicFilesArray)) {
+                            foreach ($periodicFilesArray as $periodicFile):
+                                $filename = $periodicFile['fld_filename'];
+                                $upload_date = $periodicFile['fld_uploaded_at'];
+                        ?>
                                 <p style="font-size: 14px; background-color:beige;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 424 511.543">
                                         <path fill="#262626" fill-rule="nonzero" d="M86.371 413.439c-11.766 0-11.766-17.89 0-17.89h102.733a129.853 129.853 0 00-.316 8.945c0 3.008.112 5.99.316 8.945H86.371zm179.438-389.18v29.103c0 65.658 15.314 69.469 69.082 69.469h22.031l-91.113-98.572zm94.336 115.919h-21.48c-61.025 0-90.202-4.092-90.202-86.277V17.347H56.817c-21.693 0-39.47 17.778-39.47 39.472v264.794h201.856a128.538 128.538 0 00-12.518 17.541H17.347v89.824c0 21.622 17.85 39.47 39.47 39.47h149.048a128.452 128.452 0 0012.01 17.347H56.817C25.626 485.795 0 460.171 0 428.978V56.819C0 25.553 25.55 0 56.817 0h206.336a8.656 8.656 0 016.926 3.454l105.073 113.675c2.191 2.367 2.339 4.663 2.339 7.517v166.861a127.423 127.423 0 00-17.346-7.709v-143.62z" />
@@ -136,8 +145,13 @@ $scholar = $result->fetch_assoc();
                                     <br>
                                     (Uploaded on: <?php echo date('m/d/Y', strtotime($upload_date)); ?>)
                                 </p>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+
+
+
+                        <?php
+                            endforeach;
+                        } //end if
+                        ?>
                         <!-- THIS IS THE UPLOAD AREA -->
                         <input type="file" class="form-control" name="periodic_requirements[]" accept=".pdf,.doc,.docx" multiple />
                     </div>
@@ -149,20 +163,12 @@ $scholar = $result->fetch_assoc();
                     </div>
                     <div class="col-md-6">
                         <label for="Updated COG">Updated COG&nbsp; &nbsp;<span style="font-size: 12px; color:red; background-color:antiquewhite ;"> Note: (Filenames should not have commas(,))</span></label>
-                        <?php if (!empty($scholar['updated_cog_filename'])): ?>
-                            <?php
-                            $files = explode(',', $scholar['updated_cog_filename']);
-                            foreach ($files as $file):
-                                //list($filename, $upload_date) = explode('|', $file);
-
-                                if (strpos($file, '|') !== false) {
-                                    list($filename, $upload_date) = explode('|', $file);
-                                } else {
-                                    // Fallback if the data is malformed or old
-                                    $filename = $file;
-                                    $upload_date = null;
-                                }
-                            ?>
+                        <?php
+                        if (!empty($updatedCOGsArray)) {
+                            foreach ($updatedCOGsArray as $updatedCOG):
+                                $filename = $updatedCOG['fld_filename'];
+                                $upload_date = $updatedCOG['fld_uploaded_at'];
+                        ?>
                                 <p style="font-size: 14px; background-color:beige;">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd" viewBox="0 0 424 511.543">
                                         <path fill="#262626" fill-rule="nonzero" d="M86.371 413.439c-11.766 0-11.766-17.89 0-17.89h102.733a129.853 129.853 0 00-.316 8.945c0 3.008.112 5.99.316 8.945H86.371zm179.438-389.18v29.103c0 65.658 15.314 69.469 69.082 69.469h22.031l-91.113-98.572zm94.336 115.919h-21.48c-61.025 0-90.202-4.092-90.202-86.277V17.347H56.817c-21.693 0-39.47 17.778-39.47 39.472v264.794h201.856a128.538 128.538 0 00-12.518 17.541H17.347v89.824c0 21.622 17.85 39.47 39.47 39.47h149.048a128.452 128.452 0 0012.01 17.347H56.817C25.626 485.795 0 460.171 0 428.978V56.819C0 25.553 25.55 0 56.817 0h206.336a8.656 8.656 0 016.926 3.454l105.073 113.675c2.191 2.367 2.339 4.663 2.339 7.517v166.861a127.423 127.423 0 00-17.346-7.709v-143.62z" />
@@ -182,9 +188,11 @@ $scholar = $result->fetch_assoc();
                                     <br>
                                     (Uploaded on: <?php echo date('m/d/Y', strtotime($upload_date)); ?>)
                                 </p>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
-
+                        <?php
+                            endforeach;
+                        } //end if
+                        ?>
+                        
                         <input type="file" class="form-control" name="updated_cog[]" accept=".pdf,.doc,.docx" multiple />
                     </div>
                 </div>
@@ -328,7 +336,7 @@ $scholar = $result->fetch_assoc();
         if (msg != null || msg != "") {
             box.innerHTML = msg;
         }
-
+        
         if (box) {
             // Fade in
             setTimeout(() => {
@@ -343,6 +351,7 @@ $scholar = $result->fetch_assoc();
                 setTimeout(() => box.remove(), 500);
             }, 1500);
         }
+            
 
     }
 </script>
