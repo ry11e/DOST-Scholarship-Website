@@ -49,6 +49,7 @@ if (!empty($_FILES["periodic_requirements"]["name"][0])) {
         if (!empty($filename)) {
             $tmp_name = $_FILES["periodic_requirements"]["tmp_name"][$key];
             $timestamp = date("Ymd_His");
+            $db_timestamp = date("Y-m-d H:i:s");
             $upload_type = "periodic_requirements";
 
             $file_parts = pathinfo($filename);
@@ -63,7 +64,7 @@ if (!empty($_FILES["periodic_requirements"]["name"][0])) {
 
             $sql = "INSERT iNTO uploaded_files(fld_scholar_ID, fld_upload_type, fld_filename, fld_uploaded_at) VALUES(?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("isss", $id, $upload_type, $new_filename, $timestamp);
+            $stmt->bind_param("isss", $id, $upload_type, $new_filename, $db_timestamp);
 
             if ($stmt->execute() === TRUE) {
                 $uploadFileSuccess[] = "Uploaded: " . $new_filename;
@@ -86,6 +87,7 @@ if (!empty($_FILES["updated_cog"]["name"][0])) {
         if (!empty($filename)) {
             $tmp_name = $_FILES["updated_cog"]["tmp_name"][$key];
             $timestamp = date("Ymd_His");
+            $db_timestamp = date("Y-m-d H:i:s");
             $upload_type = "updated_cog_filename";
 
             $file_parts = pathinfo($filename);
@@ -101,7 +103,7 @@ if (!empty($_FILES["updated_cog"]["name"][0])) {
 
             $sql = "INSERT iNTO uploaded_files(fld_scholar_ID, fld_upload_type, fld_filename, fld_uploaded_at) VALUES(?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("isss", $id, $upload_type, $new_filename, $timestamp);
+            $stmt->bind_param("isss", $id, $upload_type, $new_filename, $db_timestamp);
 
             if ($stmt->execute() === TRUE) {
                 $uploadFileSuccess[] = "Uploaded: " . $new_filename;

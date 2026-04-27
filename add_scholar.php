@@ -139,6 +139,7 @@ if (isset($_POST['add_scholar'])) {
                 $original_filename = pathinfo($filename, PATHINFO_FILENAME);
                 $extension = pathinfo($filename, PATHINFO_EXTENSION);
                 $timestamp = date("Ymd_His");
+                $db_timestamp = date("Y-m-d H:i:s");
                 $upload_type = "periodic_requirements";
 
                 $new_filename = $original_filename . "_" . $timestamp . "." . $extension;
@@ -149,7 +150,7 @@ if (isset($_POST['add_scholar'])) {
 
                 $sql = "INSERT iNTO uploaded_files(fld_scholar_ID, fld_upload_type, fld_filename, fld_uploaded_at) VALUES(?, ?, ?, ?)";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("isss", $new_scholar_id, $upload_type , $new_filename, $timestamp);
+                $stmt->bind_param("isss", $new_scholar_id, $upload_type , $new_filename, $db_timestamp);
 
                 if ($stmt->execute() === TRUE) {
                     $uploadedFileSuccess[] = $new_filename . " successfully inserted";
@@ -181,6 +182,7 @@ if (isset($_POST['add_scholar'])) {
         $original_filename = pathinfo($_FILES["updated_cog"]["name"], PATHINFO_FILENAME);
         $extension = pathinfo($_FILES["updated_cog"]["name"], PATHINFO_EXTENSION);
         $timestamp = date("Ymd_His");
+        $db_timestamp = date("Y-m-d H:i:s");
         $upload_type = "updated_cog_filename";
 
         $updated_cog_filename = $original_filename . "_" . $timestamp . "." . $extension;
@@ -191,7 +193,7 @@ if (isset($_POST['add_scholar'])) {
 
         $sql = "INSERT iNTO uploaded_files(fld_scholar_ID, fld_upload_type, fld_filename, fld_uploaded_at) VALUES(?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("isss", $new_scholar_id, $upload_type, $updated_cog_filename, $timestamp);
+        $stmt->bind_param("isss", $new_scholar_id, $upload_type, $updated_cog_filename, $db_timestamp);
 
         if ($stmt->execute() === TRUE) {
             $uploadedFileSuccess[] = $updated_cog_filename . " successfully inserted";
