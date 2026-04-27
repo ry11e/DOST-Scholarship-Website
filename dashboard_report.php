@@ -1981,7 +1981,7 @@ function isInAklan($municipality)
                 </div>
 
                 <div class="chart-box">
-                    <h2>Year Of Awards</h2>
+                    <h2>Timeline</h2>
                     <img src="${img4}" />
                 </div>
 
@@ -2099,7 +2099,7 @@ function isInAklan($municipality)
         doc.text("JLSS Scholarship Programs", 20, 20);
         doc.addImage(img3, 'PNG', 15, 25, 180, 90);
 
-        doc.text("Year Of Award", 20, 130);
+        doc.text("Timeline", 20, 130);
         doc.addImage(img4, 'PNG', 15, 135, 180, 90);
 
         doc.addPage();
@@ -2191,7 +2191,7 @@ function isInAklan($municipality)
                 <img src="${img3}" width="${chartWidth}" height="${chartHeight}" height:auto;">
             </div>
 
-            <h2 style="">Year Of Award</h2>
+            <h2 style="">Timeline</h2>
             <div style="text-align:center;">
                 <img src="${img4}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
             </div>
