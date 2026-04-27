@@ -312,11 +312,11 @@ include_once "includes/connection.php";
                             echo "<td>" . $row['course'] . "</td>";
                             echo "<td>" . $row['contact_no'] . "</td>";
 
-                            echo "<td class='$statusClass'>" . 
+                            echo "<td class=''> <div class='$statusClass px-3 py-1 rounded-2' >" . 
                                     ($row['year_graduated'] ? (($row['status']=="Problematic") ? "Problematic yet Graduated" : "Graduated") : $row['status']) 
-                                ."</td>";
+                                ."</div> </td>";
 
-                            echo "<td class='$yearGraduatedClass'>" . $row['year_graduated'] ?? "" . "</td>";
+                            echo "<td ><div class='$yearGraduatedClass px-3 py-1 rounded-2'>" . $row['year_graduated'] ?? "" . "</div></td>";
                             echo "<td>" . $row['municipality'] . "</td>";
                             echo "<td>";
 
@@ -673,6 +673,7 @@ include_once "includes/connection.php";
 </script>
 <!-- JS Scripts -->
 <script src="vendors/scripts/core.js"></script>
+<script src="src/scripts/custom_scripts.js"></script>
 <script src="vendors/scripts/script.min.js"></script>
 <script src="vendors/scripts/process.js"></script>
 <script src="vendors/scripts/layout-settings.js"></script>

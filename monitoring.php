@@ -58,11 +58,34 @@ else if((!empty($_SESSION['monitor_scholar_status_search'])) || (!empty($_SESSIO
 }
 
 
-$currentStatus = $_SESSION['monitor_scholar_status_search'];
+$currentStatus = $_SESSION['monitor_scholar_status_search'] ?? $defaultStatus;
 $currentName = $name;
 $allResult = $conn->query($sql);
 
 
+$monitorScholarSql = "SELECT scholar_id, count(*) as total FROM `monitor_scholars` where status = 'active' group by scholar_id";
+$stmt = $conn->query($monitorScholarSql);
+$monitorScholarArray = $stmt->fetch_all(MYSQLI_ASSOC);
+
+
+
+
+
+$searchStatusClass = "";
+switch($currentStatus){
+    case "Problematic":
+        $searchStatusClass = " bg-danger-subtle-1";
+    break;
+    case "Graduated":
+        $searchStatusClass = " bg-success-subtle-1";
+    break;
+    case "Updated":
+        $searchStatusClass = " bg-info-subtle-1";
+    break;
+    default:
+        $searchStatusClass = " bg-secondary-subtle";
+
+}
 
 function resetSearchQueries(){
     unset($_SESSION['monitor_scholar_status_search']);
@@ -93,9 +116,9 @@ include_once 'includes/sidebar.php';
                     <div class="col-12 col-lg-12">
                         <form method="POST" action="monitoring.php">
                             <!-- Status Selector -->
-                            <div class="row">
-                                <div class="col-4">
-                                    <input list="statusOptions" class="form-control" name="status" placeholder="Search by Status" value="<?= $currentStatus ?? $defaultStatus ?>"/>
+                            <div class="row d-flex px-5">
+                                <div class=" d-flex col-4 align-items-center">
+                                    <input id="statusField" list="statusOptions" class="form-control ms-2 <?= htmlspecialchars($searchStatusClass) ?>" name="status" placeholder="Search by Status" value="<?= $currentStatus ?? $defaultStatus ?>"/>
                                     <datalist id="statusOptions">
                                         <?php
                                         if ($conn->connect_error) {
@@ -111,10 +134,10 @@ include_once 'includes/sidebar.php';
                                     </datalist>
                                     
                                 </div>
-                                <div class="col-4">
+                                <div class="col-5">
                                     <input type="text" class="form-control" name="name" placeholder="Search By Name" value="<?= $currentName ?? $name ?>">
                                 </div>
-                                <div class="col-4">
+                                <div class="col-3">
                                     <button type="submit" class="btn btn-primary">Search</button>
                                     <a href="monitoring.php?task=resetSearch" class="btn btn-secondary">Reload</a>
                                 </div>
@@ -125,54 +148,81 @@ include_once 'includes/sidebar.php';
 
                 <div class="row g-4">
                     <div class="col-12 col-lg-12">
-                        <table class="data-table table no-wrap table-hover table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th class="datatable" style="width: 15%">#</th>
-                                    <th class="datatable" style="width: 35%">Name</th>
-                                    <th class="datatable" style="width: 35%">Status</th>
-                                    <th class="datatable" style="width: 15%">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php
-                                // start of table loop A
-                                while ($row = $allResult->fetch_assoc()):
-                                ?>
-
-                                <?php
-                                    $statusClass = "";
-                                    switch ($row["status"]) {
-                                        case "Updated":
-                                            $statusClass = "badge badge-success";
-                                            break;
-                                        case "Graduated":
-                                            $statusClass = "badge badge-primary";
-                                            break;
-                                        case "Problematic":
-                                            $statusClass = "badge badge-danger";
-                                            break;
-                                        default:
-                                            $statusClass = "badge badge-secondary";
-                                    }
-                                ?>
+                        <div class="bg-secondary-subtle border rounded-top-2 pb-2 mt-3 ">
+                            <table class="data-table table no-wrap table-hover table-bordered table-striped">
+                                <thead>
                                     <tr>
-                                        <td><?= htmlspecialchars($row["id"]) ?></td>
-                                        <td><?= htmlspecialchars($row["name"]) ?></td>
-                                        <td><span class="<?= $statusClass ?>"> <?= htmlspecialchars( $row['year_graduated'] ? 'Graduated' : $row["status"]) ?> </span></td>
-                                        <td>
-                                            <div class='table-actions d-flex gap-2 '>
-                                                <a href=<?= "monitor_scholar.php?id=" . $row["id"]; ?> class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
-                                                    <i class='icon-copy dw dw-edit2'></i>
-                                                </a>
-                                            </div>
-                                        </td>
+                                        <th class="datatable" style="width: 10%">#</th>
+                                        <th class="datatable" style="width: 50">Name</th>
+                                        <th class="datatable" style="width: 15%">Status</th>
+                                        <th class="datatable" style="width: 10%">Entries</th>
+                                        <th class="datatable" style="width: 15%">Action</th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    $tableCounter = 1;
+                                    // start of table loop A
+                                    while ($row = $allResult->fetch_assoc()):
+                                    ?>
 
-                                <?php endwhile; // End of table loop A
-                                ?>
-                            </tbody>
-                        </table>
+                                    <?php
+                                        $statusClass = "";
+                                        switch ($row["status"]) {
+                                            case "Updated":
+                                                $statusClass = "badge badge-success";
+                                                break;
+                                            case "Graduated":
+                                                $statusClass = "badge badge-success";
+                                                break;
+                                            case "Problematic":
+                                                if(!empty($row['year_graduated'])){
+                                                    $statusClass = "badge badge-warning";
+                                                }
+                                                else{
+                                                    $statusClass = "badge badge-danger";
+                                                }
+                                                
+                                                break;
+                                            default:
+                                                $statusClass = "badge badge-secondary";
+                                        }
+                                    ?>
+                                        <tr>
+                                            <td><?= htmlspecialchars($tableCounter) ?></td>
+                                            <td><?= htmlspecialchars($row["name"]) ?></td>
+                                            <td>
+                                                <div class="d-flex justify-content-center mx-3">
+                                                    <span class="<?= $statusClass ?>"> <?= htmlspecialchars( $row['year_graduated'] ? 'Graduated' : $row["status"]) ?> </span>
+                                                </div>
+                                            </td>
+                                            <td class="text-center">
+                                                <div class="d-inline-flex bg-info-subtle-1 px-2 rounded-2 text-align-center ">
+                                                    <?php
+                                                        foreach($monitorScholarArray as $row2){
+                                                            if($row2['scholar_id'] == $row['id']){
+                                                                echo htmlspecialchars($row2['total']);
+                                                            }
+                                                        };
+                                                    ?>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class='table-actions d-flex gap-2 '>
+                                                    <a href=<?= "monitor_scholar.php?id=" . $row["id"]; ?> class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
+                                                        <i class='icon-copy dw dw-edit2'></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+
+                                    <?php
+                                        $tableCounter++;
+                                        endwhile; // End of table loop A
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
