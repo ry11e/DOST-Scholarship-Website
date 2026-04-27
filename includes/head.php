@@ -1,15 +1,15 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+	session_start();
+}
 
 
 include_once 'includes/connection.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['admin_logged_in'])) {
-    header("Location: index.php");
-    exit();
+	header("Location: index.php");
+	exit();
 }
 
 // Fetch admin details
@@ -22,42 +22,42 @@ $admin = $result->fetch_assoc();
 
 // Update profile
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
-    $fullName = $_POST['fullName'];
-    
-    $address = $_POST['address'];
-    $phone = $_POST['phone'];
-    $email = $_POST['email'];
+	$fullName = $_POST['fullName'];
 
-    // Update the database
-    $stmt = $conn->prepare("UPDATE admin_tbl SET fullname = ?, address = ?, phone = ?, email = ? WHERE username = ?");
-    $stmt->bind_param("sssss", $fullName, $address, $phone, $email, $username);
-    $stmt->execute();
+	$address = $_POST['address'];
+	$phone = $_POST['phone'];
+	$email = $_POST['email'];
 
-    // Redirect to the same page to see the changes
-    header("Location: profile.php");
-    exit();
+	// Update the database
+	$stmt = $conn->prepare("UPDATE admin_tbl SET fullname = ?, address = ?, phone = ?, email = ? WHERE username = ?");
+	$stmt->bind_param("sssss", $fullName, $address, $phone, $email, $username);
+	$stmt->execute();
+
+	// Redirect to the same page to see the changes
+	header("Location: profile.php");
+	exit();
 }
 
 // Change password
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
-    $currentPassword = $_POST['password'];
-    $newPassword = $_POST['newpassword'];
-    $renewPassword = $_POST['renewpassword'];
+	$currentPassword = $_POST['password'];
+	$newPassword = $_POST['newpassword'];
+	$renewPassword = $_POST['renewpassword'];
 
-    // Check if the current password matches
-    if ($admin['password'] === $currentPassword) {
-        if ($newPassword === $renewPassword) {
-            // Update the password
-            $stmt = $conn->prepare("UPDATE admin_tbl SET password = ? WHERE username = ?");
-            $stmt->bind_param("ss", $newPassword, $username);
-            $stmt->execute();
-            $password_message = "Password changed successfully.";
-        } else {
-            $password_message = "New passwords do not match.";
-        }
-    } else {
-        $password_message = "Current password is incorrect.";
-    }
+	// Check if the current password matches
+	if ($admin['password'] === $currentPassword) {
+		if ($newPassword === $renewPassword) {
+			// Update the password
+			$stmt = $conn->prepare("UPDATE admin_tbl SET password = ? WHERE username = ?");
+			$stmt->bind_param("ss", $newPassword, $username);
+			$stmt->execute();
+			$password_message = "Password changed successfully.";
+		} else {
+			$password_message = "New passwords do not match.";
+		}
+	} else {
+		$password_message = "Current password is incorrect.";
+	}
 }
 ?>
 
@@ -69,8 +69,8 @@ include_once 'includes/connection.php';
 
 // Check if the user is logged in
 if (!isset($_SESSION['admin_logged_in'])) {
-    header("Location: index.php");
-    exit();
+	header("Location: index.php");
+	exit();
 }
 
 // Fetch admin details
@@ -78,69 +78,62 @@ $username = $_SESSION['admin_username'];
 ?>
 <!DOCTYPE html>
 <html>
-	<head>
-		<!-- Basic Page Info -->
-		<meta charset="utf-8" />
-		<title>SCHOLARSHIP - Admin Dashboard </title>
 
-		<!-- Site favicon -->
-		<link
-			rel="apple-touch-icon"
-			sizes="180x180"
-			href="scholarship.png"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="32x32"
-			href="scholarship.png"
-		/>
-		<link
-			rel="icon"
-			type="image/png"
-			sizes="16x16"
-			href="scholarship.png"
-		/>
+<head>
+	<!-- Basic Page Info -->
+	<meta charset="utf-8" />
+	<title>SCHOLARSHIP - Admin Dashboard </title>
 
-		<!-- Mobile Specific Metas -->
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1"
-		/>
+	<!-- Site favicon -->
+	<link
+		rel="apple-touch-icon"
+		sizes="180x180"
+		href="scholarship.png" />
+	<link
+		rel="icon"
+		type="image/png"
+		sizes="32x32"
+		href="scholarship.png" />
+	<link
+		rel="icon"
+		type="image/png"
+		sizes="16x16"
+		href="scholarship.png" />
 
-		<!-- Google Font -->
-		<link
-			href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-			rel="stylesheet"
-		/>
-		<!-- CSS -->
-		
-		<link
-			rel="stylesheet"
-			type="text/css"
-			href="vendors/styles/icon-font.min.css"
-		/>
-		<link
-			rel="stylesheet"
-			type="text/css"
-			href="src/plugins/datatables/css/dataTables.bootstrap4.min.css"
-		/>
-		<link
-			rel="stylesheet"
-			type="text/css"
-			href="src/plugins/datatables/css/responsive.bootstrap4.min.css"
-		/>
+	<!-- Mobile Specific Metas -->
+	<meta
+		name="viewport"
+		content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-		<!-- For these last three, Bootstrap was loaded first as to not overwrite the custom style sheets -->
-		<link rel="stylesheet"
-			href="src/styles/bootstrap.min.css"/>
-		<link rel="stylesheet" type="text/css" href="vendors/styles/core.css" />
-		<link rel="stylesheet" type="text/css" href="vendors/styles/style.css" />
-		<link rel="stylesheet" type="text/css" href="vendors/styles/custom-css.css" />
-		
+	<!-- Google Font -->
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+		rel="stylesheet" />
+	<!-- CSS -->
 
-	</head>
-	<!--<style>
+	<link
+		rel="stylesheet"
+		type="text/css"
+		href="vendors/styles/icon-font.min.css" />
+	<link
+		rel="stylesheet"
+		type="text/css"
+		href="src/plugins/datatables/css/dataTables.bootstrap4.min.css" />
+	<link
+		rel="stylesheet"
+		type="text/css"
+		href="src/plugins/datatables/css/responsive.bootstrap4.min.css" />
+
+	<!-- For these last three, Bootstrap was loaded first as to not overwrite the custom style sheets -->
+	<link rel="stylesheet"
+		href="src/styles/bootstrap.min.css" />
+	<link rel="stylesheet" type="text/css" href="vendors/styles/core.css" />
+	<link rel="stylesheet" type="text/css" href="vendors/styles/style.css" />
+	<link rel="stylesheet" type="text/css" href="vendors/styles/custom-css.css" />
+
+
+</head>
+<!--<style>
 @keyframes rainbowGlow {
     0% { border-color: red; box-shadow: 0 0 5px red; }
     14% { border-color: orange; box-shadow: 0 0 5px orange; }
@@ -164,59 +157,60 @@ input:focus, textarea:focus, select:focus {
     background: url('https://img1.picmix.com/output/stamp/normal/1/0/4/8/2468401_270a6.gif') center center / cover;
 }
 </style> -->
-	<body>
-	
 
-		<div class="header">
-			<div class="header-left">
-				<div class="menu-icon bi bi-list"></div>
-			
-				<div class="header-search">
-					<div class="">
-						<div class="row d-flex justify-content-start align-items-center px-6">
-								<img src="assets/images/Dost Logo Vector.svg .png" class="img-fluid" style="max-width: 75px;">
-								<img src="assets/images/AKSIS Word.png" class="img-fluid" style="max-width: 200px;"> 
+<body>
+
+
+	<div class="header">
+		<div class="header-left">
+			<div class="menu-icon bi bi-list"></div>
+
+			<div class="header-search">
+				<div class="">
+					<div class="row align-items-center">
+						<div class="col-auto ps-5 pe-1">
+							<a href="dashboard.php">
+								<img src="assets/images/Dost Logo Vector.svg .png" style="max-width: 40px;">
+							</a>
+						</div>
+						<div class="col-auto px-0">
+							<a href="dashboard.php">
+								<img src="assets/images/AKSIS Word.png" style="max-width: 170px;">
+							</a>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="header-right">
-			
-				
-				<div class="user-info-dropdown">
-					<div class="dropdown">
-						<a
-							class="dropdown-toggle"
-							href="#"
-							role="button"
-							data-toggle="dropdown"
-						>
-							<span class="user-icon">
-								<img src="vendors/images/admin.png" alt="" />
-							</span>
-							<span class="user-name"><?php echo htmlspecialchars($admin['fullname']); ?></span>
-						</a>
-						<div
-							class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list"
-						>
-							<a class="dropdown-item" href="profile.php"
-								><i class="dw dw-user1"></i> Profile</a
-							>
-							<a
-							class="dropdown-item no-arrow"
-							href="javascript:;"
-							data-toggle="right-sidebar"
-						>
-							<i class="dw dw-settings2"></i>
-						</i> Setting</a
-							>
-							
-							<a class="dropdown-item" href="includes/logout.php"
-								><i class="dw dw-logout"></i> Log Out</a
-							>
-						</div>
-					</div>
-				</div>
-				
 			</div>
 		</div>
+		<div class="header-right">
+
+
+			<div class="user-info-dropdown">
+				<div class="dropdown">
+					<a
+						class="dropdown-toggle"
+						href="#"
+						role="button"
+						data-toggle="dropdown">
+						<span class="user-icon">
+							<img src="vendors/images/admin.png" alt="" />
+						</span>
+						<span class="user-name"><?php echo htmlspecialchars($admin['fullname']); ?></span>
+					</a>
+					<div
+						class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
+						<a class="dropdown-item" href="profile.php"><i class="dw dw-user1"></i> Profile</a>
+						<a
+							class="dropdown-item no-arrow"
+							href="javascript:;"
+							data-toggle="right-sidebar">
+							<i class="dw dw-settings2"></i>
+							</i> Setting</a>
+
+						<a class="dropdown-item" href="includes/logout.php"><i class="dw dw-logout"></i> Log Out</a>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
