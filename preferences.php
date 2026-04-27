@@ -239,7 +239,7 @@ include_once 'includes/sidebar.php';
 
                 <!-- 1st Row -->
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-6" hidden>
                         <!--Manage Schools Suggestions -->
                         <div class="container py-5">
                             <div class="row">
@@ -306,7 +306,7 @@ include_once 'includes/sidebar.php';
 
 
                     <!-- Manage Municipalities-->
-                    <div class="col-md-6">
+                    <div class="col-md-6" hidden>
                         <div class="container py-5">
                             <div class="row">
                                 <div class="col-md-7">
@@ -376,7 +376,7 @@ include_once 'includes/sidebar.php';
 
                 <!-- 2nd Row -->
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-6">
                         <!--Manage Scholarships Table -->
                         <div class="container py-5">
                             <div class="row">
@@ -404,18 +404,18 @@ include_once 'includes/sidebar.php';
                                             <table class="table table-hover mb-0 align-middle">
                                                 <thead class="table-light">
                                                     <tr>
-                                                        <th>Scholarahip Code</th>
-                                                        <th>Scholarship Name</th>
-                                                        <th style="width: 33%;">Actions</th>
+                                                        <th class="fs-7">Scholarship Code</th>
+                                                        <th class="fs-7">Scholarship Name</th>
+                                                        <th  class="fs-7" style="width: 33%;">Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <?php foreach ($scholarshipItems as $row): ?>
                                                         <tr>
-                                                            <td><?= htmlspecialchars($row['fld_scholarshipCode']) ?></td>
-                                                            <td><?= htmlspecialchars($row['fld_scholarshipName']) ?></td>
+                                                            <td class="fs-8"><?= htmlspecialchars($row['fld_scholarshipCode']) ?></td>
+                                                            <td  class="fs-8"><?= htmlspecialchars($row['fld_scholarshipName']) ?></td>
                                                             <td>
-                                                                <button class="btn btn-sm btn-outline-primary me-1 edit-scholarship-btn"
+                                                                <button class="btn btn-sm btn-outline-primary me-1 edit-scholarship-btn fs-8"
                                                                     data-id="<?= $row['fld_ID'] ?>"
                                                                     data-scholarship-code="<?= htmlspecialchars($row['fld_scholarshipCode']) ?>"
                                                                     data-scholarship-name="<?= htmlspecialchars($row['fld_scholarshipName']) ?>">
@@ -427,7 +427,7 @@ include_once 'includes/sidebar.php';
                                                                     <input type="hidden" name="form_type" value="edit_scholarship">
                                                                     <input type="hidden" name="action" value="delete">
                                                                     <input type="hidden" name="id" value="<?= $row['fld_ID'] ?>">
-                                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                                    <button type="submit" class="btn btn-sm btn-outline-danger fs-8">Delete</button>
                                                                 </form>
                                                             </td>
                                                         </tr>
