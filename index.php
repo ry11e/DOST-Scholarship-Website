@@ -13,7 +13,8 @@ if (session_status() == PHP_SESSION_NONE) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rio Landing Page</title>
+    <title>AKSIS: Aklan Scholars' Information System</title>
+    <link rel="icon" type="image/x-icon" href="assets/images/AKSIS Icon.ico">
     <link href="src/styles/bootstrap.min.css" rel="stylesheet">
     <style>
         body,
@@ -25,14 +26,15 @@ if (session_status() == PHP_SESSION_NONE) {
 
         /* The "Rio" Gradient */
         .rio-bg {
-            background: #f83600;
-            /* fallback for old browsers */
-            background: -webkit-linear-gradient(to right, #95334c, #1b89c8);
-            /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to right, #56ede0, #02598b);
-            /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: linear-gradient(-225deg, #17e297,  #02598b, #e73c7e);
+            background-size: 400% 400%;
+            /* 2. Attach the animation */
+            animation: gradientShift 20s ease infinite;
+            
             min-height: 100vh;
             color: white;
+
+         
         }
 
         .navbar-brand img {
@@ -47,6 +49,37 @@ if (session_status() == PHP_SESSION_NONE) {
         .btn-outline-light:hover {
             color: #1aafff;
         }
+
+        /* Define the "Floating" animation */
+        @keyframes subtleBounce {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-7px); /* Moves up by 10 pixels */
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
+
+        /* Create a class to apply it */
+        .floating-logo {
+            animation: subtleBounce 5s ease-in-out infinite;
+        }
+
+        /* 3. Define the movement */
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
     </style>
 </head>
 
@@ -59,7 +92,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 <div class="col-5  text-center">
                     <img src="assets/images/AKSIS.png"
                         alt="Site Logo"
-                        class="img-fluid"
+                        class="img-fluid floating-logo"
                         style="max-width: 75%;">
                 </div>
 
@@ -69,7 +102,7 @@ if (session_status() == PHP_SESSION_NONE) {
                         Aklan Scholars' Information System
                     </p>
                     <div class="d-flex gap-3">
-                        <a href="login.php" class="btn btn-light btn-lg px-4 shadow" >Start</a>
+                        <a href="login.php" class="btn btn-light btn-lg px-4 shadow floating-logo" >Start</a>
                     </div>
                 </div>
             </div>
