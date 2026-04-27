@@ -170,30 +170,30 @@ include_once 'includes/sidebar.php';
                                         $statusClass = "";
                                         switch ($row["status"]) {
                                             case "Updated":
-                                                $statusClass = "badge badge-success";
+                                                $statusClass = "bg-info-subtle-1";
                                                 break;
                                             case "Graduated":
-                                                $statusClass = "badge badge-success";
+                                                $statusClass = "bg-success-subtle-1";
                                                 break;
                                             case "Problematic":
                                                 if(!empty($row['year_graduated'])){
-                                                    $statusClass = "badge badge-warning";
+                                                    $statusClass = "bg-warning-subtle-1";
                                                 }
                                                 else{
-                                                    $statusClass = "badge badge-danger";
+                                                    $statusClass = "bg-danger-subtle-1";
                                                 }
                                                 
                                                 break;
                                             default:
-                                                $statusClass = "badge badge-secondary";
+                                                $statusClass = "bg-secondary-subtle";
                                         }
                                     ?>
                                         <tr>
                                             <td><?= htmlspecialchars($tableCounter) ?></td>
                                             <td><?= htmlspecialchars($row["name"]) ?></td>
                                             <td>
-                                                <div class="d-flex justify-content-center mx-3">
-                                                    <span class="<?= $statusClass ?>"> <?= htmlspecialchars( $row['year_graduated'] ? 'Graduated' : $row["status"]) ?> </span>
+                                                <div class="<?= $statusClass ?> d-flex justify-content-center px-2 rounded-2">
+                                                    <?= htmlspecialchars( $row['year_graduated'] ? 'Graduated' : $row["status"]) ?> 
                                                 </div>
                                             </td>
                                             <td class="text-center">
