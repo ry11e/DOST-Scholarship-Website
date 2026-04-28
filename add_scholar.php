@@ -230,6 +230,10 @@ if (isset($_POST['add_scholar'])) {
         $_SESSION['message'] = 'New Scholar Added Successfully!';
         $_SESSION['message_type'] = 'success';
     }
+    else if($insertSuccess){
+        $_SESSION['message'] = 'New Scholar Added Successfully!';
+        $_SESSION['message_type'] = 'success';
+    }
 
     header("Location: dashboard.php");
     exit();

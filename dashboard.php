@@ -37,20 +37,26 @@ include_once "includes/connection.php";
 
             <!-- Display Alert Message -->
             <?php
-                if (isset($_SESSION['message'])):
-            ?>
-                <script>
-                    console.log("POTATAT");
-                    // You can also just echo the script directly if the session exists
-                    document.addEventListener("DOMContentLoaded", function() {
-                        showNotification2(<?= $_SESSION['message'] ?>, "success");
-                    });
-                </script>
+                if (isset($_SESSION['message']) && $_SESSION['message_type']) {
+                    //echo "<div class='alert alert-" . $_SESSION['message_type'] . "'>" . $_SESSION['message'] . "</div>";
 
-            <?php
-                endif;
-                unset($_SESSION['message']);
-                unset($_SESSION['message_type']);
+                    $message = $_SESSION['message'];
+                    $message_type = $_SESSION['message_type'];
+                    echo "
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                if('$message_type' == 'success'){
+                                    showNotification2( '$message' , 'success');
+                                }
+                                else{
+                                    showNotification2( 'Error' , 'error');
+                                }
+                            });
+                        </script>
+                    ";
+                    unset($_SESSION['message']);
+                    unset($_SESSION['message_type']);
+                }
             ?>
 
 
@@ -200,6 +206,8 @@ include_once "includes/connection.php";
                             unset($_GET['message']);
                         }
                         ?>
+
+
 
                         <?php
                         // Establish a connection to your database
