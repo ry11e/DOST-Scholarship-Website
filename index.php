@@ -26,15 +26,27 @@ if (session_status() == PHP_SESSION_NONE) {
 
         /* The "Rio" Gradient */
         .rio-bg {
-            background: linear-gradient(-225deg, #17e297,  #02598b, #e73c7e);
-            background-size: 400% 400%;
+            background: linear-gradient(-225deg, #32f4e4 , #0783cb, #f54387);
+            background-size: 400% 200%;
             /* 2. Attach the animation */
-            animation: gradientShift 20s ease infinite;
+            animation: gradientShift 13s ease infinite;
             
             min-height: 100vh;
             color: white;
-
          
+        }
+
+        /* 3. Define the movement */
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .navbar-brand img {
@@ -68,18 +80,7 @@ if (session_status() == PHP_SESSION_NONE) {
             animation: subtleBounce 5s ease-in-out infinite;
         }
 
-        /* 3. Define the movement */
-        @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%;
-            }
-            50% {
-                background-position: 100% 50%;
-            }
-            100% {
-                background-position: 0% 50%;
-            }
-        }
+        
     </style>
 </head>
 

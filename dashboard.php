@@ -312,7 +312,7 @@ include_once "includes/connection.php";
                             echo "<td>" . $row['course'] . "</td>";
                             echo "<td>" . $row['contact_no'] . "</td>";
 
-                            echo "<td class=''> <div class='$statusClass px-3 py-1 rounded-2' >" . 
+                            echo "<td class=''> <div class='$statusClass px-3 py-1 rounded-2 text-center' >" . 
                                     ($row['year_graduated'] ? (($row['status']=="Problematic") ? "Problematic yet Graduated" : "Graduated") : $row['status']) 
                                 ."</div> </td>";
 

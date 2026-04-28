@@ -109,6 +109,28 @@ $scholarArray = $scholar->fetch_all(MYSQLI_ASSOC);
 
 $scholarName = $scholarArray[0]['name'];
 
+
+$statusClass = "";
+
+switch ($scholarArray[0]['status']) {
+    case "Updated":
+        $statusClass = "bg-info-subtle-1";
+        break;
+    case "Graduated":
+        $statusClass = "bg-success-subtle-1";
+        break;
+    case "Problematic":
+        if (!empty($row['year_graduated'])) {
+            $statusClass = "bg-warning-subtle-1";
+        } else {
+            $statusClass = "bg-danger-subtle-1";
+        }
+
+        break;
+    default:
+        $statusClass = "bg-secondary-subtle";
+}
+
 //echo $scholarId;
 
 include_once 'includes/head.php';
@@ -156,36 +178,36 @@ include_once 'includes/sidebar.php';
                     </div>
                 </div>
 
-                <div id="print-status-hide" class="mon-schol-no-pdf">
+                <div id="print-status-hide" class="mon-schol-no-pdf px-5 pb-4">
                     <div class="row mb-4">
                         <div class="col-12">
-                            <div class="d-flex justify-content-between align-items-center  pl-3">
-                                <h2 class="h2"><?= $scholarArray[0]['name'] ?></h2>
+                            <div class="d-flex justify-content-between align-items-center  pl-3 mb-3">
+                                <h2 class="h2 mb-0"><?= $scholarArray[0]['name'] ?></h2>
                             </div>
                         </div>
                     </div>
-                    <div class="row g-1">
+                    <div class="row g-1 mb-1">
                         <div class="col-6">
-                            <h6 class="h6">School:<u> <?= $scholarArray[0]['school'] ?> </u> </h6>
+                            <h6 class="h6">School: <span class="bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['school'] ?> </span> </h6>
                         </div>
                         <div class="col-6">
-                            <h6 class="h6">Scholarship Program:<u> <?= $scholarArray[0]['scholarship_program'] ?> </u> </h6>
+                            <h6 class="h6">Scholarship Program: <span class="bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['scholarship_program'] ?> </span> </h6>
+                        </div>
+                    </div>
+                    <div class="row g-1 mb-1">
+                        <div class="col-6">
+                            <h6 class="h6">Course: <span class="bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['course'] ?></span> </h6>
+                        </div>
+                        <div class="col-6">
+                            <h6 class="h6">Year of Award: <span class="bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['year_of_award'] ?></span> </h6>
                         </div>
                     </div>
                     <div class="row g-1">
                         <div class="col-6">
-                            <h6 class="h6">Course:<u> <?= $scholarArray[0]['course'] ?></u> </h6>
+                            <h6 class="h6">Contact No.: <span class="bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['contact_no'] ?></span> </h6>
                         </div>
                         <div class="col-6">
-                            <h6 class="h6">Year of Award:<u> <?= $scholarArray[0]['year_of_award'] ?></u> </h6>
-                        </div>
-                    </div>
-                    <div class="row g-1">
-                        <div class="col-6">
-                            <h6 class="h6">Contact No.:<u> <?= $scholarArray[0]['contact_no'] ?></u> </h6>
-                        </div>
-                        <div class="col-6">
-                            <h6 class="h6">Status:<u> <?= $scholarArray[0]['status'] ?></u> </h6>
+                            <h6 class="h6">Status: <span class=" <?= $statusClass ?> bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['status'] ?></span> </h6>
                         </div>
                     </div>
                 </div>
@@ -435,7 +457,7 @@ include_once 'includes/sidebar.php';
 
         const opt = {
             margin: 0.5,
-            filename: 'Scholar_Report' + '_<?= ($scholarArray[0]['name']) ?>_' + Date.now() +  '.pdf',
+            filename: 'Scholar_Report' + '_<?= ($scholarArray[0]['name']) ?>_' + Date.now() + '.pdf',
             image: {
                 type: 'jpeg',
                 quality: 0.98
