@@ -22,17 +22,19 @@
             justify-content:center;
             align-items:center;
             
-            height: 10%;
+            height: 15%;
             width: 20%;
 
             background-color: #b8ffcd;
-            color: #00892c;
+            color: #00d744;
             border: #afffc9 solid 2px;
             padding: 15px;
             border-radius: 10px;
 
             opacity: 0;
-        ">
+        "
+        
+        class= "text-center">
         
     </div>
 </div>

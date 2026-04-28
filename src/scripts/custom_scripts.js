@@ -56,3 +56,42 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 */
+
+
+function showNotification2(msg, status) {
+
+        const box = document.getElementById('notification-box');
+        console.log(box);
+        console.log("AAAAAAA");
+
+        console.log(box);
+        if (status = "success") {
+            box.style.color = 'green';
+            box.style.background = 'rgb(230, 255, 238)';
+        } else if (status = "error") {
+            box.style.color = 'red';
+            box.style.background = '#ffd7d7';
+        }
+
+
+        if (msg != null || msg != "") {
+            box.innerHTML = msg;
+        }
+        
+        if (box) {
+            // Fade in
+            setTimeout(() => {
+                box.style.opacity = '1';
+            }, 100);
+
+            // Fade out after 4 seconds
+            setTimeout(() => {
+                box.style.opacity = '0';
+                // Optional: remove from DOM after fade
+                setTimeout(() => box.remove(), 1000);
+            }, 3000);
+        }
+    
+            
+
+    }
