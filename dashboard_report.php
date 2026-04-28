@@ -29,7 +29,7 @@ $scholProgJLSSLabel = [];
 
 
 $sqlScholarshipPrograms = "
-        SELECT `scholarship_program`, COUNT(`scholarship_program`) AS total FROM `scholars` GROUP BY `scholarship_program` ORDER BY `scholarship_program` ASC
+        SELECT `scholarship_program`, COUNT(`scholarship_program`) AS total FROM `scholars` WHERE record_status = 'active' GROUP BY `scholarship_program` ORDER BY `scholarship_program` ASC
     ";
 $resultBar = $conn->query($sqlScholarshipPrograms);
 
@@ -104,7 +104,7 @@ $ScholProgTempData = []; // Temporary storage
 $scholTableSql = "SELECT * FROM `tbl_scholarship_programs`";
 $scholTableResult = $conn->query($scholTableSql);
 
-$ScholProgSql = "SELECT scholarship_program, status, count(scholarship_program) as total FROM `scholars` WHERE 1 group BY scholarship_program, STATUS order by scholarship_program ASC";;
+$ScholProgSql = "SELECT scholarship_program, status, count(scholarship_program) as total FROM `scholars` WHERE record_status = 'active' group BY scholarship_program, STATUS order by scholarship_program ASC";;
 $ScholProgResult = $conn->query($ScholProgSql);
 
 while ($row = $ScholProgResult->fetch_assoc()) {
@@ -155,7 +155,7 @@ $scholTableSql = "SELECT DISTINCT fld_scholarshipCode FROM `tbl_scholarship_prog
 $scholTableResult = $conn->query($scholTableSql);
 $scholTable = array_column($scholTableResult->fetch_all(MYSQLI_ASSOC), "fld_scholarshipCode");
 
-$ScholProgSql = "SELECT scholarship_program, status, count(scholarship_program) as total FROM `scholars` WHERE 1 group BY scholarship_program, STATUS order by scholarship_program ASC";;
+$ScholProgSql = "SELECT scholarship_program, status, count(scholarship_program) as total FROM `scholars` WHERE record_status = 'active' group BY scholarship_program, STATUS order by scholarship_program ASC";;
 $ScholProgResult = $conn->query($ScholProgSql);
 
 $tempScholData = [];
@@ -215,7 +215,7 @@ $scholarStatusType = array_column($scholarStatusAllData, "fld_type");
 
 
 // SQL and result for Year Of Graduation And Year of Award
-$scholarTableSql = "Select year_of_award, year_graduated from scholars where 1 order by id ASC";
+$scholarTableSql = "Select year_of_award, year_graduated from scholars WHERE record_status = 'active' order by id ASC";
 $scholarTableResult = $conn->query($scholarTableSql);
 $scholarTabaleData = $scholarTableResult->fetch_all(MYSQLI_ASSOC);
 $scholarTableArray_YearOfAward = array_column($scholarTabaleData, "year_of_award");
@@ -330,7 +330,7 @@ $awardYearData = [];
 $awardYearLabels = [];
 
 $sqlAwardYear = "
-        SELECT `year_of_award`, COUNT(`year_of_award`) As total FROM `scholars` GROUP By `year_of_award`
+        SELECT `year_of_award`, COUNT(`year_of_award`) As total FROM `scholars` WHERE record_status = 'active' GROUP By `year_of_award`
     ";
 $resultAwardYear = $conn->query($sqlAwardYear);
 
@@ -350,7 +350,7 @@ $schoolData = [];
 $schoolLabels = [];
 
 $sqlSchool = "
-        SELECT `school`, COUNT(`school`) AS total FROM `scholars` GROUP BY `school`
+        SELECT `school`, COUNT(`school`) AS total FROM `scholars` WHERE record_status = 'active' GROUP BY `school`
     ";
 $resultBar = $conn->query($sqlSchool);
 
@@ -400,12 +400,12 @@ if ($graduatedStatesData[0] > 0) {
 $statusLabels = [];
 $statusData = [];
 
-$statusSql = "Select `status`, `year_graduated` from `scholars` where 1";
-$statusLabelSql = "Select `status`, COUNT(`status`) as total from `scholars` group by `status`";
+$statusSql = "Select `status`, `year_graduated` from `scholars` WHERE record_status = 'active'";
+$statusLabelSql = "Select `status`, COUNT(`status`) as total from `scholars` WHERE record_status = 'active' group by `status`";
 // $graduatedStatusSql = "Select `year_graduated` from `scholars`";
 
 
-$graduatedStatusSql = "Select Count(`year_graduated`) as total from `scholars`";
+$graduatedStatusSql = "Select Count(`year_graduated`) as total from `scholars` WHERE record_status = 'active'";
 $graduatedStatusResult = $conn->query($graduatedStatusSql);
 $graduatedStatusAll = $graduatedStatusResult->fetch_all(MYSQLI_ASSOC);
 $graduatedStatesData  = array_column($graduatedStatusAll, 'total');
@@ -493,7 +493,7 @@ $aklanMunicipalities = array_column($munTableResult->fetch_all(MYSQLI_ASSOC), "f
 $aklanMunicipalitiesDistrict = array_column($munTableResult->fetch_all(MYSQLI_ASSOC), "fld_district");
 
 
-$municipalitySql = "Select `district`,`municipality`, COUNT(municipality) as total from `scholars` Group By `municipality`";
+$municipalitySql = "Select `district`,`municipality`, COUNT(municipality) as total from `scholars` WHERE record_status = 'active' Group By `municipality`";
 $resultMunicipality = $conn->query($municipalitySql);
 
 
