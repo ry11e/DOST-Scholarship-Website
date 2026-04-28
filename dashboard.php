@@ -37,12 +37,23 @@ include_once "includes/connection.php";
 
             <!-- Display Alert Message -->
             <?php
-            if (isset($_SESSION['message'])) {
-                echo "<div class='alert alert-" . $_SESSION['message_type'] . "'>" . $_SESSION['message'] . "</div>";
+                if (isset($_SESSION['message'])):
+            ?>
+                <script>
+                    console.log("POTATAT");
+                    // You can also just echo the script directly if the session exists
+                    document.addEventListener("DOMContentLoaded", function() {
+                        showNotification2(<?= $_SESSION['message'] ?>, "success");
+                    });
+                </script>
+
+            <?php
+                endif;
                 unset($_SESSION['message']);
                 unset($_SESSION['message_type']);
-            }
             ?>
+
+
 
             <!-- Search Form -->
             <form method="GET" action="">
@@ -137,10 +148,10 @@ include_once "includes/connection.php";
 
             <div class="bg-secondary-subtle border rounded-top-2 pb-2 mt-3 ">
 
-                <div class="mt-2 mx-2 fs-7 d-flex align-items-center"> 
+                <div class="mt-2 mx-2 fs-7 d-flex align-items-center">
                     Total Results:
                     <div id="dashboard-total-results-display" class=" bg-success-subtle-1 px-1 rounded-2">
-                        
+
                     </div>
                 </div>
 
@@ -173,11 +184,20 @@ include_once "includes/connection.php";
                     <tbody>
                         <?php
                         if (isset($_GET['message'])) {
-                            if ($_GET['message'] == 'deleted') {
-                                echo "<div class='alert alert-success'>Scholar details deleted successfully!</div>";
-                            } elseif ($_GET['message'] == 'error') {
-                                echo "<div class='alert alert-danger'>An error occurred while deleting the scholar details.</div>";
-                            }
+                            $message = $_GET['message'];
+                            echo "
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        if('$message' == 'deleted'){
+                                            showNotification2( 'Scholar Details deleted successfully!' , 'success');
+                                        }
+                                        else{
+                                            showNotification2( 'Error' , 'error');
+                                        }
+                                    });
+                                </script>
+                            ";
+                            unset($_GET['message']);
                         }
                         ?>
 
@@ -283,10 +303,9 @@ include_once "includes/connection.php";
                             } else if ($row['status'] == 'Ongoing') {
                                 $statusClass = 'bg-info-subtle-1';
                             } elseif ($row['status'] == 'Problematic') {
-                                if(!empty($row['year_graduated'])){
+                                if (!empty($row['year_graduated'])) {
                                     $statusClass = 'bg-warning-subtle-1';
-                                }
-                                else{
+                                } else {
                                     $statusClass = 'bg-danger-subtle-1';
                                 }
                             } elseif ($row['status'] == 'Updated') {
@@ -312,16 +331,16 @@ include_once "includes/connection.php";
                             echo "<td>" . $row['course'] . "</td>";
                             echo "<td>" . $row['contact_no'] . "</td>";
 
-                            echo "<td class=''> <div class='$statusClass px-3 py-1 rounded-2 text-center' >" . 
-                                    ($row['year_graduated'] ? (($row['status']=="Problematic") ? "Problematic yet Graduated" : "Graduated") : $row['status']) 
-                                ."</div> </td>";
+                            echo "<td class=''> <div class='$statusClass px-3 py-1 rounded-2 text-center' >" .
+                                ($row['year_graduated'] ? (($row['status'] == "Problematic") ? "Problematic yet Graduated" : "Graduated") : $row['status'])
+                                . "</div> </td>";
 
                             echo "<td ><div class='$yearGraduatedClass px-3 py-1 rounded-2'>" . $row['year_graduated'] ?? "" . "</div></td>";
                             echo "<td>" . $row['municipality'] . "</td>";
                             echo "<td>";
 
-                            foreach($periodicFilesArray as $periodicFile){
-                                if($periodicFile['fld_scholar_ID'] == $scholarId){
+                            foreach ($periodicFilesArray as $periodicFile) {
+                                if ($periodicFile['fld_scholar_ID'] == $scholarId) {
                                     //This means for each periodic file that belongs to THIS specific scholar
                                     $filename = $periodicFile['fld_filename'];
                                     $upload_date = $periodicFile['fld_uploaded_at'];
@@ -340,7 +359,7 @@ include_once "includes/connection.php";
                                     }
                                 }
                             }
-                            
+
                             /*
                             if (!empty($row['periodic_requirements'])) {
                                 $files = explode(',', $row['periodic_requirements']);
@@ -370,13 +389,13 @@ include_once "includes/connection.php";
                                 }
                             }
                                 */
-                            
+
                             echo "</td>";
                             echo "<td>" . $row['summer'] . "</td>";
                             echo "<td>";
 
-                            foreach($updatedCOGsArray as $updatedCOG){
-                                if($updatedCOG['fld_scholar_ID'] == $scholarId){
+                            foreach ($updatedCOGsArray as $updatedCOG) {
+                                if ($updatedCOG['fld_scholar_ID'] == $scholarId) {
                                     //This means for each periodic file that belongs to THIS specific scholar
                                     $filename = $updatedCOG['fld_filename'];
                                     $upload_date = $updatedCOG['fld_uploaded_at'];
@@ -425,7 +444,7 @@ include_once "includes/connection.php";
                                 }
                             }
                                 */
-                            
+
                             echo "</td>";
 
                             echo "<td>" . $row['delayed_requirements'] . "</td>";
@@ -458,15 +477,17 @@ include_once "includes/connection.php";
                     // Display the number of results
                     //echo "<div class='mb-2 mt-2'>Number of results: " . $result->num_rows . "</div>";
                     ?>
-                    <script>
-
-
-                    </script>
+                    
 
                 </table>
             </div>
         </div>
     </div>
+
+    <?php
+    include "notification.php";
+    ?>
+
 </div>
 
 
@@ -566,7 +587,7 @@ include_once "includes/connection.php";
                             </select>
                         </div>
                         <div class="col-md-6 form-group">
-                            <label for="periodic_requirements">Periodic Requirements&nbsp;<span style="font-size: 9px; color:red; background-color:antiquewhite ;"> Note: (Filenames should not have commas(,))</span></label>
+                            <label for="periodic_requirements">Periodic Requirements&nbsp;</label>
                             <input type="file" class="form-control" id="periodic_requirements" name="periodic_requirements[]" accept=".pdf,.doc,.docx" multiple>
                         </div>
                     </div>
