@@ -176,7 +176,7 @@ include_once 'includes/connection.php';
 					</a>
 				</li>
 
-				<li class="<?php echo ($current_file === 'preferences.php') ? 'active' : ''; ?>">
+				<li class="<?php echo ($current_file === 'preferences.php') ? 'active' : ''; ?> " hidden>
 					<a href="preferences.php" class="dropdown-toggle no-arrow">
 						<span class="micon bi bi-gear"></span>
 						<span class="mtext">Preferences</span>
