@@ -2,6 +2,8 @@
 include 'includes/connection.php';
 require_once 'includes/SimpleXLSXGen.php';   // php library for generating xlsx files
 
+$current_date = date("Y-m-d_h-i-s");
+
 $rows = [
     ["LIST OF DOST-SEI SCHOLARS IN THE PROVINCE OF AKLAN"],
     ['SY 2024-2025'],
@@ -46,5 +48,5 @@ $xlsx->setColWidth(9,  15);
 $xlsx->setColWidth(10,  15);
 
 // Download
-$xlsx->downloadAs('scholars.xlsx');
+$xlsx->downloadAs("scholars_" . $current_date . ".xlsx");
 ?>
