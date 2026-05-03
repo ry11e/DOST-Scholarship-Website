@@ -238,8 +238,8 @@ include_once 'includes/sidebar.php';
                         <table id="monitorTable" class="data-table table no-wrap table-hover table-bordered table-striped w-100 mx-auto">
                             <thead>
                                 <tr>
-                                    <th class="datatable text-center" style="width: 15%">Date</th>
-                                    <th class="datatable" style="width: 65%">Details</th>
+                                    <th class="table-header datatable text-center" style="width: 15%">Date</th>
+                                    <th class="table-header datatable" style="width: 65%">Details</th>
                                     <th class="datatable mon-schol-no-pdf" style="width: 20%">Actions</th>
                                 </tr>
                             </thead>
@@ -286,7 +286,7 @@ include_once 'includes/sidebar.php';
                     <br>
                     <br>
                     <br>
-                    Prepared By:_________________________
+                    Prepared By: _________________________
                 </div>
             </div>
         </div>
@@ -443,17 +443,25 @@ include_once 'includes/sidebar.php';
         const element = document.getElementById('report-area');
         const actionElements = document.querySelectorAll('.mon-schol-no-pdf');
         const showElements = document.querySelectorAll('.mon-schol-yes-pdf');
+        const tableHeaders = document.querySelectorAll('.table-header');
 
         // 1. Temporarily hide the elements on the screen
         actionElements.forEach(el => {
             el.style.display = 'none';
-            console.log('Hiding element:', el);
+            //console.log('Hiding element:', el);
         });
 
         showElements.forEach(el => {
             el.style.display = 'block';
-            console.log('Showing element:', el);
+            //console.log('Showing element:', el);
         });
+
+        tableHeaders.forEach(el => {
+            el.classList.remove('datatable');
+            console.log("remove class from header");
+        });
+
+
 
         const opt = {
             margin: 0.5,
@@ -481,6 +489,9 @@ include_once 'includes/sidebar.php';
             // 3. Bring them back after the PDF is generated!
             actionElements.forEach(el => el.style.display = '');
             showElements.forEach(el => el.style.display = 'none');
+            tableHeaders.forEach(el => {
+                el.classList.add('datatable');
+            });
         });
     }
 </script>
