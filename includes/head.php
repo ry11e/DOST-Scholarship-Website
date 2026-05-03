@@ -83,7 +83,7 @@ $username = $_SESSION['admin_username'];
 	<!-- Basic Page Info -->
 	<meta charset="utf-8" />
 	<title>SCHOLARSHIP - Admin Dashboard </title>	
-	<link rel="icon" type="image/x-icon" href="../assets/images/AKSIS Icon.ico">
+	<link rel="icon" type="image/x-icon" href="assets/images/AKSIS_Icon.ico">
 
 	<!-- Site favicon -->
 	<link
