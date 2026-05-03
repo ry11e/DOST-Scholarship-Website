@@ -166,25 +166,25 @@ include_once "includes/connection.php";
                 <table class="data-table table no-wrap table-hover table-bordered table-striped">
                     <thead>
                         <tr style="background-color: rgba(0, 0, 0, 0.39);">
-                            <th class="table-plus">#</th>
-                            <th class="datatable">YEAR OF AWARD</th>
-                            <th class="datatable">SCHOLARSHIP PROGRAM</th>
-                            <th class="datatable">NAME OF SCHOLAR</th>
-                            <th class="datatable">SCHOOL</th>
-                            <th class="datatable">COURSE</th>
-                            <th class="datatable-nosort">CONTACT NO.</th>
-                            <th class="datatable">STATUS</th>
-                            <th class="datatable">YEAR GRADUATED</th>
-                            <th class="datatable">MUNICIPALITY</th>
-                            <th class="datatable-nosort">PERIODIC REQUIREMENTS</th>
+                            <th class="table-plus all" data-priority="1">#</th>
+                            <th class="datatable" data-priority="1">YEAR OF AWARD</th>
+                            <th class="datatable" data-priority="1">SCHOLARSHIP PROGRAM</th>
+                            <th class="datatable" data-priority="1">NAME OF SCHOLAR</th>
+                            <th class="datatable" data-priority="1">SCHOOL</th>
+                            <th class="datatable" data-priority="1">COURSE</th>
+                            <th class="datatable-nosort" data-priority="3">CONTACT NO.</th>
+                            <th class="datatable" data-priority="1">STATUS</th>
+                            <th class="datatable" data-priority="2">YEAR GRADUATED</th>
+                            <th class="datatable" data-priority="4">MUNICIPALITY</th>
+                            <th class="datatable-nosort" data-priority="4">PERIODIC REQUIREMENTS</th>
 
-                            <th class="datatable-nosort">SUMMER</th>
-                            <th class="datatable-nosort">Updated COG</th>
-                            <th class="datatable-nosort">Delayed Requirements</th>
-                            <th class="datatable-nosort">Lacking Requirements</th>
-                            <th class="datatable-nosort">Remarks</th>
-                            <th class="datatable-nosort">District</th>
-                            <th class="datatable-nosort">Actions</th>
+                            <th class="datatable-nosort" data-priority="4">SUMMER</th>
+                            <th class="datatable-nosort" data-priority="4">Updated COG</th>
+                            <th class="datatable-nosort" data-priority="4">Delayed Requirements</th>
+                            <th class="datatable-nosort" data-priority="4">Lacking Requirements</th>
+                            <th class="datatable-nosort" data-priority="4">Remarks</th>
+                            <th class="datatable-nosort" data-priority="4">District</th>
+                            <th class="datatable-nosort" data-priority="4">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -581,6 +581,8 @@ include_once "includes/connection.php";
 
                                 $scholStatSql = "SELECT * FROM tbl_scholar_status WHERE fld_status = 'active'";
                                 $scholStatRes = $conn->query($scholStatSql);
+
+                                $selected_status = $_GET['status'] ?? '';
 
                                 while ($row = $scholStatRes->fetch_assoc()) {
                                     $value = $row['fld_scholarshipStatus'];
