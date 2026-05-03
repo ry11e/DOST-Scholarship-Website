@@ -2142,7 +2142,7 @@ function isInAklan($municipality)
 
     // Download in Word Format
     async function downloadWordReport() {
-        console.log("Preparing Word Document...");
+        //console.log("Preparing Word Document...");
 
         // variables to adjust width and height
         const chartWidth = 600;
