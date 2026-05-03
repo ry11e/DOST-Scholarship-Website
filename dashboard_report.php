@@ -2124,9 +2124,17 @@ function isInAklan($municipality)
         doc.addImage(img9, 'PNG', 15, 25, 180, 90);
 
 
+        const now = new Date();
+        
+        const nowDate = now.toLocaleDateString();
+        const nowTime = now.toLocaleTimeString();
+
+        const nowDateString = nowDate.toString();
+        const nowTimeString = nowTime.toString();
+
 
         // Save the file
-        doc.save("Scholarship_Report.pdf");
+        doc.save("Scholarship_Report_" + nowDateString + "_" + nowTimeString + ".pdf");
     }
 
 
@@ -2229,11 +2237,19 @@ function isInAklan($municipality)
             type: 'application/msword'
         });
 
+        const now = new Date();
+        
+        const nowDate = now.toLocaleDateString();
+        const nowTime = now.toLocaleTimeString();
+
+        const nowDateString = nowDate.toString();
+        const nowTimeString = nowTime.toString();
+
         // Create a temporary link to click
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
-        link.download = "Scholarship_Report.doc";
+        link.download = "Scholarship_Report_" + nowDateString + "_" + nowTimeString + ".doc";
 
         document.body.appendChild(link);
         link.click();
