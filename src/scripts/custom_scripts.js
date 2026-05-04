@@ -1,37 +1,4 @@
-(function() {
-    const body = document.body;
-    const leftSidebar = document.querySelector('left-side-bar');
 
-    // 1. IMMEDIATE CHECK (Run this before the page even finishes loading if possible)
-    if (localStorage.getItem('sidebar-state') === 'closed') {
-        body.classList.add('sidebar-close');
-        if(leftSidebar){
-            leftSidebar.classList.remove('open');
-            //console.log("sidebar exists");
-        }
-        else{
-            //console.log("sidebar doesn't exist");
-        }
-        
-    }
-    
-    // 2. THE OBSERVER: Watch the <body> for class changes
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (mutation.attributeName === "class") {
-                const isClosed = body.classList.contains('sidebar-close');
-                const sideBarIsOpen = leftSidebar.contains('open');
-                const sideBarIsClosed = !sideBarIsOpen;
-
-                localStorage.setItem('sidebar-state', sideBarIsClosed ? 'closed' : 'open');
-                //console.log("Sidebar state saved:", sideBarIsClosed ? 'closed' : 'open');
-            }
-        });
-    });
-
-    // 3. START WATCHING
-    observer.observe(body, { attributes: true });
-})();
 
 /*
 document.addEventListener('DOMContentLoaded', function() {
