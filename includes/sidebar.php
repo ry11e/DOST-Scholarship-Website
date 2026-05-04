@@ -138,7 +138,7 @@ include_once 'includes/connection.php';
 	</div>
 </div>
 
-<div class="left-side-bar">
+<div id="left-side-bar" class="left-side-bar">
 	<div class="brand-logo">
 		<a href="dashboard.php">
 			<h4 style="color: rgb(0, 0, 0);" class="dark-logo">ADMINISTRATOR</h4>

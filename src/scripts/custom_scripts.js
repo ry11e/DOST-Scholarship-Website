@@ -1,4 +1,76 @@
+/*(function() {
+    const body = document.body;
+    const leftSidebar = document.querySelector('left-side-bar');
 
+    // 1. IMMEDIATE CHECK (Run this before the page even finishes loading if possible)
+    if (localStorage.getItem('sidebar-state') === 'closed') {
+        body.classList.add('sidebar-close');
+        if(leftSidebar){
+            leftSidebar.classList.remove('open');
+            //console.log("sidebar exists");
+        }
+        else{
+            //console.log("sidebar doesn't exist");
+        }
+        
+    }
+    
+    // 2. THE OBSERVER: Watch the <body> for class changes
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === "class") {
+                const isClosed = body.classList.contains('sidebar-close');
+                const sideBarIsOpen = leftSidebar.contains('open');
+                const sideBarIsClosed = !sideBarIsOpen;
+
+                localStorage.setItem('sidebar-state', sideBarIsClosed ? 'closed' : 'open');
+                //console.log("Sidebar state saved:", sideBarIsClosed ? 'closed' : 'open');
+            }
+        });
+    });
+
+    // 3. START WATCHING
+    observer.observe(body, { attributes: true });
+})();
+*/
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const leftSidebar = document.getElementById('left-side-bar');
+    const menuIcon = document.querySelector('.menu-icon');
+
+    if (!leftSidebar) return; // Exit early if sidebar is missing
+
+    // 1. INITIAL LOAD: Apply the saved state immediately
+    const savedState = localStorage.getItem('sidebar-state');
+    
+    if (savedState === 'closed') {
+        leftSidebar.classList.remove('open');
+        //console.log("Applying saved state: Closed");
+    } else if (savedState === 'open') {
+        leftSidebar.classList.add('open');
+        //console.log("Applying saved state: Open");
+    }
+
+    // 2. TOGGLE LOGIC
+    if (menuIcon) {
+        menuIcon.addEventListener('click', function() {
+            // Wait just long enough for the template's internal script to toggle the class
+            // 1000ms (1 second) is way too long; 50ms is usually plenty.
+            setTimeout(() => {
+                const isOpen = leftSidebar.classList.contains('open');
+                
+                if (isOpen) {
+                    localStorage.setItem('sidebar-state', 'open');
+                    //console.log("State saved: open");
+                } else {
+                    localStorage.setItem('sidebar-state', 'closed');
+                    //console.log("State saved: closed");
+                }
+            }, 50); 
+        });
+    }
+});
 
 /*
 document.addEventListener('DOMContentLoaded', function() {
