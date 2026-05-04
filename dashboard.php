@@ -174,7 +174,7 @@ include_once "includes/connection.php";
                             <th class="datatable" data-priority="1">COURSE</th>
                             <th class="datatable-nosort none" data-priority="3">CONTACT NO.</th>
                             <th class="datatable" data-priority="1">STATUS</th>
-                            <th class="datatable none" data-priority="2">YEAR GRADUATED</th>
+                            <th class="datatable" data-priority="2">YEAR GRADUATED</th>
                             <th class="datatable none" data-priority="4">MUNICIPALITY</th>
                             <th class="datatable-nosort none" data-priority="4">PERIODIC REQUIREMENTS</th>
 
@@ -327,6 +327,9 @@ include_once "includes/connection.php";
                             if (!empty($row['year_graduated'])) {
                                 $yearGraduatedClass = 'bg-success-subtle-1';
                             }
+                            else{
+                                $yearGraduatedClass = 'bg-secondary-subtle-1';
+                            }
 
                             $scholarId = $row['id'];
 
@@ -342,8 +345,13 @@ include_once "includes/connection.php";
                             echo "<td class=''> <div class='$statusClass px-3 py-1 rounded-2 text-center' >" .
                                 ($row['year_graduated'] ? (($row['status'] == "Problematic") ? "Problematic yet Graduated" : "Graduated") : $row['status'])
                                 . "</div> </td>";
-
-                            echo "<td ><div class='$yearGraduatedClass px-3 py-1 rounded-2'>" . $row['year_graduated'] ?? "" . "</div></td>";
+                            if($row['year_graduated'] == null){
+                                $yearGraduated = "Undergraduate";
+                            }
+                            else{
+                                $yearGraduated = $row['year_graduated'];
+                            }
+                            echo "<td ><div class='$yearGraduatedClass px-3 py-1 rounded-2 text-center'>" . $yearGraduated . "</div></td>";
                             echo "<td>" . $row['municipality'] . "</td>";
                             echo "<td>";
 
