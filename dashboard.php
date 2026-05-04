@@ -167,24 +167,24 @@ include_once "includes/connection.php";
                     <thead>
                         <tr style="background-color: rgba(0, 0, 0, 0.39);">
                             <th class="table-plus all" data-priority="1">#</th>
-                            <th class="datatable" data-priority="1">YEAR OF AWARD</th>
-                            <th class="datatable" data-priority="1">SCHOLARSHIP PROGRAM</th>
+                            <th class="datatable" data-priority="1" style="width: 5%;">YEAR OF AWARD</th>
+                            <th class="datatable" data-priority="1" style="width: 10%;">SCHOLARSHIP PROGRAM</th>
                             <th class="datatable" data-priority="1">NAME OF SCHOLAR</th>
                             <th class="datatable" data-priority="1">SCHOOL</th>
                             <th class="datatable" data-priority="1">COURSE</th>
-                            <th class="datatable-nosort" data-priority="3">CONTACT NO.</th>
+                            <th class="datatable-nosort none" data-priority="3">CONTACT NO.</th>
                             <th class="datatable" data-priority="1">STATUS</th>
-                            <th class="datatable" data-priority="2">YEAR GRADUATED</th>
-                            <th class="datatable" data-priority="4">MUNICIPALITY</th>
-                            <th class="datatable-nosort" data-priority="4">PERIODIC REQUIREMENTS</th>
+                            <th class="datatable none" data-priority="2">YEAR GRADUATED</th>
+                            <th class="datatable none" data-priority="4">MUNICIPALITY</th>
+                            <th class="datatable-nosort none" data-priority="4">PERIODIC REQUIREMENTS</th>
 
-                            <th class="datatable-nosort" data-priority="4">SUMMER</th>
-                            <th class="datatable-nosort" data-priority="4">Updated COG</th>
-                            <th class="datatable-nosort" data-priority="4">Delayed Requirements</th>
-                            <th class="datatable-nosort" data-priority="4">Lacking Requirements</th>
-                            <th class="datatable-nosort" data-priority="4">Remarks</th>
-                            <th class="datatable-nosort" data-priority="4">District</th>
-                            <th class="datatable-nosort" data-priority="4">Actions</th>
+                            <th class="datatable-nosort none" data-priority="4">SUMMER</th>
+                            <th class="datatable-nosort none" data-priority="4">Updated COG</th>
+                            <th class="datatable-nosort none" data-priority="4">Delayed Requirements</th>
+                            <th class="datatable-nosort none" data-priority="4">Lacking Requirements</th>
+                            <th class="datatable-nosort none" data-priority="4">Remarks</th>
+                            <th class="datatable-nosort none" data-priority="4">District</th>
+                            <th class="datatable-nosort none" data-priority="4">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
