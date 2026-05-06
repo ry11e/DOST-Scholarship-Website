@@ -178,13 +178,14 @@ include_once "includes/connection.php";
                             <th class="datatable none" data-priority="4">MUNICIPALITY</th>
                             <th class="datatable-nosort none" data-priority="4">PERIODIC REQUIREMENTS</th>
 
-                            <th class="datatable-nosort none" data-priority="4">SUMMER</th>
                             <th class="datatable-nosort none" data-priority="4">Updated COG</th>
+                            
+                            <th class="datatable-nosort none" data-priority="4">SUMMER</th>
                             <th class="datatable-nosort none" data-priority="4">Delayed Requirements</th>
                             <th class="datatable-nosort none" data-priority="4">Lacking Requirements</th>
                             <th class="datatable-nosort none" data-priority="4">Remarks</th>
                             <th class="datatable-nosort none" data-priority="4">District</th>
-                            <th class="datatable-nosort none" data-priority="4">Actions</th>
+                            <th class="datatable-nosort none" data-priority="4"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -307,28 +308,28 @@ include_once "includes/connection.php";
                             //status
                             $statusClass = '';
                             if ($row['year_graduated'] && ($row['status'] != 'Problematic')) {
-                                $statusClass = 'bg-success-subtle-1';
+                                $statusClass = 'bg-success-subtle-1 text-success';
                             } else if ($row['status'] == 'Ongoing') {
-                                $statusClass = 'bg-info-subtle-1';
+                                $statusClass = 'bg-info-subtle-1  text-info';
                             } elseif ($row['status'] == 'Problematic') {
                                 if (!empty($row['year_graduated'])) {
-                                    $statusClass = 'bg-warning-subtle-1';
+                                    $statusClass = 'bg-warning-subtle-1  text-warning';
                                 } else {
-                                    $statusClass = 'bg-danger-subtle-1';
+                                    $statusClass = 'bg-danger-subtle-1  text-danger';
                                 }
                             } elseif ($row['status'] == 'Updated') {
-                                $statusClass = 'bg-info-subtle-1';
+                                $statusClass = 'bg-info-subtle-1  text-info';
                             } else {
-                                $statusClass = 'bg-secondary-subtle-1';
+                                $statusClass = 'bg-secondary-subtle-1  text-secondary';
                             }
 
                             //year graduated
                             $yearGraduatedClass = '';
                             if (!empty($row['year_graduated'])) {
-                                $yearGraduatedClass = 'bg-success-subtle-1';
+                                $yearGraduatedClass = 'bg-success-subtle-1 text-success';
                             }
                             else{
-                                $yearGraduatedClass = 'bg-secondary-subtle-1';
+                                $yearGraduatedClass = 'bg-secondary-subtle-1 text-secondary';
                             }
 
                             $scholarId = $row['id'];
@@ -407,7 +408,6 @@ include_once "includes/connection.php";
                                 */
 
                             echo "</td>";
-                            echo "<td>" . $row['summer'] . "</td>";
                             echo "<td>";
 
                             foreach ($updatedCOGsArray as $updatedCOG) {
@@ -462,23 +462,26 @@ include_once "includes/connection.php";
                                 */
 
                             echo "</td>";
+                            
+                            echo "<td>" . $row['summer'] . "</td>";
 
                             echo "<td>" . $row['delayed_requirements'] . "</td>";
                             echo "<td>" . $row['lacking_requirements'] . "</td>";
                             echo "<td>" . $row['remarks'] . "</td>";
                             echo "<td>" . $row['district'] . "</td>";
                             echo "<td>
-                                    <div class='table-actions d-flex gap-2 '>
+                                    <div class='table-actions d-flex gap-3 justify-content-center'>
                                         <a href='edit-scholar.php?id=" . $row['id'] . "' 
-                                            class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
+                                        class='btn btn-sm btn-outline-primary shadow-sm '>
                                             <i class='icon-copy dw dw-edit2'></i>
                                         </a>
                                         
                                         <a onclick='return confirmDelete()' 
-                                            href='delete_scholar.php?id=" . $row['id'] . "' 
-                                                class='btn btn-sm btn-outline-danger shadow-sm'>
+                                        href='delete_scholar.php?id=" .  $row['id']. "' 
+                                        class='btn btn-sm btn-outline-danger shadow-sm m-0'>
                                             <i class='icon-copy dw dw-delete-3'></i>
                                         </a>
+                                        <div class='me-5'></div>
                                     </div>
                                 </td>";
                             echo "</tr>";

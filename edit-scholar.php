@@ -35,8 +35,8 @@ $updatedCOGsArray = $updatedCOGs->fetch_all(MYSQLI_ASSOC);
 <div class="main-container">
 
     <div class="xs-pd-20-10 pd-ltr-20">
-        <div class="card-box p-4">
-            <div class="h5 pd-20 mb-0">Edit Scholar Details</div>
+        <div class="card-box p-5">
+            <div class="h5 pd-20 mb-6">Edit Scholar Details</div>
             <form id="edit_scholar_form" method="POST" action="update-scholar.php" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?php echo $scholar['id']; ?>" />
                 <div class="form-group row">
@@ -117,6 +117,26 @@ $updatedCOGsArray = $updatedCOGs->fetch_all(MYSQLI_ASSOC);
                             ?>
                         </datalist>
                     </div>
+                    
+                    <div class="col-md-6">
+                        <label for="year_graduated">Year Graduated <span style="font-size: 9px; color:red; background-color:antiquewhite ;"> Note: (Remain blank if not yet graduated)</span></label>
+                        <input type="number" class="form-control" name="year_graduated" value="<?php echo $scholar['year_graduated']; ?>" />
+                    </div>
+
+                    
+                </div>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label for="summer">Summer</label>
+                        <input type="text" class="form-control" name="summer" value="<?php echo $scholar['summer']; ?>" />
+                    </div>
+
+                    <div class="col-md-6">
+                    </div>
+                    
+                </div>
+
+                <div class="form-group row">
                     <div class="col-md-6">
                         <label for="periodic_requirements">Periodic Requirements&nbsp; &nbsp;</label>
                         <!-- THIS IS THE LIST OF UPLOADS -->
@@ -170,12 +190,6 @@ $updatedCOGsArray = $updatedCOGs->fetch_all(MYSQLI_ASSOC);
                         <!-- THIS IS THE UPLOAD AREA -->
                         <input type="file" class="form-control" name="periodic_requirements[]" accept=".pdf,.doc,.docx" multiple />
                     </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <label for="summer">Summer</label>
-                        <input type="text" class="form-control" name="summer" value="<?php echo $scholar['summer']; ?>" />
-                    </div>
                     <div class="col-md-6">
                         <label for="Updated COG">Updated COG&nbsp; &nbsp;</label>
                         <?php
@@ -226,27 +240,29 @@ $updatedCOGsArray = $updatedCOGs->fetch_all(MYSQLI_ASSOC);
 
                         <input type="file" class="form-control" name="updated_cog[]" accept=".pdf,.doc,.docx" multiple />
                     </div>
+                    
                 </div>
+
+                <div class="form-group row p-4">
+                </div>
+
                 <div class="form-group row">
-                    <div class="col-md-6">
-                        <label for="year_graduated">Year Graduated <span style="font-size: 9px; color:red; background-color:antiquewhite ;"> Note: (Remain blank if not yet graduated)</span></label>
-                        <input type="number" class="form-control" name="year_graduated" value="<?php echo $scholar['year_graduated']; ?>" />
-                    </div>
                     <div class="col-md-6">
                         <label for="lacking_requirements">Lacking Requirements</label>
                         <input type="text" class="form-control" name="lacking_requirements" value="<?php echo $scholar['lacking_requirements']; ?>" />
-                    </div>
-                </div>
-                <div class="form-group row">
-                    <div class="col-md-6">
-                        <label for="remarks">Remarks</label>
-                        <input type="text" class="form-control" name="remarks" value="<?php echo $scholar['remarks']; ?>" />
                     </div>
                     <div class="col-md-6">
                         <label for="delayed_requirements">Delayed Requirements</label>
                         <input type="text" class="form-control" name="delayed_requirements" value="<?php echo $scholar['delayed_requirements']; ?>" />
                     </div>
                 </div>
+
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label for="remarks">Remarks</label>
+                        <input type="text" class="form-control" name="remarks" value="<?php echo $scholar['remarks']; ?>" />
+                    </div>
+                </div>  
                 <div class="form-group row">
                     <div class="col-md-12 text-right">
                         <button type="submit" class="btn btn-primary">Update</button>

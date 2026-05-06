@@ -54,7 +54,7 @@
 
 
 .bg-info-subtle-1 {
-    background-color: #abf0ff !important;
+    background-color: #97ecff !important;
 }
 
 .bg-success-subtle-1 {
@@ -70,9 +70,121 @@
 }
 
 .bg-warning-subtle-1 {
-    background-color: #ffeaaa !important;
+    background-color: #fff0c1 !important;
 }
 
 .bg-secondary-subtle-1 {
     background-color: #cfcfcf !important;
 }
+
+
+
+/* Target the child row list */
+ul.dtr-details {
+    display: grid !important;
+    /* This creates two equal columns. Change to 1fr 1fr 1fr for three. */
+    grid-template-columns: 1fr 1fr; 
+    grid-column-gap: 30px;
+    width: 100%;
+    padding: 30px !important;
+    border: rgb(117, 117, 117) 1px solid;
+    border-radius: 15px;
+}
+
+/* Ensure the list items behave like grid children */
+ul.dtr-details > li {
+    border-bottom: 1px solid #8a8a8a;
+    border-top: 1px solid #cfcfcf;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    margin-bottom: 0;
+}
+
+/* Optional: Make specific items (like "Actions" or "Remarks") span both columns */
+ul.dtr-details > li:last-child {
+    grid-column: span 2; 
+    border-bottom: none;
+
+    display: flex;
+    justify-content: center; /* horizontal */
+    align-items: center;
+}
+
+
+
+
+
+/* Custom Professional Table Styling */
+.data-table {
+    border-collapse: separate;
+    border-spacing: 0 8px; /* Creates a 'card' look for rows if you remove borders */
+    border: none !important;
+}
+
+/* Make the header look modern */
+.data-table thead th {
+    background-color: #f8f9fa; /* Very light gray */
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    font-weight: 700;
+    border-top: none;
+    border-bottom: 2px solid #dee2e6;
+    padding: 12px 15px;
+}
+
+/* Style the rows like individual cards or clean lines */
+.data-table tbody tr {
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+}
+
+/* Highlight row on hover without being distracting */
+.data-table tbody tr:hover {
+    background-color: #f1f5ff !important; /* Soft blue tint */
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.data-table td {
+    padding: 14px 15px;
+    vertical-align: middle !important;
+    border-top: 1px solid #f2f2f2;
+    color: #333;
+    font-size: 0.85rem;
+}
+
+
+
+
+/* Style the search input */
+.dataTables_filter input {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 6px 12px;
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+.dataTables_filter input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.1);
+}
+
+/* Style pagination buttons */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 10px !important;
+    border: 1px solid #ddd !important;
+    background: white !important;
+    margin-left: 0px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: #007bff !important;
+    color: white !important;
+    border-color: #007bff !important;
+}
+
