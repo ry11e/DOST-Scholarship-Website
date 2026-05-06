@@ -48,11 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (savedState === 'closed') {
         //leftSidebar.classList.remove('open');
         body.classList.add('sidebar-shrink');
-        console.log("Applying saved state: Closed");
+        //console.log("Applying saved state: Closed");
     } else if (savedState === 'open') {
         //leftSidebar.classList.add('open');
         body.classList.remove('sidebar-shrink');
-        console.log("Applying saved state: Open");
+        //console.log("Applying saved state: Open");
     }
 
     // 2. TOGGLE LOGIC
@@ -76,10 +76,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 if (bodyIsClosed) {
                     localStorage.setItem('sidebar-state', 'closed');
-                    console.log("State saved: closed");
+                    //console.log("State saved: closed");
                 } else {
                     localStorage.setItem('sidebar-state', 'open');
-                    console.log("State saved: open");
+                    //console.log("State saved: open");
                 }
             }, 50); 
         });
