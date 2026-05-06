@@ -154,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $scholarshipCode = trim($_POST['scholarshipCode'] ?? '');
                 $scholarshipName    = trim($_POST['scholarshipName'] ?? '');
 
-                if ($municipalityName !== '' && $district !== '') {
+                if ($scholarshipCode !== '' && $scholarshipName !== '') {
                     $stmt = $conn->prepare("
                         UPDATE tbl_scholarship_programs 
                         SET fld_scholarshipCode = ?, fld_scholarshipName = ?
@@ -679,6 +679,7 @@ include_once 'includes/sidebar.php';
 
 <!-- vendor scripts -->
 <script src="vendors/scripts/core.js"></script>
+<script src="src/scripts/custom_scripts.js"></script>
 <script src="vendors/scripts/script.min.js"></script>
 <script src="vendors/scripts/process.js"></script>
 <script src="vendors/scripts/layout-settings.js"></script>

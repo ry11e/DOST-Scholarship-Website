@@ -38,6 +38,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const leftSidebar = document.getElementById('left-side-bar');
     const menuIcon = document.querySelector('.menu-icon');
+    const body = document.body;
 
     if (!leftSidebar) return; // Exit early if sidebar is missing
 
@@ -45,11 +46,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const savedState = localStorage.getItem('sidebar-state');
     
     if (savedState === 'closed') {
-        leftSidebar.classList.remove('open');
-        //console.log("Applying saved state: Closed");
+        //leftSidebar.classList.remove('open');
+        body.classList.add('sidebar-shrink');
+        console.log("Applying saved state: Closed");
     } else if (savedState === 'open') {
-        leftSidebar.classList.add('open');
-        //console.log("Applying saved state: Open");
+        //leftSidebar.classList.add('open');
+        body.classList.remove('sidebar-shrink');
+        console.log("Applying saved state: Open");
     }
 
     // 2. TOGGLE LOGIC
@@ -58,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Wait just long enough for the template's internal script to toggle the class
             // 1000ms (1 second) is way too long; 50ms is usually plenty.
             setTimeout(() => {
+                /*
                 const isOpen = leftSidebar.classList.contains('open');
                 
                 if (isOpen) {
@@ -66,6 +70,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     localStorage.setItem('sidebar-state', 'closed');
                     //console.log("State saved: closed");
+                }
+                */
+                const bodyIsClosed = body.classList.contains('sidebar-shrink');
+
+                if (bodyIsClosed) {
+                    localStorage.setItem('sidebar-state', 'closed');
+                    console.log("State saved: closed");
+                } else {
+                    localStorage.setItem('sidebar-state', 'open');
+                    console.log("State saved: open");
                 }
             }, 50); 
         });

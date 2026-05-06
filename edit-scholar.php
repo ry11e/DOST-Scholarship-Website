@@ -126,7 +126,7 @@ $updatedCOGsArray = $updatedCOGs->fetch_all(MYSQLI_ASSOC);
                                 $filename = $periodicFile['fld_filename'];
                                 $upload_date = $periodicFile['fld_uploaded_at'];
                         ?>
-                                <div class="row bg-warning-subtle m-1 p-2 rounded-3 align-items-center d-flex flex-nowrap">
+                                <div class="row bg-warning-subtle m-1 p-2 rounded-3 align-items-center d-flex flex-nowrap w-100 overflow-hidden">
                                     <div class="d-flex align-items-center flex-grow-1 overflow-hidden" style="max-width:75%;">
                                         <div class="me-2 flex-shrink-0">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 424 511.543">
@@ -146,7 +146,7 @@ $updatedCOGsArray = $updatedCOGs->fetch_all(MYSQLI_ASSOC);
                                         </div>
                                     </div>
 
-                                    <div class="ms-auto d-flex gap-1 align-items-center flex-shrink-0">
+                                    <div class="ms-auto d-flex gap-1 align-items-center flex-shrink-0 ">
                                         <a href="uploads/scholars/<?= $scholar_id ?>/periodic_requirements/<?= $filename ?>"
                                             class="btn btn-outline-primary btn-sm py-0 px-3"
                                             style="font-size: 0.7rem; height: 24px; display: flex; align-items: center;" download>
@@ -185,7 +185,7 @@ $updatedCOGsArray = $updatedCOGs->fetch_all(MYSQLI_ASSOC);
                                 $upload_date = $updatedCOG['fld_uploaded_at'];
                         ?>
 
-                                <div class="row bg-warning-subtle m-1 p-2 rounded-3 align-items-center d-flex flex-nowrap">
+                                <div class="row bg-warning-subtle m-1 p-2 rounded-3 align-items-center d-flex flex-nowrap w-100 overflow-hidden">
                                     <div class="d-flex align-items-center flex-grow-1 overflow-hidden" style="max-width:75%;">
                                         <div class="me-2 flex-shrink-0">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 424 511.543">
@@ -269,6 +269,7 @@ $updatedCOGsArray = $updatedCOGs->fetch_all(MYSQLI_ASSOC);
 
 <!-- JS Scripts -->
 <script src="vendors/scripts/core.js"></script>
+<script src="src/scripts/custom_scripts.js"></script>
 <script src="vendors/scripts/script.min.js"></script>
 <script src="vendors/scripts/process.js"></script>
 <script src="vendors/scripts/layout-settings.js"></script>

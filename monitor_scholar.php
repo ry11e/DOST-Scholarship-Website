@@ -368,6 +368,7 @@ include_once 'includes/sidebar.php';
 
 <!-- JS Scripts -->
 <script src="vendors/scripts/core.js"></script>
+<script src="src/scripts/custom_scripts.js"></script>
 <script src="vendors/scripts/script.min.js"></script>
 <script src="vendors/scripts/bootstrap.min.js"></script>
 <script src="vendors/scripts/process.js"></script>
