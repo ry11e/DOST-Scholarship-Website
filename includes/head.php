@@ -160,7 +160,12 @@ input:focus, textarea:focus, select:focus {
 </style> -->
 
 <body>
-
+	<script>
+        // Apply the state immediately to prevent flicker
+        if (localStorage.getItem('sidebar-state') === 'closed') {
+            document.body.classList.add('sidebar-shrink');
+        }
+    </script>
 
 	<div class="header">
 		<div class="header-left">
