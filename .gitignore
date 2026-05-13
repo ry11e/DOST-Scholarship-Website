@@ -1,3 +1,3 @@
 # the uploads folder
 /uploads/*
-/uploads/.gitkeep
+!/uploads/.gitkeep
