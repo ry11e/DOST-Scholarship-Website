@@ -53,6 +53,10 @@
 
 
 
+.bg-primary-subtle-1 {
+    background-color: #878fff !important;
+}
+
 .bg-info-subtle-1 {
     background-color: #97ecff !important;
 }
@@ -101,6 +105,16 @@ ul.dtr-details > li {
     margin-bottom: 0;
 }
 
+/* Optional: Make specific items (like "Actions" or "Remarks") span both columns */
+ul.dtr-details > li:last-child {
+    grid-column: span 2; 
+    border-bottom: none;
+
+    display: flex;
+    justify-content: center; 
+    align-items: center;
+}
+
 
 @media (min-width: 700px){
     ul.dtr-details {
@@ -123,20 +137,25 @@ ul.dtr-details > li {
         padding: 8px 0;
         margin-bottom: 0;
     }
+
+    /* Optional: Make specific items (like "Actions" or "Remarks") span both columns */
+    ul.dtr-details > li:last-child {
+        grid-column: span 2; 
+        border-bottom: none;
+
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+    }
+
+    
 }
 
-/* Optional: Make specific items (like "Actions" or "Remarks") span both columns */
-/*
-ul.dtr-details > li:last-child {
-    grid-column: span 2; 
-    border-bottom: none;
 
-    display: flex;
-    justify-content: center; 
-    align-items: center;
-}
 
-/*
+
+
+
 
 
 
@@ -239,6 +258,15 @@ ul.dtr-details > li:last-child {
         table-layout: auto !important;
         width: 100% !important;
     }
+
+       
+}
+
+@media (max-width: 1012px){
+    .dash-action-col-2{
+    background-color: #b8ffcd;
+    display: none;
+}
 }
 
 
