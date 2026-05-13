@@ -83,7 +83,7 @@
 ul.dtr-details {
     display: grid !important;
     /* This creates two equal columns. Change to 1fr 1fr 1fr for three. */
-    grid-template-columns: 1fr 1fr; 
+    grid-template-columns: 1fr; 
     grid-column-gap: 30px;
     width: 100%;
     padding: 30px !important;
@@ -101,17 +101,42 @@ ul.dtr-details > li {
     margin-bottom: 0;
 }
 
+
+@media (min-width: 700px){
+    ul.dtr-details {
+        display: grid !important;
+        /* This creates two equal columns. Change to 1fr 1fr 1fr for three. */
+        grid-template-columns: 1fr 1fr; 
+        grid-column-gap: 30px;
+        width: 100%;
+        padding: 30px !important;
+        border: rgb(117, 117, 117) 1px solid;
+        border-radius: 15px;
+    }
+
+    /* Ensure the list items behave like grid children */
+    ul.dtr-details > li {
+        border-bottom: 1px solid #8a8a8a;
+        border-top: 1px solid #cfcfcf;
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        margin-bottom: 0;
+    }
+}
+
 /* Optional: Make specific items (like "Actions" or "Remarks") span both columns */
+/*
 ul.dtr-details > li:last-child {
     grid-column: span 2; 
     border-bottom: none;
 
     display: flex;
-    justify-content: center; /* horizontal */
+    justify-content: center; 
     align-items: center;
 }
 
-
+/*
 
 
 
@@ -188,3 +213,48 @@ ul.dtr-details > li:last-child {
     border-color: #007bff !important;
 }
 
+
+
+
+
+/* Only apply fixed widths on screens larger than 992px (Desktop) */
+@media (min-width: 1200px) {
+    #dashboard-table {
+        table-layout: fixed !important;
+        width: 100% !important;
+    }
+
+    #dashboard-table td, #dashboard-table th {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        word-wrap: break-word;
+        vertical-align: middle;
+    }
+}
+
+/* On smaller screens, allow it to be fluid so the responsive plugin works */
+@media (max-width: 1199.98px) {
+    #dashboard-table {
+        table-layout: auto !important;
+        width: 100% !important;
+    }
+}
+
+
+/* Keep the cell stable */
+#dashboard-table td {
+    vertical-align: middle;
+    height: 40px; /* Force the consistent row height */
+}
+
+/* Control the text inside the cell */
+.cell-content {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.2;
+    max-height: 2.4em; /* height * line-height (1.2 * 2) */
+    white-space: normal !important;
+}
