@@ -181,25 +181,25 @@ include_once 'includes/sidebar.php';
                                         $statusClass = "";
                                         switch ($row["status"]) {
                                             case "Updated":
-                                                $statusClass = "bg-info-subtle-1";
+                                                $statusClass = "bg-info-subtle-1 text-info";
                                                 break;
                                             case "Graduated":
-                                                $statusClass = "bg-success-subtle-1";
+                                                $statusClass = "bg-success-subtle-1 text-success";
                                                 break;
                                             case "Problematic":
                                                 if(!empty($row['year_graduated'])){
-                                                    $statusClass = "bg-warning-subtle-1";
+                                                    $statusClass = "bg-warning-subtle-1 text-warning";
                                                 }
                                                 else{
-                                                    $statusClass = "bg-danger-subtle-1";
+                                                    $statusClass = "bg-danger-subtle-1 text-danger";
                                                 }
                                                 
                                                 break;
                                             default:
-                                                $statusClass = "bg-secondary-subtle";
+                                                $statusClass = "bg-secondary-subtle text-secondary";
                                         }
                                         if($row['year_graduated']){
-                                            $statusClass = "bg-success-subtle-1";
+                                            $statusClass = "bg-success-subtle-1 text-success";
                                         }
                                     ?>
                                         <tr>
