@@ -11,6 +11,7 @@ if($task == "resetSearch"){
     resetSearchQueries();
 }
 
+$initialStatus = "";
 $defaultStatus = "Problematic";
 $status = $defaultStatus;
 $sql = "SELECT * FROM scholars WHERE status = '$defaultStatus'";
@@ -59,6 +60,8 @@ else if((!empty($_SESSION['monitor_scholar_status_search'])) || (!empty($_SESSIO
 
 
 $currentStatus = $_SESSION['monitor_scholar_status_search'] ?? $defaultStatus;
+$searchedStatus = $_SESSION['monitor_scholar_status_search'] ?? $initialStatus;
+
 $currentName = $name;
 $allResult = $conn->query($sql);
 
@@ -118,7 +121,7 @@ include_once 'includes/sidebar.php';
                             <!-- Status Selector -->
                             <div class="row d-flex px-5">
                                 <div class=" d-flex col-4 align-items-center">
-                                    <input id="statusField" list="statusOptions" class="form-control ms-2 <?= htmlspecialchars($searchStatusClass) ?>" name="status" placeholder="Search by Status" value="<?= $currentStatus ?? $defaultStatus ?>"/>
+                                    <input id="statusField" list="statusOptions" class="form-control ms-2 " name="status" placeholder="Search by Status" value="<?= $searchedStatus ?? '' ?>"/>
                                     <datalist id="statusOptions">
                                         <?php
                                         if ($conn->connect_error) {
@@ -149,6 +152,14 @@ include_once 'includes/sidebar.php';
                 <div class="row g-4">
                     <div class="col-12 col-lg-12">
                         <div class="bg-secondary-subtle border rounded-top-2 pb-2 mt-3 ">
+
+                            <div class="mt-2 mx-2 fs-7 d-flex align-items-center">
+                                Status: 
+                                <div id="monitor-table-status-display" class=" <?= htmlspecialchars($searchStatusClass) ?> px-1 rounded-2">
+                                    <?= $currentStatus ?? $defaultStatus ?>
+                                </div>
+                            </div>
+
                             <table class="data-table table no-wrap table-hover table-bordered table-striped">
                                 <thead>
                                     <tr>
@@ -186,6 +197,9 @@ include_once 'includes/sidebar.php';
                                                 break;
                                             default:
                                                 $statusClass = "bg-secondary-subtle";
+                                        }
+                                        if($row['year_graduated']){
+                                            $statusClass = "bg-success-subtle-1";
                                         }
                                     ?>
                                         <tr>
