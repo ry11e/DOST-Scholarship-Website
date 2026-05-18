@@ -152,6 +152,7 @@ include_once 'includes/sidebar.php';
                             </div>
                         </div>
                     </div>
+                    
                     <div class="row g-1">
                         <div class="col-6">
                             <h6 class="h6">School:<u> <?= $scholarArray[0]['school'] ?> </u> </h6>
@@ -170,10 +171,10 @@ include_once 'includes/sidebar.php';
                     </div>
                     <div class="row g-1">
                         <div class="col-6">
-                            <h6 class="h6">Contact No.:<u> <?= $scholarArray[0]['contact_no'] ?></u> </h6>
+                            <h6 class="h6">Status:<u> <?= $scholarArray[0]['status'] ?></u> </h6>
                         </div>
                         <div class="col-6">
-                            <h6 class="h6">Status:<u> <?= $scholarArray[0]['status'] ?></u> </h6>
+                            <h6 class="h6">Contact No.:<u> <?= $scholarArray[0]['contact_no'] ?></u> </h6>
                         </div>
                     </div>
                 </div>
@@ -185,6 +186,9 @@ include_once 'includes/sidebar.php';
                                 <h2 class="h2 mb-0"><?= $scholarArray[0]['name'] ?></h2>
                             </div>
                         </div>
+                    </div>
+                    <div class="row mb-4">
+
                     </div>
                     <div class="row g-1 mb-1">
                         <div class="col-6">
@@ -204,10 +208,10 @@ include_once 'includes/sidebar.php';
                     </div>
                     <div class="row g-1">
                         <div class="col-6">
-                            <h6 class="h6">Contact No.: <span class="bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['contact_no'] ?></span> </h6>
+                            <h6 class="h6">Status: <span class=" <?= $statusClass ?> bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['status'] ?></span> </h6>
                         </div>
                         <div class="col-6">
-                            <h6 class="h6">Status: <span class=" <?= $statusClass ?> bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['status'] ?></span> </h6>
+                            <h6 class="h6">Contact No.: <span class="bg-info-subtle-1 px-3 py-1 rounded-2 "> <?= $scholarArray[0]['contact_no'] ?></span> </h6>
                         </div>
                     </div>
                 </div>
