@@ -12,7 +12,7 @@ if($task == "resetSearch"){
 }
 
 $initialStatus = "";
-$defaultStatus = "Problematic";
+$defaultStatus = "";
 $status = $defaultStatus;
 $sql = "SELECT * FROM scholars WHERE status = '$defaultStatus'";
 
@@ -56,6 +56,9 @@ else if((!empty($_SESSION['monitor_scholar_status_search'])) || (!empty($_SESSIO
         $name = $_SESSION['monitor_scholar_name_search'];
         $sql.= " AND name LIKE '%$name%'";
     }  
+}
+else{
+    $sql = "SELECT * FROM scholars WHERE 1 Order by status";
 }
 
 
@@ -159,15 +162,16 @@ include_once 'includes/sidebar.php';
                                     <?= $currentStatus ?? $defaultStatus ?>
                                 </div>
                             </div>
-
-                            <table class="data-table table no-wrap table-hover table-bordered table-striped">
+                            
+                            <table id="monitoring-table" class="data-table table no-wrap table-hover table-bordered table-striped">
                                 <thead>
                                     <tr>
-                                        <th class="datatable" style="width: 10%">#</th>
+                                        <th class="datatable" style="width: 5%">#</th>
+                                        <th class="datatable" style="width: 9%">ID</th>
                                         <th class="datatable" style="width: 50">Name</th>
                                         <th class="datatable" style="width: 15%">Status</th>
                                         <th class="datatable" style="width: 10%">Entries</th>
-                                        <th class="datatable" style="width: 15%">Action</th>
+                                        <th class="datatable" style="width: 11%">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -204,6 +208,13 @@ include_once 'includes/sidebar.php';
                                     ?>
                                         <tr>
                                             <td><?= htmlspecialchars($tableCounter) ?></td>
+                                            <td class="text-center">
+                                                <div class="bg-success-subtle-1 d-flex justify-content-center px-2 rounded-2">
+                                                    <?= htmlspecialchars($row['id']) ?> 
+                                                </div>
+
+                                                
+                                            </td>
                                             <td><?= htmlspecialchars($row["name"]) ?></td>
                                             <td>
                                                 <div class="<?= $statusClass ?> d-flex justify-content-center px-2 rounded-2">
@@ -211,7 +222,7 @@ include_once 'includes/sidebar.php';
                                                 </div>
                                             </td>
                                             <td class="text-center">
-                                                <div class="d-inline-flex bg-info-subtle-1 px-2 rounded-2 text-align-center ">
+                                                <div class="bg-info-subtle-1 d-flex justify-content-center px-2 rounded-2 ">
                                                     <?php
                                                         foreach($monitorScholarArray as $row2){
                                                             if($row2['scholar_id'] == $row['id']){
@@ -221,7 +232,7 @@ include_once 'includes/sidebar.php';
                                                     ?>
                                                 </div>
                                             </td>
-                                            <td>
+                                            <td >
                                                 <div class='table-actions d-flex gap-2 '>
                                                     <a href=<?= "monitor_scholar.php?id=" . $row["id"]; ?> class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
                                                         <i class='icon-copy dw dw-edit2'></i>
