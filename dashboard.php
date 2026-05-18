@@ -171,9 +171,9 @@ include_once "includes/connection.php";
                             <th class="datatable" data-priority="2" style="width: 11%;">SCHOLARSHIP PROGRAM</th>
                             <th class="datatable" data-priority="1" style="width: 24%;">NAME OF SCHOLAR</th>
                             <th class="datatable" data-priority="2" style="width: 15%;">SCHOOL</th>
-                            <th class="datatable" data-priority="2" style="width: 15%;">COURSE</th>
+                            <th class="datatable" data-priority="2" style="width: 16%;">COURSE</th>
                             <th class="datatable-nosort none" data-priority="3">CONTACT NO.</th>
-                            <th class="datatable" data-priority="2" style="width: 12%;">STATUS</th>
+                            <th class="datatable" data-priority="2" style="width: 13%;">STATUS</th>
                             <th class="datatable none" data-priority="4">YEAR GRADUATED</th>
                             <th class="datatable none" data-priority="4">MUNICIPALITY</th>
                             <th class="datatable-nosort none" data-priority="4">District</th>
@@ -185,7 +185,7 @@ include_once "includes/connection.php";
                             <th class="datatable-nosort none" data-priority="4">Delayed Requirements</th>
                             <th class="datatable-nosort none" data-priority="4">Lacking Requirements</th>
                             <th class="datatable-nosort none" data-priority="4">Remarks</th>
-                            <th class="datatable-nosort" data-priority="2" style="width: 10%;">Actions</th>
+                            <th class="datatable-nosort" data-priority="2" style="width: 8%;">Actions</th>
                             <th class="datatable-nosort none dash-action-col-2" data-priority="2"></th>
                         </tr>
                     </thead>
@@ -417,14 +417,10 @@ include_once "includes/connection.php";
                                             <i class='icon-copy dw dw-edit2'></i>
                                         </a>
                                         
-                                        <a onclick='return confirmDelete()' 
-                                        href='delete_scholar.php?id=" .  $row['id']. "' 
-                                        class='btn btn-sm btn-outline-danger shadow-sm m-0'>
-                                            <i class='icon-copy dw dw-delete-3'></i>
-                                        </a>
                                     </div>
                                 </td>";
-                            echo "<td class='dash-action-col-2'>
+                            // Action Buttons Within the dropdown
+                            echo "<td class='dash-action-col-2'> 
                                     <div class=' d-flex gap-2 justify-content-center dash-action-col-2'>
                                         <a href='edit-scholar.php?id=" . $row['id'] . "' 
                                         class='btn btn-sm btn-outline-primary shadow-sm dash-action-col-2'
