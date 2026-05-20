@@ -167,9 +167,8 @@ include_once 'includes/sidebar.php';
                                 <thead>
                                     <tr>
                                         <th class="datatable" style="width: 5%">#</th>
-                                        <th class="datatable" style="width: 9%">ID</th>
-                                        <th class="datatable" style="width: 50">Name</th>
-                                        <th class="datatable" style="width: 15%">Status</th>
+                                        <th class="datatable" style="width: 55">Name</th>
+                                        <th class="datatable" style="width: 19%">Status</th>
                                         <th class="datatable" style="width: 10%">Entries</th>
                                         <th class="datatable" style="width: 11%">Action</th>
                                     </tr>
@@ -208,13 +207,7 @@ include_once 'includes/sidebar.php';
                                     ?>
                                         <tr>
                                             <td><?= htmlspecialchars($tableCounter) ?></td>
-                                            <td class="text-center">
-                                                <div class="bg-success-subtle-1 d-flex justify-content-center px-2 rounded-2">
-                                                    <?= htmlspecialchars($row['id']) ?> 
-                                                </div>
-
-                                                
-                                            </td>
+                                            
                                             <td><?= htmlspecialchars($row["name"]) ?></td>
                                             <td>
                                                 <div class="<?= $statusClass ?> d-flex justify-content-center px-2 rounded-2">
@@ -233,7 +226,7 @@ include_once 'includes/sidebar.php';
                                                 </div>
                                             </td>
                                             <td >
-                                                <div class='table-actions d-flex gap-2 '>
+                                                <div class='table-actions d-flex gap-2 justify-content-center'>
                                                     <a href=<?= "monitor_scholar.php?id=" . $row["id"]; ?> class='btn btn-sm btn-outline-primary shadow-sm ms-5'>
                                                         <i class='icon-copy dw dw-edit2'></i>
                                                     </a>
