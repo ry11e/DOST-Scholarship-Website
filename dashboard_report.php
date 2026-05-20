@@ -606,7 +606,7 @@ function isInAklan($municipality)
                         <div class="d-flex gap-2">
                             <div class="flex-fill p-2 border rounded bg-white text-center">
                                 <small class="d-block mb-1 text-muted">Print</small>
-                                <button onclick="generateFullReport()" class="btn btn-success btn-sm w-100">
+                                <button id="generateFullReport" onclick="generateFullReport()" class="btn btn-success btn-sm w-100">
                                     <i class="bi bi-printer"></i>
                                 </button>
                             </div>
@@ -614,10 +614,10 @@ function isInAklan($municipality)
                             <div class="flex-fill p-2 border rounded bg-white text-center">
                                 <small class="d-block mb-1 text-muted">Export</small>
                                 <div class="d-flex gap-1">
-                                    <button onclick="downloadPDFReport()" class="btn btn-light btn-sm border text-success flex-fill">
+                                    <button id="downloadBtnPDF" onclick="downloadPDFReport()" class="btn btn-light btn-sm border text-success flex-fill">
                                         PDF
                                     </button>
-                                    <button onclick="downloadWordReport()" class="btn btn-light btn-sm border text-success flex-fill">
+                                    <button id="downloadBtnWord" onclick="downloadWordReport()" class="btn btn-light btn-sm border text-success flex-fill">
                                         Word
                                     </button>
                                 </div>
@@ -1931,6 +1931,27 @@ function isInAklan($municipality)
 
     // MAIN FUNCTION:
     async function generateFullReport() {
+        // 1. Get the button element
+        const btn = document.getElementById('generateFullReport');
+        if (btn) {
+            // Save existing context, lock user out from double-clicking, and add the rotating spinner
+            btn.dataset.originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `
+                <span class="print-spinner" style="
+                    display: inline-block;
+                    width: 14px;
+                    height: 14px;
+                    border: 2px solid currentcolor;
+                    border-bottom-color: transparent;
+                    border-radius: 50%;
+                    animation: print-rotation 1s linear infinite;
+                    margin-right: 8px;
+                    vertical-align: middle;
+                "></span> Preparing
+            `;
+        }
+
         try {
             // --- STEP A: CAPTURE YOUR CHARTS ---
             const img1 = await getChartSnapshot(scholarshipTotalOptions);
@@ -1945,86 +1966,96 @@ function isInAklan($municipality)
 
             // --- STEP B: OPEN THE PRINT WINDOW ---
             const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                alert("Popup blocker detected! Please allow popups to open the print layout window.");
+                return;
+            }
 
             printWindow.document.write(`
-            <html>
-            <head>
-                <title>Scholarship Statistics Report</title>
-                <style>
-                    body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 50px; line-height: 1.6; }
-                    .header { text-align: center; border-bottom: 2px solid #333; margin-bottom: 30px; }
-                    .chart-box { page-break-inside: avoid; margin-bottom: 40px; text-align: center; }
-                    img { width: 100%; border: 1px solid #ddd; margin-top: 10px; }
-                    h2 { color: #0056b3; text-align: left; }
-                </style>
-            </head>
-            <body>
-                <div class="header">
-                    <h1>Department Of Science and Technology</h1>
-                    <h3>Aklan Field Office</h3>
-                    <h3>Scholarship Management System Report</h3>
-                    <p>Generated: ${new Date().toLocaleDateString()}</p>
-                </div>
+                <html>
+                <head>
+                    <title>Scholarship Statistics Report</title>
+                    <style>
+                        body { font-family: 'Segoe UI', Tahoma, sans-serif; padding: 50px; line-height: 1.6; }
+                        .header { text-align: center; border-bottom: 2px solid #333; margin-bottom: 30px; }
+                        .chart-box { page-break-inside: avoid; margin-bottom: 40px; text-align: center; }
+                        img { width: 100%; max-width: 800px; border: 1px solid #ddd; margin-top: 10px; }
+                        h2 { color: #0056b3; text-align: left; }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Department Of Science and Technology</h1>
+                        <h3>Aklan Field Office</h3>
+                        <h3>Scholarship Management System Report</h3>
+                        <p>Generated: ${new Date().toLocaleDateString()}</p>
+                    </div>
 
-                <div class="chart-box">
-                    <h2>Overall Scholarship Programs</h2>
-                    <img src="${img1}" />
-                </div>
+                    <div class="chart-box">
+                        <h2>Overall Scholarship Programs</h2>
+                        <img src="${img1}" />
+                    </div>
 
-                <div class="chart-box">
-                    <h2>Undergraduate Programs</h2>
-                    <img src="${img2}" />
-                </div>
+                    <div class="chart-box">
+                        <h2>Undergraduate Programs</h2>
+                        <img src="${img2}" />
+                    </div>
 
-                <div class="chart-box">
-                    <h2>JLSS Programs</h2>
-                    <img src="${img3}" />
-                </div>
+                    <div class="chart-box">
+                        <h2>JLSS Programs</h2>
+                        <img src="${img3}" />
+                    </div>
 
-                <div class="chart-box">
-                    <h2>Timeline</h2>
-                    <img src="${img4}" />
-                </div>
+                    <div class="chart-box">
+                        <h2>Timeline</h2>
+                        <img src="${img4}" />
+                    </div>
 
-                <div class="chart-box">
-                    <h2>School</h2>
-                    <img src="${img5}" />
-                </div>
+                    <div class="chart-box">
+                        <h2>School</h2>
+                        <img src="${img5}" />
+                    </div>
 
-                <div class="chart-box">
-                    <h2>Status</h2>
-                    <img src="${img6}" />
-                </div>
+                    <div class="chart-box">
+                        <h2>Status</h2>
+                        <img src="${img6}" />
+                    </div>
 
-                <div class="chart-box">
-                    <h2>Within Aklan: District 1</h2>
-                    <img src="${img7}" />
-                </div>
+                    <div class="chart-box">
+                        <h2>Within Aklan: District 1</h2>
+                        <img src="${img7}" />
+                    </div>
 
-                <div class="chart-box">
-                    <h2>Within Aklan: District 2</h2>
-                    <img src="${img8}" />
-                </div>
+                    <div class="chart-box">
+                        <h2>Within Aklan: District 2</h2>
+                        <img src="${img8}" />
+                    </div>
 
-                <div class="chart-box">
-                    <h2>Outside Aklan</h2>
-                    <img src="${img9}" />
-                </div>
+                    <div class="chart-box">
+                        <h2>Outside Aklan</h2>
+                        <img src="${img9}" />
+                    </div>
 
-                <script>
-                    window.onload = function() {
-                        window.print();
-                    };
-                <\/script>
-            </body>
-            </html>
-        `);
+                    <script>
+                        window.onload = function() {
+                            window.print();
+                        };
+                    <\/script>
+                </body>
+                </html>
+            `);
 
             printWindow.document.close();
 
         } catch (error) {
             console.error("Report failed:", error);
             alert("There was an error generating the report images.");
+        } finally {
+            // --- STEP C: RESTORE BUTTON INTERFACE STATE ---
+            if (btn) {
+                btn.innerHTML = btn.dataset.originalContent;
+                btn.disabled = false;
+            }
         }
     }
 
@@ -2065,12 +2096,34 @@ function isInAklan($municipality)
 
 
     async function downloadPDFReport() {
-        const {
-            jsPDF
-        } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4'); // Portrait, Millimeters, A4 size
+    // 1. Get the button element
+    const btn = document.getElementById('downloadBtnPDF');
+    if (!btn) return;
 
-        // Capture the images using your existing helper
+    // 2. Save original button content and disable it to prevent double-clicks
+    const originalContent = btn.innerHTML;
+    btn.disabled = true;
+    
+    // 3. Inject the loading spinner text/html
+    btn.innerHTML = `
+        <span class="pdf-spinner" style="
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 2px solid currentcolor;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            animation: pdf-rotation 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        "></span> Generating...
+    `;
+
+    try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+
+        // Capture images (this takes a few seconds)
         const img1 = await getChartSnapshot(scholarshipTotalOptions);
         const img2 = await getChartSnapshot(scholarshipStandardOptions);
         const img3 = await getChartSnapshot(scholarshipJLSSOptions);
@@ -2081,22 +2134,18 @@ function isInAklan($municipality)
         const img8 = await getChartSnapshot(inAklanMun2ndOptions);
         const img9 = await getChartSnapshot(outAklanMunOptions);
 
-        // Add Title
+        // --- PDF Formatting ---
         doc.setFontSize(20);
-        doc.text("Scholarship Report", 105, 20, {
-            align: "center"
-        });
+        doc.text("Scholarship Report", 105, 20, { align: "center" });
 
         doc.setFontSize(14);
         doc.text("Overall Scholarship Programs", 20, 40);
-        // addImage(data, type, x, y, width, height)
         doc.addImage(img1, 'PNG', 15, 45, 180, 90);
 
         doc.text("Undergraduate Programs", 20, 150);
         doc.addImage(img2, 'PNG', 15, 155, 180, 90);
 
         doc.addPage();
-
         doc.text("JLSS Scholarship Programs", 20, 20);
         doc.addImage(img3, 'PNG', 15, 25, 180, 90);
 
@@ -2104,7 +2153,6 @@ function isInAklan($municipality)
         doc.addImage(img4, 'PNG', 15, 135, 180, 90);
 
         doc.addPage();
-
         doc.text("Schools", 20, 20);
         doc.addImage(img5, 'PNG', 15, 25, 180, 90);
 
@@ -2112,7 +2160,6 @@ function isInAklan($municipality)
         doc.addImage(img6, 'PNG', 15, 135, 180, 90);
 
         doc.addPage();
-
         doc.text("Within Aklan: District 1", 20, 20);
         doc.addImage(img7, 'PNG', 15, 25, 180, 90);
 
@@ -2120,140 +2167,169 @@ function isInAklan($municipality)
         doc.addImage(img8, 'PNG', 15, 135, 180, 90);
 
         doc.addPage();
-
         doc.text("Outside Aklan", 20, 20);
         doc.addImage(img9, 'PNG', 15, 25, 180, 90);
 
-
+        // Sanitize date string formatting for clean windows filenames (swaps / and : out)
         const now = new Date();
-        
-        const nowDate = now.toLocaleDateString();
-        const nowTime = now.toLocaleTimeString();
-
-        const nowDateString = nowDate.toString();
-        const nowTimeString = nowTime.toString();
-
+        const nowDateString = now.toLocaleDateString().replace(/\//g, "-");
+        const nowTimeString = now.toLocaleTimeString().replace(/:/g, "-");
 
         // Save the file
-        doc.save("Scholarship_Report_" + nowDateString + "_" + nowTimeString + ".pdf");
+        doc.save(`Scholarship_Report_${nowDateString}_${nowTimeString}.pdf`);
+
+    } catch (error) {
+        console.error("PDF Generation failed:", error);
+        alert("An error occurred while generating the PDF.");
+    } finally {
+        // 4. RESET THE BUTTON: This fires as soon as doc.save() executes or an error breaks out
+        btn.innerHTML = originalContent;
+        btn.disabled = false;
     }
+}
 
 
 
 
     // Download in Word Format
     async function downloadWordReport() {
-        //console.log("Preparing Word Document...");
+        // 1. Get the button element
+        const btn = document.getElementById('downloadBtnWord');
+        if (btn) {
+            // Save original text, disable to prevent spam clicking, and insert spinner
+            btn.dataset.originalContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = `
+                <span class="word-spinner" style="
+                    display: inline-block;
+                    width: 14px;
+                    height: 14px;
+                    border: 2px solid currentcolor;
+                    border-bottom-color: transparent;
+                    border-radius: 50%;
+                    animation: word-rotation 1s linear infinite;
+                    margin-right: 8px;
+                    vertical-align: middle;
+                "></span> Generating...
+            `;
+        }
 
-        // variables to adjust width and height
-        const chartWidth = 600;
-        const chartHeight = 300;
+        try {
+            // variables to adjust width and height
+            const chartWidth = 600;
+            const chartHeight = 300;
 
-        // 1. Capture the images
-        const img1 = await getChartSnapshot(scholarshipTotalOptions);
-        const img2 = await getChartSnapshot(scholarshipStandardOptions);
-        const img3 = await getChartSnapshot(scholarshipJLSSOptions);
-        const img4 = await getChartSnapshot(awardYearOptions);
-        const img5 = await getChartSnapshot(schoolOptions);
-        const img6 = await getChartSnapshot(statusOptions);
-        const img7 = await getChartSnapshot(inAklanMun1stOptions);
-        const img8 = await getChartSnapshot(inAklanMun2ndOptions);
-        const img9 = await getChartSnapshot(outAklanMunOptions);
+            // 2. Capture the images
+            const img1 = await getChartSnapshot(scholarshipTotalOptions);
+            const img2 = await getChartSnapshot(scholarshipStandardOptions);
+            const img3 = await getChartSnapshot(scholarshipJLSSOptions);
+            const img4 = await getChartSnapshot(awardYearOptions);
+            const img5 = await getChartSnapshot(schoolOptions);
+            const img6 = await getChartSnapshot(statusOptions);
+            const img7 = await getChartSnapshot(inAklanMun1stOptions);
+            const img8 = await getChartSnapshot(inAklanMun2ndOptions);
+            const img9 = await getChartSnapshot(outAklanMunOptions);
 
-        // 2. Build the Word-friendly HTML structure
-        // use MSOffice XML namespaces to help Word understand the file
-        const header = `
-            <html xmlns:o='urn:schemas-microsoft-com:office:office' 
-                xmlns:w='urn:schemas-microsoft-com:office:word' 
-                xmlns='http://www.w3.org/TR/REC-html40'>
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-                <title>Scholarship Report</title>
-                <style>
-                    /* Using system fonts like Arial or Calibri ensures it works without internet */
-                    body { font-family: 'Calibri', 'Arial', sans-serif; }
-                    h1 { text-align: center; color: #0056b3; }
-                    h2 { color: #333; border-bottom: 1px solid #ccc; margin-top: 30px; }
-                    .chart-wrapper { text-align: center; margin-bottom: 20px; }
-                    /* We keep the height:auto but remember our 'Ironclad' attributes from before */
-                    img { display: block; margin: 0 auto; } 
-                </style>
-            </head>
-            <body>`;
+            // 3. Build the Word-friendly HTML structure
+            const header = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' 
+                    xmlns:w='urn:schemas-microsoft-com:office:word' 
+                    xmlns='http://www.w3.org/TR/REC-html40'>
+                <head>
+                    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+                    <title>Scholarship Report</title>
+                    <style>
+                        body { font-family: 'Calibri', 'Arial', sans-serif; }
+                        h1 { text-align: center; color: #0056b3; }
+                        h2 { color: #333; border-bottom: 1px solid #ccc; margin-top: 30px; }
+                        .chart-wrapper { text-align: center; margin-bottom: 20px; }
+                        img { display: block; margin: 0 auto; } 
+                    </style>
+                </head>
+                <body>`;
 
-        const content = `
-            <h1 style="text-align:center; font-family:Arial;">Scholarship Report</h1>
-            <p style="text-align:center;">Generated on: ${new Date().toLocaleDateString()}</p>
+            const content = `
+                <h1 style="text-align:center; font-family:Arial;">Scholarship Report</h1>
+                <p style="text-align:center;">Generated on: ${new Date().toLocaleDateString()}</p>
 
-            <h2 style="">Overall Scholarship Programs</h2>
-            <div style="text-align:center;">
-                <img src="${img1}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
-            </div>
+                <h2>Overall Scholarship Programs</h2>
+                <div style="text-align:center;">
+                    <img src="${img1}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+                </div>
 
-            <h2 style="">Undergraduate Programs</h2>
-            <div style="text-align:center;">
-                <img src="${img2}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
-            </div>
+                <h2>Undergraduate Programs</h2>
+                <div style="text-align:center;">
+                    <img src="${img2}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+                </div>
 
-            <h2 style="page-break-before: always;">JLSS Scholarship Programs</h2>
-            <div style="text-align:center;">
-                <img src="${img3}" width="${chartWidth}" height="${chartHeight}" height:auto;">
-            </div>
+                <h2 style="page-break-before: always;">JLSS Scholarship Programs</h2>
+                <div style="text-align:center;">
+                    <img src="${img3}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+                </div>
 
-            <h2 style="">Timeline</h2>
-            <div style="text-align:center;">
-                <img src="${img4}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
-            </div>
+                <h2>Timeline</h2>
+                <div style="text-align:center;">
+                    <img src="${img4}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+                </div>
 
-            <h2 style="page-break-before: always;">Schools</h2>
-            <div style="text-align:center;">
-                <img src="${img5}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
-            </div>
+                <h2 style="page-break-before: always;">Schools</h2>
+                <div style="text-align:center;">
+                    <img src="${img5}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+                </div>
 
-            <h2 style="">Status</h2>
-            <div style="text-align:center;">
-                <img src="${img6}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
-            </div>
+                <h2>Status</h2>
+                <div style="text-align:center;">
+                    <img src="${img6}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+                </div>
 
-            <h2 style="page-break-before: always;">Within Aklan: District 1</h2>
-            <div style="text-align:center;">
-                <img src="${img7}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
-            </div>
+                <h2 style="page-break-before: always;">Within Aklan: District 1</h2>
+                <div style="text-align:center;">
+                    <img src="${img7}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+                </div>
 
-            <h2 style="">Within Aklan: District 2</h2>
-            <div style="text-align:center;">
-                <img src="${img8}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
-            </div>
+                <h2>Within Aklan: District 2</h2>
+                <div style="text-align:center;">
+                    <img src="${img8}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+                </div>
 
-            <h2 style="page-break-before: always;">Outside Aklan</h2>
-            <div style="text-align:center;">
-                <img src="${img9}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
-            </div>
-        `;
-        const footer = "</body></html>";
-        const fullHtml = header + content + footer;
+                <h2 style="page-break-before: always;">Outside Aklan</h2>
+                <div style="text-align:center;">
+                    <img src="${img9}" width="${chartWidth}" height="${chartHeight}" style="width:500pt; height:auto;">
+                </div>
+            `;
+            const footer = "</body></html>";
+            const fullHtml = header + content + footer;
 
-        // 3. Create a Blob and trigger the download
-        const blob = new Blob(['\ufeff', fullHtml], {
-            type: 'application/msword'
-        });
+            // 4. Create a Blob and trigger the download
+            const blob = new Blob(['\ufeff', fullHtml], {
+                type: 'application/msword'
+            });
 
-        const now = new Date();
-        
-        const nowDate = now.toLocaleDateString();
-        const nowTime = now.toLocaleTimeString();
+            // Clean filename string swaps for system file safety
+            const now = new Date();
+            const nowDateString = now.toLocaleDateString().replace(/\//g, "-");
+            const nowTimeString = now.toLocaleTimeString().replace(/:/g, "-");
 
-        const nowDateString = nowDate.toString();
-        const nowTimeString = nowTime.toString();
+            // Create a temporary link to click
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = `Scholarship_Report_${nowDateString}_${nowTimeString}.doc`;
 
-        // Create a temporary link to click
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = "Scholarship_Report_" + nowDateString + "_" + nowTimeString + ".doc";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url); // Clean up memory allocation
 
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
+        } catch (error) {
+            console.error("Word Generation failed:", error);
+            alert("An error occurred while generating the document.");
+        } finally {
+            // 5. Always restore the button interface state
+            if (btn) {
+                btn.innerHTML = btn.dataset.originalContent;
+                btn.disabled = false;
+            }
+        }
     }
 </script>
