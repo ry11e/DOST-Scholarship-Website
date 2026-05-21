@@ -489,12 +489,18 @@ $inAklanData2ndTotal = 0;
 $municipalityTableSql = "select fld_municipality, fld_district from tbl_municipalities";
 $munTableResult = $conn->query($municipalityTableSql);
 
-$aklanMunicipalities = array_column($munTableResult->fetch_all(MYSQLI_ASSOC), "fld_municipality");
-$aklanMunicipalitiesDistrict = array_column($munTableResult->fetch_all(MYSQLI_ASSOC), "fld_district");
+// 1. Fetch ALL rows into a variable ONCE
+$allMunicipalities = $munTableResult->fetch_all(MYSQLI_ASSOC);
+
+// 2. Extract your columns from that single array
+$aklanMunicipalities = array_column($allMunicipalities, "fld_municipality");
+$aklanMunicipalitiesDistrict = array_column($allMunicipalities, "fld_district");
 
 
 $municipalitySql = "Select `district`,`municipality`, COUNT(municipality) as total from `scholars` WHERE record_status = 'active' Group By `municipality`";
 $resultMunicipality = $conn->query($municipalitySql);
+
+
 
 
 
@@ -530,6 +536,38 @@ while ($row = $resultMunicipality->fetch_assoc()) {
     }
 }
 
+
+
+foreach($aklanMunicipalities as $index => $municipality){
+    if($aklanMunicipalitiesDistrict[$index] == "1st"){
+        if(!in_array($municipality, $inAklanLabel1st)){
+            $inAklanLabel1st[] = $municipality;
+            $inAklanData1st[] = 0;
+        }
+    }
+    else{
+        if(!in_array($municipality, $inAklanLabel2nd)){
+            $inAklanLabel2nd[] = $municipality;
+            $inAklanData2nd[] = 0;
+        }
+    }
+}
+
+
+
+
+// THis function checks whether the argument sent can be found in the municipalities list/table as well.
+function isInAklan($municipality)
+{
+    global $aklanMunicipalities;
+
+
+    if (in_array($municipality, $aklanMunicipalities)) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 
 
@@ -574,18 +612,6 @@ $conn->close();
 
 
 
-// THis function checks whether the argument sent can be found in the municipalities list/table as well.
-function isInAklan($municipality)
-{
-    global $aklanMunicipalities;
-
-
-    if (in_array($municipality, $aklanMunicipalities)) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 ?>
 
