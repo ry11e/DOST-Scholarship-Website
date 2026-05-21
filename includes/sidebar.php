@@ -178,7 +178,7 @@ include_once 'includes/connection.php';
 
 				<li class="<?php echo ($current_file === 'preferences.php') ? 'active' : ''; ?> " hidden>
 					<a href="preferences.php" class="dropdown-toggle no-arrow">
-						<span class="micon bi bi-gear"></span>
+						<span class="micon bi bi-attach"></span>
 						<span class="mtext">Preferences</span>
 					</a>
 				</li>
@@ -191,6 +191,14 @@ include_once 'includes/connection.php';
 				<li>
 					<div class="sidebar-small-cap">Extra</div>
 				</li>
+
+				<li class="<?php echo ($current_file === 'about_page.php') ? 'active' : ''; ?>">
+					<a href="about_page.php" class="dropdown-toggle no-arrow">
+						<span class="micon bi bi-info-circle"></span>
+						<span class="mtext">About</span>
+					</a>
+				</li>
+
 
 				<li>
 					<a
