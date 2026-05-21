@@ -6,7 +6,7 @@ $current_date = date("Y-m-d_h-i-s");
 
 $rows = [
     ["LIST OF DOST-SEI SCHOLARS IN THE PROVINCE OF AKLAN"],
-    ['SY 2024-2025'],
+    ['As of ' . $current_date],
     [], // empty line
     ['ID', 'Year of Award', 'Scholarship Program', 'Name', 'School', 'Course', 'Contact No', 'Municipality', 'District', 'Status', 'Year Graduated']
 ];
