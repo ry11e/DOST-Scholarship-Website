@@ -12,7 +12,7 @@ $rows = [
 ];
 
 $sql = "SELECT id, year_of_award, scholarship_program, name, school, course, contact_no, municipality, district, status, year_graduated
-        FROM scholars";
+        FROM scholars where record_status = 'active'";
 $result = $conn->query($sql);
 
 while ($row = $result->fetch_assoc()) {
